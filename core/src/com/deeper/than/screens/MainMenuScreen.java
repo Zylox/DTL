@@ -41,9 +41,10 @@ public class MainMenuScreen implements EnumerableScreen {
 		stage = new Stage(game.getViewport());
 		stage2 = new Stage(game.getViewport());
 		stage2.getViewport().update((int) (DTL.VWIDTH/1), (int) (DTL.VHEIGHT/1), false);
+
 		Image img = new Image(new Texture(Gdx.files.internal("demonjonathan.png")));
-		img.addAction(Actions.moveBy(1, 1));
 		img.setBounds(img.getX()+img.getWidth()/4, img.getY()+img.getHeight()/4, img.getWidth()/2, img.getHeight()/2);
+		img.setOrigin(img.getWidth()/2, img.getHeight()/2);
 //		img.setBounds(img.getX(), img.getY(), img.getWidth(), img.getHeight());
 		img.addListener(new InputListener() {
 		    public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
@@ -52,7 +53,7 @@ public class MainMenuScreen implements EnumerableScreen {
 		    }
 		});
 		stage2.addActor(img);
-		img.setPosition(0, (stage.getViewport().getWorldHeight()/2)-(img.getHeight()/2));
+		img.setPosition(20, (stage.getViewport().getWorldHeight()/2)-(img.getHeight()/2));
 		
 		input = new InputMultiplexer();
 		input.addProcessor(stage);
@@ -122,7 +123,9 @@ public class MainMenuScreen implements EnumerableScreen {
 	    Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 	    
 		for(Actor a : stage2.getActors()){
-			a.addAction(Actions.moveBy(1, 1));
+			//a.addAction(Actions.moveBy(1, 1));
+			a.addAction(Actions.rotateBy(1));
+
 		}
 	    
 	    stage.act(delta);
