@@ -1,6 +1,5 @@
 package com.deeper.than.screens;
 
-import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.GL20;
@@ -18,6 +17,8 @@ public class GameplayScreen implements EnumerableScreen{
 	public void show() {
 		// TODO Auto-generated method stub
 		System.out.println("gameplay state ");
+		DTL.gameActive = true;
+		Gdx.input.setInputProcessor(null);
 	}
 
 	@Override
@@ -50,13 +51,14 @@ public class GameplayScreen implements EnumerableScreen{
 	}
 	
 	public void mainMenu(){
+		DTL.gameActive = false;
 		game.setScreen(Screens.MAINMENU.getScreen());
 	}
 
 	@Override
 	public void hide() {
 		// TODO Auto-generated method stub
-		
+		DTL.previousScreen = this;
 	}
 
 	@Override

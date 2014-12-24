@@ -17,6 +17,7 @@ public class NewGameScreen implements EnumerableScreen {
 	public void show() {
 		// TODO Auto-generated method stub
 		System.out.println("New Game Screen");
+		game.setScreen(Screens.GAMEPLAY.getScreen());
 	}
 
 	@Override
@@ -47,7 +48,7 @@ public class NewGameScreen implements EnumerableScreen {
 	@Override
 	public void hide() {
 		// TODO Auto-generated method stub
-
+		DTL.previousScreen = this;
 	}
 
 	@Override
