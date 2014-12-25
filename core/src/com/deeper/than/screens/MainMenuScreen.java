@@ -124,7 +124,7 @@ public class MainMenuScreen implements EnumerableScreen {
 	    
 		for(Actor a : stage2.getActors()){
 			//a.addAction(Actions.moveBy(1, 1));
-			a.addAction(Actions.rotateBy(1));
+			a.addAction(Actions.rotateBy(10));
 
 		}
 	    

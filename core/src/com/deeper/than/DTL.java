@@ -13,7 +13,7 @@ public class DTL extends Game {
 	public static final int VWIDTH = 1920;
 	public static final int VHEIGHT = 1080;
 	
-	public static final boolean DEBUG = false;
+	public static final boolean DEBUG = true;
 	public static boolean gameActive = false;
 	
 	public static Screen previousScreen = Screens.MAINMENU.getScreen();
