@@ -131,22 +131,28 @@ public class ScriptParser implements Poolable{
 			//floorlayout case
 			if(line.replaceAll("\\s", "").equals("layout=")){
 				Vector2 poss[] = null;
+				int roomId=-1;
+				Room room;
+				FloorTile fl;
+				GridSquare gs;
 				//internal layout proccesing loop
 				while(scanner.hasNext()){
 					line = getNextNonCommentLine(scanner);
 					if(line.startsWith("{")){
-						poss = getRoomValues(line);
-						FloorTile fl;
-						GridSquare gs;
+						roomId++;
+						room = new Room(roomId);
+						poss = getRoomValues(line);						
 						for(Vector2 v : poss){
 							fl = new FloorTile(v);
 							gs = new GridSquare();
 							gs.setFloorTile(fl);
+							gs.setRoom(room);
 							gs.setShip(ship);
 							fl.setShip(ship);
 							ship.layout[(int)v.y][(int)v.x] = gs;
 							
 						}
+						ship.addRoom(room);
 					}else if(line.equals("endlayout")){
 						break;
 					}else{

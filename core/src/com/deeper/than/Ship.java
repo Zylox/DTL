@@ -14,10 +14,13 @@ import com.badlogic.gdx.scenes.scene2d.Group;
 
 public class Ship extends Group{
 	
-
+	private DTL game;
+	
 	protected String name;
 	private ArrayList<Crew> crew;
 	protected GridSquare[][] layout;
+	private WallSkeleton[][] walls;
+	private ArrayList<Room> rooms;
 	private ArrayList<Door>	doors;
 	protected int gridWidth;
 	protected int gridHeight;
@@ -25,18 +28,18 @@ public class Ship extends Group{
 	private String floorTileImgHandle;
 	private NinePatch doorImg;
 	private TextureAtlas texAtl;
-	private Sprite doorImgRot;
 	private String doorImgHandle;
-	
 	
 	public Ship(){
 		
 	}
 	
-	public Ship(FileHandle filepath){
+	public Ship(FileHandle filepath, DTL game){
 		
+		this.game = game;
 		crew = new ArrayList<Crew>();
 		doors = new ArrayList<Door>();
+		rooms = new ArrayList<Room>();
 		
 		
 		try {
@@ -55,6 +58,8 @@ public class Ship extends Group{
 			}
 		}
 		
+		determineWalls();
+		
 		for(Door d : doors){		
 			layout[(int)d.pos.y][(int)d.pos.x].addDoor(d);
 			addActor(d);
@@ -63,14 +68,102 @@ public class Ship extends Group{
 		int x = FloorTile.TILESIZE*layout[0].length;
 		int y = FloorTile.TILESIZE*layout.length;
 		
-		setBounds(Gdx.graphics.getWidth()/2 - x/2,Gdx.graphics.getHeight()/2 - y/2, x, y);
+		setBounds(game.getViewport().getWorldWidth()/2 - x/2,game.getViewport().getWorldHeight()/2 - y/2, x, y);
 		
 		loadAssets();
 	}
 	
+	public void determineWalls(){
+		walls = new WallSkeleton[layout.length][layout[0].length];
+		int wallTypeLeft = -1;
+		int wallTypeDown = -1;
+		GridSquare current = null;
+		GridSquare left = null;
+		GridSquare down = null;
+		for(int x = 0; x < walls[0].length; x++){
+			for(int y = 0; y < walls.length; y++){
+				//y x
+				current = layout[y][x];
+				if(x==0){
+					left = null;
+				}else{
+					left = layout[y][x-1];
+				}
+				if(y==0){
+					down = null;
+				}else{
+					down = layout[y-1][x];
+				}
+				
+				wallTypeLeft = detWallType(current, left);
+				wallTypeDown = detWallType(current, down);
+				
+				walls[y][x] = new WallSkeleton(x*FloorTile.TILESIZE,y*FloorTile.TILESIZE, wallTypeLeft, wallTypeDown);
+				addActor(walls[y][x]);
+			}
+		}
+	}
+	
+	private int detWallType(GridSquare base, GridSquare ref){
+		int wallType = -1;
+		
+		if(base != null){
+			if(ref != null){
+				if(base.isSameRoom(ref)){
+					wallType= WallSkeleton.noWall;
+				}else{
+					if(isDoorBetweenNeighTile(base, ref)){
+						wallType = WallSkeleton.doorWall;
+					}else{
+						wallType = WallSkeleton.interiorWall;
+					}
+				}
+			}else{
+				wallType = WallSkeleton.exteriorWall;
+			}
+		}
+		
+		return wallType;
+	}
+	
+	public boolean isDoorBetweenNeighTile(GridSquare base, GridSquare ref){
+		
+		if(base == null || ref == null){
+			return false;
+		}
+		
+		if(base.getPos().x+1 == ref.getPos().x){
+			//if base left
+			if(base.hasDoor(Neighbors.RIGHT) || ref.hasDoor(Neighbors.LEFT)){
+				return true;
+			}
+		}else if(base.getPos().x-1 == ref.getPos().x){
+			//if base right
+			if(base.hasDoor(Neighbors.LEFT) || ref.hasDoor(Neighbors.RIGHT)){
+				return true;
+			}
+		}else if(base.getPos().x == ref.getPos().y){
+			//if same column
+			if(base.getPos().y-1 == ref.getPos().y){
+				//if base up
+				if(base.hasDoor(Neighbors.DOWN) || ref.hasDoor(Neighbors.UP)){
+					return true;
+				}
+			}else if(base.getPos().y+1 == ref.getPos().y){
+				//if base down
+				if(base.hasDoor(Neighbors.UP) || ref.hasDoor(Neighbors.DOWN)){
+					return true;
+				}
+			}
+			
+		}
+		
+		return false;
+	}
+	
 	private void loadAssets(){
 		floorTileImg = new Sprite(new Texture(Gdx.files.internal(floorTileImgHandle)));
-		texAtl       = new TextureAtlas("door.pack");
+		texAtl       = new TextureAtlas(doorImgHandle);
 		doorImg      = texAtl.createPatch("doorhalf");
 	}
 	
@@ -115,6 +208,10 @@ public class Ship extends Group{
 		this.doors.add(door);
 	}
 	
+	public void addRoom(Room room){
+		this.rooms.add(room);
+	}
+	
 	public int getGridWidth() {
 		return gridWidth;
 	}
@@ -142,10 +239,6 @@ public class Ship extends Group{
 	public NinePatch getDoorImg() {
 		return doorImg;
 	}
-	
-	public Sprite getDoorImgRot() {
-		return doorImgRot;
-	}
 
 	public void setFloorTileImgHandle(String handle){
 		floorTileImgHandle = handle;
@@ -154,4 +247,13 @@ public class Ship extends Group{
 	public void setDoorImgHandle(String handle){
 		doorImgHandle = handle;
 	}
+	
+	public WallSkeleton[][] getWalls() {
+		return walls;
+	}
+
+	public void setWalls(WallSkeleton[][] walls) {
+		this.walls = walls;
+	}
+
 }

@@ -1,14 +1,15 @@
 package com.deeper.than.screens;
 
-import java.util.Random;
-
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.deeper.than.DTL;
 import com.deeper.than.Ship;
+import com.deeper.than.WallSkeleton;
 
 public class GameplayScreen implements EnumerableScreen{
 
@@ -19,16 +20,24 @@ public class GameplayScreen implements EnumerableScreen{
 	
 	private InputMultiplexer input;
 
+	Image tempBackground;
 	
 	public void create(DTL game){
 		this.game = game;
-		ship = new Ship(Gdx.files.internal("kes.ship"));
+		WallSkeleton.loadAssets();
+		loadAssets();
+		ship = new Ship(Gdx.files.internal("kes.ship"), game);
 		ship.setOrigin(ship.getWidth()/2, ship.getHeight()/2);
 		gameObjects = new Stage(game.getViewport());
+		gameObjects.addActor(tempBackground);
 		gameObjects.addActor(ship);
 		input = new InputMultiplexer();
 		input.addProcessor(gameObjects);
 		
+	}
+	
+	public void loadAssets(){
+		tempBackground = new Image(new Texture("tempbackground.png"));
 	}
 	
 	@Override
@@ -44,7 +53,7 @@ public class GameplayScreen implements EnumerableScreen{
 		// TODO Auto-generated method stub
 	    Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
-	    if(Gdx.input.isKeyJustPressed(Input.Keys.Q)){
+	    if(Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)){
 	    	mainMenu();
 	    }
 	    

@@ -26,9 +26,11 @@ public class DTL extends Game {
 	@Override
 	public void create () {
 		
+		//Gdx.graphics.setDisplayMode(Gdx.graphics.getDesktopDisplayMode().width, Gdx.graphics.getDesktopDisplayMode().height, true);
 		Gdx.graphics.setDisplayMode(VWIDTH, VHEIGHT, false);
 		
 		viewport = new FitViewport(VWIDTH, VHEIGHT);
+		viewport.update(VWIDTH, VWIDTH, true);
 		skin = new Skin(Gdx.files.internal("uiskin.json"));
 		
 		Screens[] screens = Screens.values();

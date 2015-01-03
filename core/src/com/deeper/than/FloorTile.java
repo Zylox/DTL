@@ -12,7 +12,7 @@ public class FloorTile extends Actor{
 	private static final float BASEPRESSURE = 50;
 	private static final float BASEWATERLEVEL= 0;
 	
-	public static final int TILESIZE = 64;
+	public static final int TILESIZE = 32;
 	protected Vector2 pos;
 	protected Neighbors neighs[];
 	
@@ -53,7 +53,6 @@ public class FloorTile extends Actor{
 	
 	@Override
 	public void draw(Batch batch, float alpha){
-		//batch.draw(ship.floorTileImg, pos.x*TILESIZE, pos.y*TILESIZE);
 		batch.draw(ship.getFloorTileImg(), getX(), getY(), getOriginX(), getOriginY(), getWidth(), getHeight(), getScaleX(), getScaleY(), getRotation());
 	}
 	

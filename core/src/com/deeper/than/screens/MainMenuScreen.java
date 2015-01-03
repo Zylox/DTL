@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.scenes.scene2d.Actor;
@@ -31,6 +32,8 @@ public class MainMenuScreen implements EnumerableScreen {
 	TextButton exitButton;
 	
 	InputMultiplexer input;
+
+	
 	
 	public MainMenuScreen(){
 
@@ -107,7 +110,11 @@ public class MainMenuScreen implements EnumerableScreen {
 		table.setDebug(DTL.DEBUG);
 		img.setDebug(DTL.DEBUG);
 		
-		//shapeRen = new ShapeRenderer();
+		loadAssets();
+	}
+	
+	public void loadAssets(){
+		
 	}
 	
 	@Override
@@ -130,6 +137,8 @@ public class MainMenuScreen implements EnumerableScreen {
 	    
 	    stage.act(delta);
 	    stage2.act(delta);
+	    
+	    
 	    
 	    stage.draw();
 	    stage2.draw();

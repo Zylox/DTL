@@ -9,6 +9,9 @@ public class GridSquare extends Group{
 	private Door[] doors;
 	private Crew crewMember;
 	private Vector2 pos;
+
+
+	private Room room;
 	
 	private Ship ship;
 	
@@ -16,7 +19,15 @@ public class GridSquare extends Group{
 		crewMember = null;
 		tile = null;
 		doors = new Door[4];
+		room = null;
 		setDebug(DTL.DEBUG);
+	}
+	
+	public boolean isSameRoom(GridSquare square){
+		if(room.getRoomId() == square.getRoomId()){
+			return true;
+		}
+		return false;
 	}
 	
 	public void addDoor(Door door){
@@ -24,6 +35,13 @@ public class GridSquare extends Group{
 		door.setGridSquare(this);
 		//addActor(door);
 		door.initDoors();
+	}
+	
+	public boolean hasDoor(int direction){
+		if(doors[direction] != null){
+			return true;
+		}
+		return false;
 	}
 	
 	public void setFloorTile(FloorTile tile){
@@ -38,7 +56,6 @@ public class GridSquare extends Group{
 		this.crewMember = crew;
 	}
 	
-	
 	public void setShip(Ship ship){
 		this.ship = ship;
 	}
@@ -47,5 +64,23 @@ public class GridSquare extends Group{
 		return tile;
 	}
 	
+	public Room getRoom(){
+		return room;
+	}
 	
+	public void setRoom(Room room){
+		this.room = room;
+	}
+	
+	public int getRoomId(){
+		return room.getRoomId();
+	}
+
+	public Vector2 getPos() {
+		return pos;
+	}
+
+	public void setPos(Vector2 pos) {
+		this.pos = pos;
+	}
 }

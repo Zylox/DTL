@@ -15,6 +15,11 @@ public class Door extends Group{
 		Open,
 		Closed;
 	}
+	
+	public static enum DoorType{
+		interior,
+		exterior;
+	}
 	public static final float DOORSIZELONG = FloorTile.TILESIZE/2;
 	public static final float DOORSIZESHORT = DOORSIZELONG/3;
 	
@@ -24,7 +29,7 @@ public class Door extends Group{
 	protected int orientation;
 	private DoorState doorState;
 	private float openAmount;
-	
+	private DoorType doorType;
 	
 	public Door(float x, float y, int orientation, Ship ship){
 		init(new Vector2(x,y), orientation, ship);
@@ -125,6 +130,22 @@ public class Door extends Group{
 		
 		this.addActor(doors[0]);
 		this.addActor(doors[1]);
+		
+	}
+	
+	@Override
+	public void draw(Batch batch, float parentAlpha){
+		float width = (FloorTile.TILESIZE - DOORSIZELONG)/2;
+		float height = DOORSIZESHORT/3;
+		
+		if(orientation == Neighbors.UP || orientation == Neighbors.DOWN){
+			//WallSkeleton.getExteriorWallImg().draw(batch, getX(), getY()+DOORSIZESHORT/2-height/2, -width, height);
+			//WallSkeleton.getExteriorWallImg().draw(batch, getX()+FloorTile.TILESIZE-width, getY()+DOORSIZESHORT/2-height/2, -width, height);
+		}else if (orientation == Neighbors.RIGHT || orientation == Neighbors.LEFT){
+			//WallSkeleton.getExteriorWallImg().draw(batch, getX()+DOORSIZESHORT/2-height/2, getY(), height, -width);
+			//WallSkeleton.getExteriorWallImg().draw(batch, getX()+DOORSIZESHORT/2-height/2, getY()+FloorTile.TILESIZE-width, height, -width);
+		}
+		super.draw(batch, parentAlpha);
 		
 	}
 	

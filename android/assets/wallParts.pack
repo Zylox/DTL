@@ -1,16 +1,8 @@
 
-door.png
+wallParts.png
 format: RGBA8888
 filter: Nearest,Nearest
 repeat: none
-doorhalf
-  rotate: false
-  xy: 1, 7
-  size: 15, 15
-  split: 1, 1, 1, 1
-  orig: 15, 15
-  offset: 0, 0
-  index: -1
 wallPart
   rotate: false
   xy: 1, 1
