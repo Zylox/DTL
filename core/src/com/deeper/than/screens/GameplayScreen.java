@@ -1,16 +1,34 @@
 package com.deeper.than.screens;
 
+import java.util.Random;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.deeper.than.DTL;
+import com.deeper.than.Ship;
 
 public class GameplayScreen implements EnumerableScreen{
 
 	private DTL game;
+	private Stage ui;
+	private Stage gameObjects;
+	private Ship ship;
+	
+	private InputMultiplexer input;
+
 	
 	public void create(DTL game){
 		this.game = game;
+		ship = new Ship(Gdx.files.internal("kes.ship"));
+		ship.setOrigin(ship.getWidth()/2, ship.getHeight()/2);
+		gameObjects = new Stage(game.getViewport());
+		gameObjects.addActor(ship);
+		input = new InputMultiplexer();
+		input.addProcessor(gameObjects);
+		
 	}
 	
 	@Override
@@ -18,7 +36,7 @@ public class GameplayScreen implements EnumerableScreen{
 		// TODO Auto-generated method stub
 		System.out.println("gameplay state ");
 		DTL.gameActive = true;
-		Gdx.input.setInputProcessor(null);
+		Gdx.input.setInputProcessor(input);
 	}
 
 	@Override
@@ -30,12 +48,20 @@ public class GameplayScreen implements EnumerableScreen{
 	    	mainMenu();
 	    }
 	    
+//	    ship.rotateBy(1);
+	    
+	    gameObjects.act();
+	    
+	    gameObjects.draw();
+
+	    
 	}
 
 	@Override
 	public void resize(int width, int height) {
 		// TODO Auto-generated method stub
-		
+		gameObjects.getViewport().update(width, height, true);
+		game.setViewport(gameObjects.getViewport());
 	}
 
 	@Override
@@ -64,7 +90,7 @@ public class GameplayScreen implements EnumerableScreen{
 	@Override
 	public void dispose() {
 		// TODO Auto-generated method stub
-		
+		gameObjects.dispose();
 	}
 
 }
