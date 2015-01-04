@@ -17,7 +17,10 @@ public class Wall extends CellBorder{
 	private static  NinePatch exteriorWallImg;
 	private static NinePatch interiorWallImg;
 	
-	public WallType wallType;
+	public static final float INTERIORWALLSHORTSIDE = Door.DOORSIZESHORT/2;
+	public static final float EXTERIORWALLSHORTSIDE = Door.DOORSIZESHORT/4;
+	
+	private WallType wallType;
 
 	public Wall(float x, float y, int orientation, Ship ship) {
 		super(x, y, orientation, ship);
@@ -47,9 +50,9 @@ public class Wall extends CellBorder{
 		
 		float shortSide = 0;
 		if(wallType == WallType.interior){
-			shortSide = Door.DOORSIZESHORT/2;
+			shortSide = INTERIORWALLSHORTSIDE;
 		}else{
-			shortSide = Door.DOORSIZESHORT/4;
+			shortSide = EXTERIORWALLSHORTSIDE; 
 		}
 		float longSide = FloorTile.TILESIZE;
 		
@@ -71,6 +74,10 @@ public class Wall extends CellBorder{
 		this.wallType = wallType;
 	}
 	
+	public WallType getWallType(){
+		return wallType;
+	}
+	
 	@Override
 	public void draw(Batch batch, float parentAlpha){
 		getExteriorWallImg().draw(batch, getX(), getY(), getWidth(), getHeight());
@@ -78,6 +85,8 @@ public class Wall extends CellBorder{
 		
 		
 	}
+	
+	
 	
 	public static void loadAssets(){
 		TextureAtlas textAtl = new TextureAtlas("wallParts.pack");

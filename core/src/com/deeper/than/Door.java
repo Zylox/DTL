@@ -3,9 +3,9 @@ package com.deeper.than;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
+import com.deeper.than.Wall.WallType;
 
 public class Door extends CellBorder{
 	
@@ -16,10 +16,7 @@ public class Door extends CellBorder{
 		Closed;
 	}
 	
-	public static enum DoorType{
-		interior,
-		exterior;
-	}
+
 	public static final float DOORSIZELONG = FloorTile.TILESIZE/2;
 	public static final float DOORSIZESHORT = DOORSIZELONG/3;
 	
@@ -27,7 +24,7 @@ public class Door extends CellBorder{
 	private int doorId;
 	private DoorState doorState;
 	private float openAmount;
-	private DoorType doorType;
+	private WallType wallType;
 	
 	public Door(float x, float y, int orientation, Ship ship){
 		super(x,y,orientation,ship);
@@ -122,22 +119,27 @@ public class Door extends CellBorder{
 	}
 
 	
-//	@Override
-//	public void draw(Batch batch, float parentAlpha){
-//		float width = (FloorTile.TILESIZE - DOORSIZELONG)/2;
-//		float height = DOORSIZESHORT/3;
-//		
-//		if(orientation == Neighbors.UP || orientation == Neighbors.DOWN){
-//			//WallSkeleton.getExteriorWallImg().draw(batch, getX(), getY()+DOORSIZESHORT/2-height/2, -width, height);
-//			//WallSkeleton.getExteriorWallImg().draw(batch, getX()+FloorTile.TILESIZE-width, getY()+DOORSIZESHORT/2-height/2, -width, height);
-//		}else if (orientation == Neighbors.RIGHT || orientation == Neighbors.LEFT){
-//			//WallSkeleton.getExteriorWallImg().draw(batch, getX()+DOORSIZESHORT/2-height/2, getY(), height, -width);
-//			//WallSkeleton.getExteriorWallImg().draw(batch, getX()+DOORSIZESHORT/2-height/2, getY()+FloorTile.TILESIZE-width, height, -width);
-//		}
-//		super.draw(batch, parentAlpha);
-//		
-//	}
-//	
+	@Override
+	public void draw(Batch batch, float parentAlpha){
+		float width = (FloorTile.TILESIZE - DOORSIZELONG)/2;
+		float height;
+		if(wallType == WallType.interior){
+			height = Wall.INTERIORWALLSHORTSIDE;			
+		}else{
+			height = Wall.EXTERIORWALLSHORTSIDE;
+		}
+		
+		if(orientation == Neighbors.UP || orientation == Neighbors.DOWN){
+			Wall.getExteriorWallImg().draw(batch, getX(), getY()+DOORSIZESHORT/2-height/2, -width, height);
+			Wall.getExteriorWallImg().draw(batch, getX()+FloorTile.TILESIZE-width, getY()+DOORSIZESHORT/2-height/2, -width, height);
+		}else if (orientation == Neighbors.RIGHT || orientation == Neighbors.LEFT){
+			Wall.getExteriorWallImg().draw(batch, getX()+DOORSIZESHORT/2-height/2, getY(), height, -width);
+			Wall.getExteriorWallImg().draw(batch, getX()+DOORSIZESHORT/2-height/2, getY()+FloorTile.TILESIZE-width, height, -width);
+		}
+		super.draw(batch, parentAlpha);
+		
+	}
+	
 	public boolean isOpen(){
 		if(doorState == DoorState.Open || doorState == DoorState.Opening){
 			return true;
@@ -151,6 +153,14 @@ public class Door extends CellBorder{
 
 	public void setDoorId(int doorId) {
 		this.doorId = doorId;
+	}
+
+	public WallType getWallType() {
+		return wallType;
+	}
+
+	public void setWallType(WallType wallType) {
+		this.wallType = wallType;
 	}
 
 

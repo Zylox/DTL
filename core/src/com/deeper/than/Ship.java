@@ -74,8 +74,12 @@ public class Ship extends Group{
 			i++;
 			d.setId(i);
 			d.init();
-			removeActor(layout[(int)d.pos.y][(int)d.pos.x].getBorder(d.orientation));
-			walls.remove(layout[(int)d.pos.y][(int)d.pos.x].getBorder(d.orientation));
+			CellBorder removedWall = layout[(int)d.pos.y][(int)d.pos.x].getBorder(d.orientation);
+			if(removedWall instanceof Wall){
+				d.setWallType(((Wall) removedWall).getWallType());
+			}
+			removeActor(removedWall);
+			walls.remove(removedWall);
 			layout[(int)d.pos.y][(int)d.pos.x].addBorder(d);
 			//layout[(int)d.pos.y][(int)d.pos.x].printWalls();
 			addActor(d);
