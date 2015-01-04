@@ -162,13 +162,16 @@ public class ScriptParser implements Poolable{
 					}
 				}
 			}else if(line.replaceAll("\\s", "").equals("doors=")){
+				Door door = null;
 				while(scanner.hasNext()){
 					line = getNextNonCommentLine(scanner);
 					if(line.startsWith("{")){
 						line = stripCurly(line);
 						line.toLowerCase();
 						tokens = line.split(" ");
-						ship.addDoor(new Door(getCoordFromPair(tokens[0]), getDirection(tokens[1]), ship));
+						door = new Door(getCoordFromPair(tokens[0]), getDirection(tokens[1]), ship);
+						door.setGridSquare((ship.getLayout())[(int)door.getPos().y][(int)door.getPos().x]);
+						ship.addDoor(door);
 					}else if(line.equals("enddoors")){
 						break;
 					}else{

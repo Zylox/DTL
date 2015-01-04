@@ -2,6 +2,7 @@ package com.deeper.than;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashSet;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
@@ -11,6 +12,7 @@ import com.badlogic.gdx.graphics.g2d.NinePatch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.scenes.scene2d.Group;
+import com.deeper.than.Wall.WallType;
 
 public class Ship extends Group{
 	
@@ -19,9 +21,9 @@ public class Ship extends Group{
 	protected String name;
 	private ArrayList<Crew> crew;
 	protected GridSquare[][] layout;
-	private WallSkeleton[][] walls;
 	private ArrayList<Room> rooms;
 	private ArrayList<Door>	doors;
+	private ArrayList<CellBorder> walls;
 	protected int gridWidth;
 	protected int gridHeight;
 	private Sprite floorTileImg;
@@ -40,6 +42,7 @@ public class Ship extends Group{
 		crew = new ArrayList<Crew>();
 		doors = new ArrayList<Door>();
 		rooms = new ArrayList<Room>();
+		walls = new ArrayList<CellBorder>();
 		
 		
 		try {
@@ -58,12 +61,32 @@ public class Ship extends Group{
 			}
 		}
 		
+//		
 		determineWalls();
-		
+		for(CellBorder cb : walls){
+			addActor(cb);
+			cb.init();
+			System.out.println(cb.getId());
+		}
+//		
+		int i = 0;
 		for(Door d : doors){		
-			layout[(int)d.pos.y][(int)d.pos.x].addDoor(d);
+			i++;
+			d.setId(i);
+			d.init();
+			removeActor(layout[(int)d.pos.y][(int)d.pos.x].getBorder(d.orientation));
+			walls.remove(layout[(int)d.pos.y][(int)d.pos.x].getBorder(d.orientation));
+			layout[(int)d.pos.y][(int)d.pos.x].addBorder(d);
+			//layout[(int)d.pos.y][(int)d.pos.x].printWalls();
 			addActor(d);
 		}
+//		for(Door d : doors){		
+//			i++;
+//			d.setId(i);
+//			d.init();
+////			layout[(int)d.pos.y][(int)d.pos.x].addBorder(d);
+//			addActor(d);
+//		}
 		
 		int x = FloorTile.TILESIZE*layout[0].length;
 		int y = FloorTile.TILESIZE*layout.length;
@@ -74,91 +97,152 @@ public class Ship extends Group{
 	}
 	
 	public void determineWalls(){
-		walls = new WallSkeleton[layout.length][layout[0].length];
-		int wallTypeLeft = -1;
-		int wallTypeDown = -1;
+
 		GridSquare current = null;
 		GridSquare left = null;
+		GridSquare right = null;
+		GridSquare up = null;
 		GridSquare down = null;
-		for(int x = 0; x < walls[0].length; x++){
-			for(int y = 0; y < walls.length; y++){
-				//y x
-				current = layout[y][x];
-				if(x==0){
-					left = null;
-				}else{
-					left = layout[y][x-1];
-				}
-				if(y==0){
-					down = null;
-				}else{
-					down = layout[y-1][x];
-				}
-				
-				wallTypeLeft = detWallType(current, left);
-				wallTypeDown = detWallType(current, down);
-				
-				walls[y][x] = new WallSkeleton(x*FloorTile.TILESIZE,y*FloorTile.TILESIZE, wallTypeLeft, wallTypeDown);
-				addActor(walls[y][x]);
-			}
-		}
-	}
-	
-	private int detWallType(GridSquare base, GridSquare ref){
-		int wallType = -1;
-		
-		if(base != null){
-			if(ref != null){
-				if(base.isSameRoom(ref)){
-					wallType= WallSkeleton.noWall;
-				}else{
-					if(isDoorBetweenNeighTile(base, ref)){
-						wallType = WallSkeleton.doorWall;
+
+		int i =0;
+		for(int x = 0; x<layout[0].length;x++){
+			for(int y = 0; y<layout.length; y++){
+				current  = layout[y][x];
+				if(current != null){
+					if(x>0){
+						left = layout[y][x-1];
 					}else{
-						wallType = WallSkeleton.interiorWall;
+						left = null;
 					}
+					if(x<layout[0].length-1){
+						right= layout[y][x+1];
+					}else{
+						right= null;
+					}
+					if(y<layout.length-1){
+						up   = layout[y+1][x];
+					}else{
+						up   = null;
+					}
+					if(y>0){
+						down = layout[y-1][x];
+					}else{
+						down = null;
+					}
+
+					CellBorder bord = null;
+					
+					
+					bord = detWall(current, left, Neighbors.LEFT);
+					if(bord.getId() == CellBorder.IDSENTINEL){
+						i++;
+						bord.setId(i);
+					}
+//					bord.setGridSquare(layout[(int)bord.getPos().y][(int)bord.getPos().x]);
+  					addUniqueWall(bord);
+  					current.addBorder(bord);
+					
+  					bord = detWall(current, right, Neighbors.RIGHT);
+					if(bord.getId() == CellBorder.IDSENTINEL){
+						i++;
+						bord.setId(i);
+					}
+//					bord.setGridSquare(layout[(int)bord.getPos().y][(int)bord.getPos().x]);
+					addUniqueWall(bord);
+  					current.addBorder(bord);
+  
+  					bord = detWall(current, up, Neighbors.UP);
+					if(bord.getId() == CellBorder.IDSENTINEL){
+						i++;
+						bord.setId(i);
+					}
+					bord.setGridSquare(layout[(int)bord.getPos().y][(int)bord.getPos().x]);
+					addUniqueWall(bord);
+  					current.addBorder(bord);
+					
+  					bord = detWall(current, down, Neighbors.DOWN);
+					if(bord.getId() == CellBorder.IDSENTINEL){
+						i++;
+						bord.setId(i);
+					}
+					//bord.setGridSquare(layout[(int)bord.getPos().y][(int)bord.getPos().x]);
+					addUniqueWall(bord);
+					current.addBorder(bord);
+					
 				}
-			}else{
-				wallType = WallSkeleton.exteriorWall;
 			}
 		}
 		
-		return wallType;
+
 	}
 	
-	public boolean isDoorBetweenNeighTile(GridSquare base, GridSquare ref){
-		
-		if(base == null || ref == null){
-			return false;
+	private void addUniqueWall(CellBorder bord){
+		if(!walls.contains(bord)){
+			walls.add(bord);
+		}
+	}
+	
+	private CellBorder detWall(GridSquare current, GridSquare adj, int orientation){
+//
+		if(adj != null){
+			CellBorder bord = adj.getBorder(Neighbors.reverseOrienation(orientation));
+			if(bord != null){
+				bord.flipOrientation();
+				bord.setPos(current.getPos());
+				bord.init();
+				return bord;
+			}
 		}
 		
-		if(base.getPos().x+1 == ref.getPos().x){
-			//if base left
-			if(base.hasDoor(Neighbors.RIGHT) || ref.hasDoor(Neighbors.LEFT)){
-				return true;
-			}
-		}else if(base.getPos().x-1 == ref.getPos().x){
-			//if base right
-			if(base.hasDoor(Neighbors.LEFT) || ref.hasDoor(Neighbors.RIGHT)){
-				return true;
-			}
-		}else if(base.getPos().x == ref.getPos().y){
-			//if same column
-			if(base.getPos().y-1 == ref.getPos().y){
-				//if base up
-				if(base.hasDoor(Neighbors.DOWN) || ref.hasDoor(Neighbors.UP)){
-					return true;
-				}
-			}else if(base.getPos().y+1 == ref.getPos().y){
-				//if base down
-				if(base.hasDoor(Neighbors.UP) || ref.hasDoor(Neighbors.DOWN)){
-					return true;
-				}
-			}
-			
+//		Door door = doorBetweenNeighTile(current, adj, orientation);
+//		
+//		if(door != null){
+//			if(adj != null){
+//				System.out.println("Door Between: " + current.getPos().toString() + " and " + adj.getPos().toString());
+//			}else{
+//				System.out.println("Door Between: " + current.getPos().toString() + " and " + door.orientation);
+//			}
+//			return door;
+//		}
+		
+		if(adj == null){
+			return new Wall(current.getPos().x, current.getPos().y, orientation, this, WallType.exterior);
 		}
 		
-		return false;
+		
+		if(current.isSameRoom(adj)){
+			return new NoWall(current.getPos().x, current.getPos().y ,orientation, this);
+		}
+		
+		
+		
+		return new Wall(current.getPos().x, current.getPos().y, orientation, this, WallType.interior);
+	}
+	
+
+	
+	public Door doorBetweenNeighTile(GridSquare base, GridSquare ref, int orientation){
+		
+		if(base == null){
+			return null;
+		}
+		
+		Door baseDoor = base.getDoor(orientation);
+		if(baseDoor != null){
+			return baseDoor;
+		}
+		
+		if(ref != null){
+			Door refDoor  = ref.getDoor(Neighbors.reverseOrienation(orientation));
+			//Door refDoor  = ref.getDoor(orientation);
+			if(refDoor != null){
+				refDoor.flipOrientation();
+				return refDoor;
+			}
+		}
+		
+		
+		return null;
 	}
 	
 	private void loadAssets(){
@@ -248,12 +332,6 @@ public class Ship extends Group{
 		doorImgHandle = handle;
 	}
 	
-	public WallSkeleton[][] getWalls() {
-		return walls;
-	}
 
-	public void setWalls(WallSkeleton[][] walls) {
-		this.walls = walls;
-	}
 
 }

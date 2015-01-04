@@ -23,6 +23,32 @@ layout=
 {2,14 3,14}
 endlayout
 doors=
+#{2,0 left}
+#{2,0 right}
+#{3,0 left}
+#{3,0 right}
+#{1,2 up}
+#{1,2 right}
+#{4,2 down}
+#{4,2 right}
+#{1,4 up}
+#{4,4 down}
+#{2,5 right}
+#{3,5 right}
+#{0,6 down}
+#{0,7 down}
+#{0,7 up}
+#{1,7 right}
+#{4,7 right}
+#{5,7 down}
+#5,7 up}
+#{5,6 up}
+#{2,8 up}
+#{2,9 right}
+#{3,9 right}
+#{2,11 right}
+#{3,11 right}
+#{2,13 right}
 {2,0 left}
 {2,0 right}
 {3,0 left}

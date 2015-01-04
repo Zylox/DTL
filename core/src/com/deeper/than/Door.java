@@ -7,7 +7,7 @@ import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 
-public class Door extends Group{
+public class Door extends CellBorder{
 	
 	public static enum DoorState{
 		Opening,
@@ -23,26 +23,21 @@ public class Door extends Group{
 	public static final float DOORSIZELONG = FloorTile.TILESIZE/2;
 	public static final float DOORSIZESHORT = DOORSIZELONG/3;
 	
-	private Ship ship;
-	private GridSquare gs;
-	protected Vector2 pos;
-	protected int orientation;
+
+	private int doorId;
 	private DoorState doorState;
 	private float openAmount;
 	private DoorType doorType;
 	
 	public Door(float x, float y, int orientation, Ship ship){
-		init(new Vector2(x,y), orientation, ship);
+		super(x,y,orientation,ship);
 	}
 	
 	public Door(Vector2 pos, int orientation, Ship ship){
-		init(pos, orientation, ship);
+		super(pos,orientation,ship);
 	}
 	
-	public void init(Vector2 pos, int orientation, Ship ship){
-		this.pos = pos;
-		this.orientation = orientation;
-		this.ship = ship;
+	public void init(){
 		
 		doorState = DoorState.Closed;
 		openAmount=0;
@@ -54,40 +49,7 @@ public class Door extends Group{
 				return true;
 		    }
 		});
-
 		
-		setDebug(DTL.DEBUG);
-
-	}
-	
-	public void changeOpen(){
-		if(doorState == DoorState.Open || doorState == DoorState.Opening){
-			doorState = DoorState.Closing;
-		}else{
-			doorState = DoorState.Opening;
-		}
-		
-
-	}
-	
-	public void printDoorState(){
-		switch(doorState){
-		case Open : 
-			System.out.println("Door open");
-			break;
-		case Closed :
-			System.out.println("Door closed");
-			break;
-		case Opening : 
-			System.out.println("Door opening");
-			break;
-		case Closing : 
-			System.out.println("Door closing");
-			break;
-		}
-	}
-	
-	public void  initDoors(){
 		DoorHalf[] doors = new DoorHalf[2];
 		
 		
@@ -130,25 +92,52 @@ public class Door extends Group{
 		
 		this.addActor(doors[0]);
 		this.addActor(doors[1]);
-		
 	}
 	
-	@Override
-	public void draw(Batch batch, float parentAlpha){
-		float width = (FloorTile.TILESIZE - DOORSIZELONG)/2;
-		float height = DOORSIZESHORT/3;
-		
-		if(orientation == Neighbors.UP || orientation == Neighbors.DOWN){
-			//WallSkeleton.getExteriorWallImg().draw(batch, getX(), getY()+DOORSIZESHORT/2-height/2, -width, height);
-			//WallSkeleton.getExteriorWallImg().draw(batch, getX()+FloorTile.TILESIZE-width, getY()+DOORSIZESHORT/2-height/2, -width, height);
-		}else if (orientation == Neighbors.RIGHT || orientation == Neighbors.LEFT){
-			//WallSkeleton.getExteriorWallImg().draw(batch, getX()+DOORSIZESHORT/2-height/2, getY(), height, -width);
-			//WallSkeleton.getExteriorWallImg().draw(batch, getX()+DOORSIZESHORT/2-height/2, getY()+FloorTile.TILESIZE-width, height, -width);
+	public void changeOpen(){
+		if(doorState == DoorState.Open || doorState == DoorState.Opening){
+			doorState = DoorState.Closing;
+		}else{
+			doorState = DoorState.Opening;
 		}
-		super.draw(batch, parentAlpha);
 		
+
 	}
 	
+	public void printDoorState(){
+		switch(doorState){
+		case Open : 
+			System.out.println("Door open");
+			break;
+		case Closed :
+			System.out.println("Door closed");
+			break;
+		case Opening : 
+			System.out.println("Door opening");
+			break;
+		case Closing : 
+			System.out.println("Door closing");
+			break;
+		}
+	}
+
+	
+//	@Override
+//	public void draw(Batch batch, float parentAlpha){
+//		float width = (FloorTile.TILESIZE - DOORSIZELONG)/2;
+//		float height = DOORSIZESHORT/3;
+//		
+//		if(orientation == Neighbors.UP || orientation == Neighbors.DOWN){
+//			//WallSkeleton.getExteriorWallImg().draw(batch, getX(), getY()+DOORSIZESHORT/2-height/2, -width, height);
+//			//WallSkeleton.getExteriorWallImg().draw(batch, getX()+FloorTile.TILESIZE-width, getY()+DOORSIZESHORT/2-height/2, -width, height);
+//		}else if (orientation == Neighbors.RIGHT || orientation == Neighbors.LEFT){
+//			//WallSkeleton.getExteriorWallImg().draw(batch, getX()+DOORSIZESHORT/2-height/2, getY(), height, -width);
+//			//WallSkeleton.getExteriorWallImg().draw(batch, getX()+DOORSIZESHORT/2-height/2, getY()+FloorTile.TILESIZE-width, height, -width);
+//		}
+//		super.draw(batch, parentAlpha);
+//		
+//	}
+//	
 	public boolean isOpen(){
 		if(doorState == DoorState.Open || doorState == DoorState.Opening){
 			return true;
@@ -156,10 +145,17 @@ public class Door extends Group{
 		return  false;
 	}	
 	
-	public void setGridSquare(GridSquare gs){
-		this.gs = gs;
+	public int getDoorId() {
+		return doorId;
 	}
-	
+
+	public void setDoorId(int doorId) {
+		this.doorId = doorId;
+	}
+
+
+
+
 	private class DoorHalf extends Actor{		
 		
 		public boolean left;

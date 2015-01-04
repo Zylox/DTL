@@ -12,5 +12,24 @@ public enum Neighbors {
 	public static final int LEFT = 3;
 	public static final int UNDEFINED = -1;
 	
+	public static int reverseOrienation(int orient){
+		if(orient == UP){
+			return DOWN;
+		}
+		
+		if(orient == RIGHT){
+			return LEFT;
+		}
+		
+		if(orient == DOWN){
+			return UP;
+		}
+		
+		if(orient == LEFT){
+			return RIGHT;
+		}
+		
+		return -1;
+	}
 	
 }

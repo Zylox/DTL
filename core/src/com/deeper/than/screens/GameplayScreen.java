@@ -9,7 +9,7 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.deeper.than.DTL;
 import com.deeper.than.Ship;
-import com.deeper.than.WallSkeleton;
+import com.deeper.than.Wall;
 
 public class GameplayScreen implements EnumerableScreen{
 
@@ -24,7 +24,7 @@ public class GameplayScreen implements EnumerableScreen{
 	
 	public void create(DTL game){
 		this.game = game;
-		WallSkeleton.loadAssets();
+		Wall.loadAssets();
 		loadAssets();
 		ship = new Ship(Gdx.files.internal("kes.ship"), game);
 		ship.setOrigin(ship.getWidth()/2, ship.getHeight()/2);
