@@ -49,25 +49,40 @@ public class Wall extends CellBorder{
 		Vector2 bLeft = new Vector2(getPos().x*FloorTile.TILESIZE, getPos().y*FloorTile.TILESIZE);
 		
 		float shortSide = 0;
+		float longSide = FloorTile.TILESIZE;
 		if(wallType == WallType.interior){
 			shortSide = INTERIORWALLSHORTSIDE;
+			if(orientation == Neighbors.DOWN){
+				setBounds(bLeft.x, bLeft.y-shortSide/2, longSide, shortSide);
+			}
+			else if(orientation == Neighbors.UP){
+				setBounds(bLeft.x, bLeft.y-shortSide/2+FloorTile.TILESIZE, longSide, shortSide);
+			}
+			else if(orientation == Neighbors.RIGHT){
+				setBounds(bLeft.x+FloorTile.TILESIZE-shortSide/2, bLeft.y, shortSide, longSide);
+			}
+			else if(orientation == Neighbors.LEFT){
+				setBounds(bLeft.x-shortSide/2, bLeft.y, shortSide, longSide);
+			}
 		}else{
-			shortSide = EXTERIORWALLSHORTSIDE; 
+			shortSide = EXTERIORWALLSHORTSIDE;
+			if(orientation == Neighbors.DOWN){
+				setBounds(bLeft.x, bLeft.y, longSide, shortSide);
+			}
+			else if(orientation == Neighbors.UP){
+				setBounds(bLeft.x, bLeft.y-shortSide+FloorTile.TILESIZE, longSide, shortSide);
+			}
+			else if(orientation == Neighbors.RIGHT){
+				setBounds(bLeft.x+FloorTile.TILESIZE-shortSide, bLeft.y, shortSide, longSide);
+			}
+			else if(orientation == Neighbors.LEFT){
+				setBounds(bLeft.x, bLeft.y, shortSide, longSide);
+			}
 		}
-		float longSide = FloorTile.TILESIZE;
 		
-		if(orientation == Neighbors.DOWN){
-			setBounds(bLeft.x, bLeft.y-shortSide/2, longSide, shortSide);
-		}
-		else if(orientation == Neighbors.UP){
-			setBounds(bLeft.x, bLeft.y-shortSide/2+FloorTile.TILESIZE, longSide, shortSide);
-		}
-		else if(orientation == Neighbors.RIGHT){
-			setBounds(bLeft.x+FloorTile.TILESIZE-shortSide/2, bLeft.y, shortSide, longSide);
-		}
-		else if(orientation == Neighbors.LEFT){
-			setBounds(bLeft.x-shortSide/2, bLeft.y, shortSide, longSide);
-		}
+
+		
+		
 	}
 	
 	public void setWallType(WallType wallType){
