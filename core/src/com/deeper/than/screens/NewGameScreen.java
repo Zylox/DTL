@@ -16,7 +16,7 @@ public class NewGameScreen implements EnumerableScreen {
 	@Override
 	public void show() {
 		// TODO Auto-generated method stub
-		System.out.println("New Game Screen");
+		DTL.printDebug("New Game Screen");
 		game.setScreen(Screens.GAMEPLAY.getScreen());
 	}
 

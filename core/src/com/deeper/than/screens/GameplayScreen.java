@@ -43,7 +43,7 @@ public class GameplayScreen implements EnumerableScreen{
 	@Override
 	public void show() {
 		// TODO Auto-generated method stub
-		System.out.println("gameplay state ");
+		DTL.printDebug("gameplay state ");
 		DTL.gameActive = true;
 		Gdx.input.setInputProcessor(input);
 	}

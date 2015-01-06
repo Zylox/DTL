@@ -4,7 +4,6 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.scenes.scene2d.Actor;
@@ -33,7 +32,7 @@ public class MainMenuScreen implements EnumerableScreen {
 	
 	InputMultiplexer input;
 
-	
+	private boolean loadtest = false;
 	
 	public MainMenuScreen(){
 
@@ -107,8 +106,8 @@ public class MainMenuScreen implements EnumerableScreen {
 		table.add().expand().height(300);
 		table.add().expandX();
 		
-		table.setDebug(DTL.DEBUG);
-		img.setDebug(DTL.DEBUG);
+		table.setDebug(DTL.GRAPHICALDEBUG);
+		img.setDebug(DTL.GRAPHICALDEBUG);
 		
 		loadAssets();
 	}
@@ -120,7 +119,7 @@ public class MainMenuScreen implements EnumerableScreen {
 	@Override
 	public void show() {
 		// TODO Auto-generated method stub
-		System.out.println("Main Menu State");
+		DTL.printDebug("Main Menu State");
 		Gdx.input.setInputProcessor(input);
 	}
 
@@ -128,6 +127,13 @@ public class MainMenuScreen implements EnumerableScreen {
 	public void render(float delta) {
 		// TODO Auto-generated method stub
 	    Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+	    
+	    if(!loadtest){
+
+	    	long newTime = System.currentTimeMillis()-DTL.startTime;
+	    	DTL.printDebug("Load took: " + newTime/1000f + " seconds" );
+	    	loadtest = true;
+	    }
 	    
 		for(Actor a : stage2.getActors()){
 			//a.addAction(Actions.moveBy(1, 1));

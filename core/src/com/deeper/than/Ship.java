@@ -2,7 +2,6 @@ package com.deeper.than;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashSet;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
@@ -12,6 +11,7 @@ import com.badlogic.gdx.graphics.g2d.NinePatch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.scenes.scene2d.Group;
+import com.badlogic.gdx.utils.OrderedMap;
 import com.deeper.than.Wall.WallType;
 
 public class Ship extends Group{
@@ -23,7 +23,7 @@ public class Ship extends Group{
 	protected GridSquare[][] layout;
 	private ArrayList<Room> rooms;
 	private ArrayList<Door>	doors;
-	private ArrayList<CellBorder> walls;
+	private OrderedMap<Integer, CellBorder> walls;
 	protected int gridWidth;
 	protected int gridHeight;
 	private Sprite floorTileImg;
@@ -43,7 +43,7 @@ public class Ship extends Group{
 		crew = new ArrayList<Crew>();
 		doors = new ArrayList<Door>();
 		rooms = new ArrayList<Room>();
-		walls = new ArrayList<CellBorder>();
+		walls = new OrderedMap<Integer, CellBorder>();
 		
 		
 		try {
@@ -65,10 +65,9 @@ public class Ship extends Group{
 
 //		
 		determineWalls();
-		for(CellBorder cb : walls){
+		for(CellBorder cb : walls.values()){
 			addActor(cb);
 			cb.init();
-			System.out.println(cb.getId());
 		}
 //		
 		for(Door d : doors){		
@@ -80,18 +79,10 @@ public class Ship extends Group{
 				d.setWallType(((Wall) removedWall).getWallType());
 			}
 			removeActor(removedWall);
-			walls.remove(removedWall);
+			walls.remove(removedWall.getId());
 			layout[(int)d.pos.y][(int)d.pos.x].addBorder(d);
-			//layout[(int)d.pos.y][(int)d.pos.x].printWalls();
 			addActor(d);
 		}
-//		for(Door d : doors){		
-//			i++;
-//			d.setId(i);
-//			d.init();
-////			layout[(int)d.pos.y][(int)d.pos.x].addBorder(d);
-//			addActor(d);
-//		}
 		
 		int x = FloorTile.TILESIZE*layout[0].length;
 		int y = FloorTile.TILESIZE*layout.length;
@@ -182,8 +173,8 @@ public class Ship extends Group{
 	}
 	
 	private void addUniqueWall(CellBorder bord){
-		if(!walls.contains(bord)){
-			walls.add(bord);
+		if(!walls.containsKey(bord.getId())){
+			walls.put(bord.getId(), bord);
 		}
 	}
 	

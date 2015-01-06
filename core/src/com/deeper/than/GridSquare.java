@@ -22,7 +22,7 @@ public class GridSquare extends Group{
 		tile = null;
 		borders = new CellBorder[4];
 		room = null;
-		setDebug(DTL.DEBUG);
+		setDebug(DTL.GRAPHICALDEBUG);
 	}
 	
 	public boolean isSameRoom(GridSquare square){
@@ -104,27 +104,27 @@ public class GridSquare extends Group{
 	
 	public void printWalls(){
 		if(borders[Neighbors.UP] == null){
-			System.out.println("Up: null");
+			DTL.printDebug("Up: null");
 		}else{
-			System.out.println("Up: " + borders[Neighbors.UP].getClass() + " pos: " +borders[Neighbors.UP].getX() + " " + borders[Neighbors.UP].getY());	
+			DTL.printDebug("Up: " + borders[Neighbors.UP].getClass() + " pos: " +borders[Neighbors.UP].getX() + " " + borders[Neighbors.UP].getY());	
 		}
 		
 		if(borders[Neighbors.RIGHT] == null){
-			System.out.println("Right: null");
+			DTL.printDebug("Right: null");
 		}else{
-			System.out.println("Right: " + borders[Neighbors.RIGHT].getClass() + " pos: " +borders[Neighbors.RIGHT].getX() + " " + borders[Neighbors.RIGHT].getY());	
+			DTL.printDebug("Right: " + borders[Neighbors.RIGHT].getClass() + " pos: " +borders[Neighbors.RIGHT].getX() + " " + borders[Neighbors.RIGHT].getY());	
 		}
 		
 		if(borders[Neighbors.DOWN] == null){
-			System.out.println("Down: null");
+			DTL.printDebug("Down: null");
 		}else{
-			System.out.println("Down: " + borders[Neighbors.DOWN].getClass() + " pos: " +borders[Neighbors.DOWN].getX() + " " + borders[Neighbors.DOWN].getY());	
+			DTL.printDebug("Down: " + borders[Neighbors.DOWN].getClass() + " pos: " +borders[Neighbors.DOWN].getX() + " " + borders[Neighbors.DOWN].getY());	
 		}
 		
 		if(borders[Neighbors.LEFT] == null){
-			System.out.println("Left: null");
+			DTL.printDebug("Left: null");
 		}else{
-			System.out.println("Left: " + borders[Neighbors.LEFT].getClass() + " pos: " +borders[Neighbors.LEFT].getX() + " " + borders[Neighbors.LEFT].getY());	
+			DTL.printDebug("Left: " + borders[Neighbors.LEFT].getClass() + " pos: " +borders[Neighbors.LEFT].getX() + " " + borders[Neighbors.LEFT].getY());	
 		}
 	}
 	

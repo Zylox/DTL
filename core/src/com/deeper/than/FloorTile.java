@@ -38,17 +38,17 @@ public class FloorTile extends Actor{
 		waterLevel = BASEWATERLEVEL;
 		addListener(new InputListener() {
 			public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
-				printy();
+				printCoords();
 				return true;
 		    }
 		});
 		
 		setOrigin(TILESIZE/2, TILESIZE/2);
-		setDebug(DTL.DEBUG);
+		setDebug(DTL.GRAPHICALDEBUG);
 	}
 	
-	public void printy(){
-		System.out.println(Float.toString(pos.x) + " " + Float.toString(pos.y));
+	public void printCoords(){
+		DTL.printDebug(Float.toString(pos.x) + " " + Float.toString(pos.y));
 	}
 	
 	@Override

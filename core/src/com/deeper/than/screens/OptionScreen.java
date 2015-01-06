@@ -1,6 +1,5 @@
 package com.deeper.than.screens;
 
-import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.GL20;
@@ -10,7 +9,6 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
-import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener.ChangeEvent;
 import com.deeper.than.DTL;
 
 public class OptionScreen implements EnumerableScreen {
@@ -37,14 +35,14 @@ public class OptionScreen implements EnumerableScreen {
 		
 		
 		shapeRen = new ShapeRenderer();
-		table.setDebug(DTL.DEBUG);
+		table.setDebug(DTL.GRAPHICALDEBUG);
 		
 	}
 	
 	@Override
 	public void show() {
 		// TODO Auto-generated method stub
-		System.out.println("Option Screen");
+		DTL.printDebug("Option Screen");
 		Gdx.input.setInputProcessor(menu);
 	}
 

@@ -16,7 +16,7 @@ public class TutorialScreen implements EnumerableScreen {
 	@Override
 	public void show() {
 		// TODO Auto-generated method stub
-		System.out.println("Tutorial Screen");
+		DTL.printDebug("Tutorial Screen");
 	}
 
 	@Override

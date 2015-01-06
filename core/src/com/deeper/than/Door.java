@@ -84,8 +84,8 @@ public class Door extends CellBorder{
 				break;
 		}
 			
-		doors[0].setDebug(DTL.DEBUG);
-		doors[1].setDebug(DTL.DEBUG);
+		doors[0].setDebug(DTL.GRAPHICALDEBUG);
+		doors[1].setDebug(DTL.GRAPHICALDEBUG);
 		
 		this.addActor(doors[0]);
 		this.addActor(doors[1]);
@@ -104,16 +104,16 @@ public class Door extends CellBorder{
 	public void printDoorState(){
 		switch(doorState){
 		case Open : 
-			System.out.println("Door open");
+			DTL.printDebug("Door open");
 			break;
 		case Closed :
-			System.out.println("Door closed");
+			DTL.printDebug("Door closed");
 			break;
 		case Opening : 
-			System.out.println("Door opening");
+			DTL.printDebug("Door opening");
 			break;
 		case Closing : 
-			System.out.println("Door closing");
+			DTL.printDebug("Door closing");
 			break;
 		}
 	}
@@ -134,13 +134,6 @@ public class Door extends CellBorder{
 			}
 		}else{
 			height = Wall.EXTERIORWALLSHORTSIDE;
-//			if(orientation == Neighbors.UP || orientation == Neighbors.DOWN){
-//				Wall.getExteriorWallImg().draw(batch, getX(), getY()+Wall.INTERIORWALLSHORTSIDE-height/2, -width, height);
-//				Wall.getExteriorWallImg().draw(batch, getX()+FloorTile.TILESIZE-width, getY()+Wall.INTERIORWALLSHORTSIDE-height/2, -width, height);
-//			}else if (orientation == Neighbors.RIGHT || orientation == Neighbors.LEFT){
-//				Wall.getExteriorWallImg().draw(batch, getX()+Wall.INTERIORWALLSHORTSIDE-height/2, getY(), height, -width);
-//				Wall.getExteriorWallImg().draw(batch, getX()+Wall.INTERIORWALLSHORTSIDE-height/2, getY()+FloorTile.TILESIZE-width, height, -width);
-//			}
 			
 			
 			
@@ -162,13 +155,6 @@ public class Door extends CellBorder{
 			}
 		}
 		
-//		if(orientation == Neighbors.UP || orientation == Neighbors.DOWN){
-//			Wall.getExteriorWallImg().draw(batch, getX(), getY()+DOORSIZESHORT/2-height/2, -width, height);
-//			Wall.getExteriorWallImg().draw(batch, getX()+FloorTile.TILESIZE-width, getY()+DOORSIZESHORT/2-height/2, -width, height);
-//		}else if (orientation == Neighbors.RIGHT || orientation == Neighbors.LEFT){
-//			Wall.getExteriorWallImg().draw(batch, getX()+DOORSIZESHORT/2-height/2, getY(), height, -width);
-//			Wall.getExteriorWallImg().draw(batch, getX()+DOORSIZESHORT/2-height/2, getY()+FloorTile.TILESIZE-width, height, -width);
-//		}
 		super.draw(batch, parentAlpha);
 		
 	}
