@@ -27,6 +27,8 @@ public class DTL extends Game {
 	public void create () {
 		
 		//Gdx.graphics.setDisplayMode(Gdx.graphics.getDesktopDisplayMode().width, Gdx.graphics.getDesktopDisplayMode().height, true);
+		
+		
 		Gdx.graphics.setDisplayMode(VWIDTH, VHEIGHT, false);
 		
 		viewport = new FitViewport(VWIDTH, VHEIGHT);

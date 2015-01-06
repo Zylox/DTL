@@ -138,8 +138,6 @@ public class MainMenuScreen implements EnumerableScreen {
 	    stage.act(delta);
 	    stage2.act(delta);
 	    
-	    
-	    
 	    stage.draw();
 	    stage2.draw();
 	    

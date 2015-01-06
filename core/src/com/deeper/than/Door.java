@@ -124,18 +124,51 @@ public class Door extends CellBorder{
 		float width = (FloorTile.TILESIZE - DOORSIZELONG)/2;
 		float height;
 		if(wallType == WallType.interior){
-			height = Wall.INTERIORWALLSHORTSIDE;			
+			height = Wall.INTERIORWALLSHORTSIDE;
+			if(orientation == Neighbors.UP || orientation == Neighbors.DOWN){
+				Wall.getExteriorWallImg().draw(batch, getX(), getY()+Wall.INTERIORWALLSHORTSIDE-height/2, -width, height);
+				Wall.getExteriorWallImg().draw(batch, getX()+FloorTile.TILESIZE-width, getY()+Wall.INTERIORWALLSHORTSIDE-height/2, -width, height);
+			}else if (orientation == Neighbors.RIGHT || orientation == Neighbors.LEFT){
+				Wall.getExteriorWallImg().draw(batch, getX()+Wall.INTERIORWALLSHORTSIDE-height/2, getY(), height, -width);
+				Wall.getExteriorWallImg().draw(batch, getX()+Wall.INTERIORWALLSHORTSIDE-height/2, getY()+FloorTile.TILESIZE-width, height, -width);
+			}
 		}else{
 			height = Wall.EXTERIORWALLSHORTSIDE;
+//			if(orientation == Neighbors.UP || orientation == Neighbors.DOWN){
+//				Wall.getExteriorWallImg().draw(batch, getX(), getY()+Wall.INTERIORWALLSHORTSIDE-height/2, -width, height);
+//				Wall.getExteriorWallImg().draw(batch, getX()+FloorTile.TILESIZE-width, getY()+Wall.INTERIORWALLSHORTSIDE-height/2, -width, height);
+//			}else if (orientation == Neighbors.RIGHT || orientation == Neighbors.LEFT){
+//				Wall.getExteriorWallImg().draw(batch, getX()+Wall.INTERIORWALLSHORTSIDE-height/2, getY(), height, -width);
+//				Wall.getExteriorWallImg().draw(batch, getX()+Wall.INTERIORWALLSHORTSIDE-height/2, getY()+FloorTile.TILESIZE-width, height, -width);
+//			}
+			
+			
+			
+			if(orientation == Neighbors.DOWN){
+				Wall.getExteriorWallImg().draw(batch, getX(), getY()+DOORSIZESHORT/2, -width, height);
+				Wall.getExteriorWallImg().draw(batch, getX()+FloorTile.TILESIZE-width, getY()+DOORSIZESHORT/2, -width, height);
+			}
+			else if(orientation == Neighbors.UP){
+				Wall.getExteriorWallImg().draw(batch, getX(), getY()+DOORSIZESHORT/2-height, -width, height);
+				Wall.getExteriorWallImg().draw(batch, getX()+FloorTile.TILESIZE-width, getY()+DOORSIZESHORT/2-height, -width, height);
+			}
+			else if(orientation == Neighbors.RIGHT){
+				Wall.getExteriorWallImg().draw(batch, getX()+DOORSIZESHORT/2-height, getY(), height, -width);
+				Wall.getExteriorWallImg().draw(batch, getX()+DOORSIZESHORT/2-height, getY()+FloorTile.TILESIZE-width, height, -width);
+			}
+			else if(orientation == Neighbors.LEFT){
+				Wall.getExteriorWallImg().draw(batch, getX()+DOORSIZESHORT/2, getY(), height, -width);
+				Wall.getExteriorWallImg().draw(batch, getX()+DOORSIZESHORT/2, getY()+FloorTile.TILESIZE-width, height, -width);
+			}
 		}
 		
-		if(orientation == Neighbors.UP || orientation == Neighbors.DOWN){
-			Wall.getExteriorWallImg().draw(batch, getX(), getY()+DOORSIZESHORT/2-height/2, -width, height);
-			Wall.getExteriorWallImg().draw(batch, getX()+FloorTile.TILESIZE-width, getY()+DOORSIZESHORT/2-height/2, -width, height);
-		}else if (orientation == Neighbors.RIGHT || orientation == Neighbors.LEFT){
-			Wall.getExteriorWallImg().draw(batch, getX()+DOORSIZESHORT/2-height/2, getY(), height, -width);
-			Wall.getExteriorWallImg().draw(batch, getX()+DOORSIZESHORT/2-height/2, getY()+FloorTile.TILESIZE-width, height, -width);
-		}
+//		if(orientation == Neighbors.UP || orientation == Neighbors.DOWN){
+//			Wall.getExteriorWallImg().draw(batch, getX(), getY()+DOORSIZESHORT/2-height/2, -width, height);
+//			Wall.getExteriorWallImg().draw(batch, getX()+FloorTile.TILESIZE-width, getY()+DOORSIZESHORT/2-height/2, -width, height);
+//		}else if (orientation == Neighbors.RIGHT || orientation == Neighbors.LEFT){
+//			Wall.getExteriorWallImg().draw(batch, getX()+DOORSIZESHORT/2-height/2, getY(), height, -width);
+//			Wall.getExteriorWallImg().draw(batch, getX()+DOORSIZESHORT/2-height/2, getY()+FloorTile.TILESIZE-width, height, -width);
+//		}
 		super.draw(batch, parentAlpha);
 		
 	}

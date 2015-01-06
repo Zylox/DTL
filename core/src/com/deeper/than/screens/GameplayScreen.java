@@ -58,7 +58,6 @@ public class GameplayScreen implements EnumerableScreen{
 	    }
 	    
 //	    ship.rotateBy(1);
-	    
 	    gameObjects.act();
 	    
 	    gameObjects.draw();
