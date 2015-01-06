@@ -31,6 +31,7 @@ public class Ship extends Group{
 	private NinePatch doorImg;
 	private TextureAtlas texAtl;
 	private String doorImgHandle;
+	private int wallIdCounter;
 	
 	public Ship(){
 		
@@ -61,6 +62,7 @@ public class Ship extends Group{
 			}
 		}
 		
+
 //		
 		determineWalls();
 		for(CellBorder cb : walls){
@@ -69,10 +71,9 @@ public class Ship extends Group{
 			System.out.println(cb.getId());
 		}
 //		
-		int i = 0;
 		for(Door d : doors){		
-			i++;
-			d.setId(i);
+			wallIdCounter++;
+			d.setId(wallIdCounter);
 			d.init();
 			CellBorder removedWall = layout[(int)d.pos.y][(int)d.pos.x].getBorder(d.orientation);
 			if(removedWall instanceof Wall){
@@ -108,7 +109,7 @@ public class Ship extends Group{
 		GridSquare up = null;
 		GridSquare down = null;
 
-		int i =0;
+
 		for(int x = 0; x<layout[0].length;x++){
 			for(int y = 0; y<layout.length; y++){
 				current  = layout[y][x];
@@ -139,8 +140,8 @@ public class Ship extends Group{
 					
 					bord = detWall(current, left, Neighbors.LEFT);
 					if(bord.getId() == CellBorder.IDSENTINEL){
-						i++;
-						bord.setId(i);
+						wallIdCounter++;
+						bord.setId(wallIdCounter);
 					}
 //					bord.setGridSquare(layout[(int)bord.getPos().y][(int)bord.getPos().x]);
   					addUniqueWall(bord);
@@ -148,8 +149,8 @@ public class Ship extends Group{
 					
   					bord = detWall(current, right, Neighbors.RIGHT);
 					if(bord.getId() == CellBorder.IDSENTINEL){
-						i++;
-						bord.setId(i);
+						wallIdCounter++;
+						bord.setId(wallIdCounter);
 					}
 //					bord.setGridSquare(layout[(int)bord.getPos().y][(int)bord.getPos().x]);
 					addUniqueWall(bord);
@@ -157,8 +158,8 @@ public class Ship extends Group{
   
   					bord = detWall(current, up, Neighbors.UP);
 					if(bord.getId() == CellBorder.IDSENTINEL){
-						i++;
-						bord.setId(i);
+						wallIdCounter++;
+						bord.setId(wallIdCounter);
 					}
 					bord.setGridSquare(layout[(int)bord.getPos().y][(int)bord.getPos().x]);
 					addUniqueWall(bord);
@@ -166,8 +167,8 @@ public class Ship extends Group{
 					
   					bord = detWall(current, down, Neighbors.DOWN);
 					if(bord.getId() == CellBorder.IDSENTINEL){
-						i++;
-						bord.setId(i);
+						wallIdCounter++;
+						bord.setId(wallIdCounter);
 					}
 					//bord.setGridSquare(layout[(int)bord.getPos().y][(int)bord.getPos().x]);
 					addUniqueWall(bord);
@@ -198,16 +199,16 @@ public class Ship extends Group{
 			}
 		}
 		
-//		Door door = doorBetweenNeighTile(current, adj, orientation);
-//		
-//		if(door != null){
-//			if(adj != null){
-//				System.out.println("Door Between: " + current.getPos().toString() + " and " + adj.getPos().toString());
-//			}else{
-//				System.out.println("Door Between: " + current.getPos().toString() + " and " + door.orientation);
-//			}
-//			return door;
-//		}
+		Door door = doorBetweenNeighTile(current, adj, orientation);
+		
+		if(door != null){
+			if(adj != null){
+				System.out.println("Door Between: " + current.getPos().toString() + " and " + adj.getPos().toString());
+			}else{
+				System.out.println("Door Between: " + current.getPos().toString() + " and " + door.orientation);
+			}
+			return door;
+		}
 		
 		if(adj == null){
 			return new Wall(current.getPos().x, current.getPos().y, orientation, this, WallType.exterior);
@@ -241,6 +242,8 @@ public class Ship extends Group{
 			//Door refDoor  = ref.getDoor(orientation);
 			if(refDoor != null){
 				refDoor.flipOrientation();
+				refDoor.setPos(base.getPos());
+				refDoor.init();
 				return refDoor;
 			}
 		}
