@@ -16,7 +16,6 @@ public class GridSquare extends Group{
 	private Crew crewMember;
 	private Vector2 pos;
 
-
 	private Room room;
 	
 	private Ship ship;
@@ -74,6 +73,7 @@ public class GridSquare extends Group{
 		addListener(new InputListener() {
 			public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
 				printWalls();
+				DTL.printDebug("WaterLevel: " + room.getWaterLevel());
 				return false;
 		    }
 		});

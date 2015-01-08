@@ -33,6 +33,8 @@ public class Ship extends Group{
 	private String doorImgHandle;
 	private int wallIdCounter;
 	
+	private float drainRate = -.1f;
+	
 	public Ship(){
 		
 	}
@@ -88,40 +90,51 @@ public class Ship extends Group{
 			if(d.orientation == Neighbors.RIGHT){
 				if(d.pos.x+1 < gridWidth){
 					neighGrid = layout[(int)d.pos.y][(int)d.pos.x+1];
+					linkRooms(curGrid.getRoom(), neighGrid.getRoom(), d);
 					if(neighGrid != null){
 						d.getFullFlip();		
 						neighGrid.addBorder(d);
 						d.getFullFlip();
 					}
+				}else{
+					linkRooms(curGrid.getRoom(), null, d);
 				}
 			}else if(d.orientation == Neighbors.LEFT){
 				if(d.pos.x > 1){
 					d = (Door) d.getFullFlip();
 					neighGrid = layout[(int)d.pos.y][(int)d.pos.x-1];
+					linkRooms(curGrid.getRoom(), neighGrid.getRoom(), d);
 					if(neighGrid != null){
 						d.getFullFlip();		
 						neighGrid.addBorder(d);
 						d.getFullFlip();
 					}
+				}else{
+					linkRooms(curGrid.getRoom(), null, d);
 				}
-			
 			}else if(d.orientation == Neighbors.UP){
 				if(d.pos.y+1 < gridHeight){
 					neighGrid = layout[(int)d.pos.y+1][(int)d.pos.x];
+					linkRooms(curGrid.getRoom(), neighGrid.getRoom(), d);
 					if(neighGrid != null){
 						d.getFullFlip();		
 						neighGrid.addBorder(d);
 						d.getFullFlip();
 					}
+				}else{
+					linkRooms(curGrid.getRoom(), null, d);
 				}
 			}else if(d.orientation == Neighbors.DOWN){
 				if(d.pos.y > 1){
 					neighGrid = layout[(int)d.pos.y-1][(int)d.pos.x];
+					linkRooms(curGrid.getRoom(), neighGrid.getRoom(), d);
 					if(neighGrid != null){
 						d.getFullFlip();		
 						neighGrid.addBorder(d);
 						d.getFullFlip();
 					}
+				}else{
+					linkRooms(curGrid.getRoom(), null, d);
 				}
 			}
 			addActor(d);
@@ -134,6 +147,15 @@ public class Ship extends Group{
 		setBounds(game.getViewport().getWorldWidth()/2 - x/2,game.getViewport().getWorldHeight()/2 - y/2, x, y);
 		
 		loadAssets();
+	}
+	
+	public void update(){
+		for(Room r : rooms){
+			r.calculateEnv();
+		}
+		for(Room r : rooms){
+			r.updateEnv();
+		}
 	}
 	
 	public void determineWalls(){
@@ -214,6 +236,13 @@ public class Ship extends Group{
 		}
 		
 
+	}
+	
+	private void linkRooms(Room room1, Room room2, Door door){
+		room1.addLink(room2, door);
+		if(room2 != null){
+			room2.addLink(room1, door);
+		}
 	}
 	
 	private void addUniqueWall(CellBorder bord){
@@ -373,6 +402,10 @@ public class Ship extends Group{
 		doorImgHandle = handle;
 	}
 	
-
+	public float getDrainRate(){
+		return drainRate;
+	}
+	
+	
 
 }

@@ -10,6 +10,7 @@ public class DesktopLauncher {
 	
 	public static void main (String[] arg) {
 		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
+		config.title = "DTL: Deeper Than Light";
 		if(MAXFRAMESGO){
 			config.vSyncEnabled = false; // Setting to false disables vertical sync
 			config.foregroundFPS = 0; // Setting to 0 disables foreground fps throttling

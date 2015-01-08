@@ -140,11 +140,11 @@ public class ScriptParser implements Poolable{
 					line = getNextNonCommentLine(scanner);
 					if(line.startsWith("{")){
 						roomId++;
-						room = new Room(roomId);
+						room = new Room(roomId, ship);
 						poss = getRoomValues(line);						
 						for(Vector2 v : poss){
-							fl = new FloorTile(v);
 							gs = new GridSquare();
+							fl = new FloorTile(v, gs);
 							gs.setFloorTile(fl);
 							gs.setRoom(room);
 							gs.setShip(ship);

@@ -56,9 +56,12 @@ public class GameplayScreen implements EnumerableScreen{
 	    if(Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)){
 	    	mainMenu();
 	    }
+
 	    
-//	    ship.rotateBy(1);
+	    ship.update();
 	    gameObjects.act();
+	    
+	    
 	    
 	    gameObjects.draw();
 
