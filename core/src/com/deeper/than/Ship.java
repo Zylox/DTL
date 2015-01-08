@@ -62,7 +62,7 @@ public class Ship extends Group{
 			}
 		}
 		
-
+		
 //		
 		determineWalls();
 		for(CellBorder cb : walls.values()){
@@ -71,17 +71,61 @@ public class Ship extends Group{
 		}
 //		
 		for(Door d : doors){		
+			GridSquare curGrid = layout[(int)d.pos.y][(int)d.pos.x];
+			GridSquare neighGrid  = null;
 			wallIdCounter++;
 			d.setId(wallIdCounter);
 			d.init();
-			CellBorder removedWall = layout[(int)d.pos.y][(int)d.pos.x].getBorder(d.orientation);
+			CellBorder removedWall = curGrid.getBorder(d.orientation);
 			if(removedWall instanceof Wall){
 				d.setWallType(((Wall) removedWall).getWallType());
 			}
 			removeActor(removedWall);
 			walls.remove(removedWall.getId());
-			layout[(int)d.pos.y][(int)d.pos.x].addBorder(d);
+			curGrid.addBorder(d);
+			
+			
+			if(d.orientation == Neighbors.RIGHT){
+				if(d.pos.x+1 < gridWidth){
+					neighGrid = layout[(int)d.pos.y][(int)d.pos.x+1];
+					if(neighGrid != null){
+						d.getFullFlip();		
+						neighGrid.addBorder(d);
+						d.getFullFlip();
+					}
+				}
+			}else if(d.orientation == Neighbors.LEFT){
+				if(d.pos.x > 1){
+					d = (Door) d.getFullFlip();
+					neighGrid = layout[(int)d.pos.y][(int)d.pos.x-1];
+					if(neighGrid != null){
+						d.getFullFlip();		
+						neighGrid.addBorder(d);
+						d.getFullFlip();
+					}
+				}
+			
+			}else if(d.orientation == Neighbors.UP){
+				if(d.pos.y+1 < gridHeight){
+					neighGrid = layout[(int)d.pos.y+1][(int)d.pos.x];
+					if(neighGrid != null){
+						d.getFullFlip();		
+						neighGrid.addBorder(d);
+						d.getFullFlip();
+					}
+				}
+			}else if(d.orientation == Neighbors.DOWN){
+				if(d.pos.y > 1){
+					neighGrid = layout[(int)d.pos.y-1][(int)d.pos.x];
+					if(neighGrid != null){
+						d.getFullFlip();		
+						neighGrid.addBorder(d);
+						d.getFullFlip();
+					}
+				}
+			}
 			addActor(d);
+			
 		}
 		
 		int x = FloorTile.TILESIZE*layout[0].length;
@@ -99,7 +143,7 @@ public class Ship extends Group{
 		GridSquare right = null;
 		GridSquare up = null;
 		GridSquare down = null;
-
+		
 
 		for(int x = 0; x<layout[0].length;x++){
 			for(int y = 0; y<layout.length; y++){
@@ -183,9 +227,8 @@ public class Ship extends Group{
 		if(adj != null){
 			CellBorder bord = adj.getBorder(Neighbors.reverseOrienation(orientation));
 			if(bord != null){
-				bord.flipOrientation();
-				bord.setPos(current.getPos());
-				bord.init();
+
+				bord.getFullFlip();
 				return bord;
 			}
 		}

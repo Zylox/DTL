@@ -40,6 +40,7 @@ public abstract class CellBorder extends Group {
 	}
 	
 	public abstract void init();
+	public abstract void reinit();
 
 	public Ship getShip() {
 		return ship;
@@ -64,6 +65,10 @@ public abstract class CellBorder extends Group {
 	public void setPos(Vector2 pos) {
 		this.pos = pos;
 	}
+	
+	public void setPos(float x, float y) {
+		this.pos = new Vector2(x,y);
+	}
 
 	public int getOrientation() {
 		return orientation;
@@ -75,6 +80,34 @@ public abstract class CellBorder extends Group {
 	
 	public void flipOrientation(){
 		this.orientation = Neighbors.reverseOrienation(orientation);
+	}
+	
+	/**
+	 * Flips the wall over to its neighbor. Not safe for the edge of the ship grid, needs to be checked before calling.
+	 */
+	public CellBorder getFullFlip(){
+		CellBorder tmp = this;
+		switch(tmp.orientation){
+		case Neighbors.UP :
+			setPos(tmp.getPos().x, tmp.getPos().y+1);
+			break;
+		case Neighbors.RIGHT :
+			setPos(tmp.getPos().x+1, tmp.getPos().y);
+			break;
+		case Neighbors.DOWN :
+			setPos(tmp.getPos().x, tmp.getPos().y-1);
+			break;
+		case Neighbors.LEFT :
+			setPos(tmp.getPos().x-1, tmp.getPos().y);
+			break;
+		default:
+			DTL.printDebug("Orientation messud up for Cellborder fullflip");
+			break;
+		}
+		tmp.flipOrientation();
+		tmp.reinit();
+		
+		return tmp;
 	}
 
 	public int getId() {

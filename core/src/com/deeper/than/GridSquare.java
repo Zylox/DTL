@@ -1,5 +1,9 @@
 package com.deeper.than;
 
+import java.util.Random;
+
+import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
@@ -22,6 +26,7 @@ public class GridSquare extends Group{
 		tile = null;
 		borders = new CellBorder[4];
 		room = null;
+		
 		setDebug(DTL.GRAPHICALDEBUG);
 	}
 	

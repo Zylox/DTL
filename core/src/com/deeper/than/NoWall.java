@@ -10,4 +10,9 @@ public class NoWall extends CellBorder{
 	public void init(){
 		
 	}
+	
+	@Override
+	public void reinit(){
+		
+	}
 }

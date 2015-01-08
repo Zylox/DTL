@@ -34,8 +34,11 @@ public class Wall extends CellBorder{
 	
 	@Override
 	public void init() {
-
 		setPositionForDraw();
+	}
+	
+	public void reinit(){
+		init();
 	}
 	
 	public void setPositionForDraw(){

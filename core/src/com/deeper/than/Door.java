@@ -47,6 +47,14 @@ public class Door extends CellBorder{
 		    }
 		});
 		
+		reinit();
+	}
+	
+	public void reinit(){
+		
+		for(Actor a : getChildren()){
+			removeActor(a);
+		}
 		DoorHalf[] doors = new DoorHalf[2];
 		
 		

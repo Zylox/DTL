@@ -99,6 +99,7 @@ public class GameplayScreen implements EnumerableScreen{
 	public void dispose() {
 		// TODO Auto-generated method stub
 		gameObjects.dispose();
+		
 	}
 
 }
