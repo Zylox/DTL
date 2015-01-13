@@ -10,7 +10,9 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.NinePatch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
+import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.OrderedMap;
 import com.deeper.than.Wall.WallType;
 
@@ -33,7 +35,8 @@ public class Ship extends Group{
 	private String doorImgHandle;
 	private int wallIdCounter;
 	
-	private float drainRate = -.1f;
+	
+	private float drainRate = -.01f;
 	
 	public Ship(){
 		
@@ -150,6 +153,21 @@ public class Ship extends Group{
 	}
 	
 	public void update(){
+//		Collections.sort(rooms, new Comparator<Room>() {
+//			@Override
+//			public int compare(Room  room1, Room  room2)
+//			{
+//				
+//				return room1.getWaterLevel() < room2.getWaterLevel() ? -1 : room1.getWaterLevel() == room2.getWaterLevel() ? 0 : 1;
+//			}
+//		});
+		
+		Array<Actor> actors = getChildren();
+		
+		for(Actor a : actors){
+			
+		}
+		
 		for(Room r : rooms){
 			r.calculateEnv();
 		}

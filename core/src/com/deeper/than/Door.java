@@ -2,6 +2,7 @@ package com.deeper.than;
 
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.scenes.scene2d.Action;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
@@ -106,7 +107,8 @@ public class Door extends CellBorder{
 			doorState = DoorState.Opening;
 		}
 		
-
+		
+		addAction(new DoorOpen());
 	}
 	
 	public void printDoorState(){
@@ -174,6 +176,14 @@ public class Door extends CellBorder{
 		return  false;
 	}	
 	
+	public float getOpenAmount() {
+		return openAmount;
+	}
+
+	public void setOpenAmount(float openAmount) {
+		this.openAmount = openAmount;
+	}
+
 	public int getDoorId() {
 		return doorId;
 	}
@@ -190,9 +200,6 @@ public class Door extends CellBorder{
 		this.wallType = wallType;
 	}
 
-
-
-
 	private class DoorHalf extends Actor{		
 		
 		public boolean left;
@@ -201,30 +208,9 @@ public class Door extends CellBorder{
 			this.left = left;
 		}
 		
+		
 		@Override
 		public void draw(Batch batch, float alpha){
-
-		
-			float longSide=0;
-			if(orientation == Neighbors.UP || orientation == Neighbors.DOWN){
-				longSide = this.getWidth();
-			}else if (orientation == Neighbors.RIGHT || orientation == Neighbors.LEFT){
-				longSide = this.getHeight();
-			}
-			if(doorState == DoorState.Opening){
-				openAmount += DOORSIZELONG/32;
-				if(openAmount >= longSide-DOORSIZELONG/8){
-					openAmount = longSide-DOORSIZELONG/8;
-					doorState = DoorState.Open;
-				}
-			}else if(doorState == DoorState.Closing){
-				openAmount -= DOORSIZELONG/32;
-				if(openAmount <=0){
-					openAmount = 0;
-					doorState = DoorState.Closed;
-					
-				}
-			}
 		
 			if(orientation == Neighbors.UP || orientation == Neighbors.DOWN){
 				if(left){
@@ -250,4 +236,33 @@ public class Door extends CellBorder{
 	
 	}
 
+	private class DoorOpen extends Action{
+		
+		
+		@Override
+		public boolean act(float delta) {
+			float longSide=0;
+			if(orientation == Neighbors.UP || orientation == Neighbors.DOWN){
+				longSide = getWidth()/2;
+			}else if (orientation == Neighbors.RIGHT || orientation == Neighbors.LEFT){
+				longSide = getHeight()/2;
+			}
+			if(doorState == DoorState.Opening){
+				openAmount += DTL.getRatePerFrame(DOORSIZELONG/16*60);
+				if(openAmount >= longSide-DOORSIZELONG/8){
+					openAmount = longSide-DOORSIZELONG/8;
+					doorState = DoorState.Open;
+					return true;
+				}
+			}else if(doorState == DoorState.Closing){
+				openAmount -= DTL.getRatePerFrame(DOORSIZELONG/16*60);;
+				if(openAmount <=0){
+					openAmount = 0;
+					doorState = DoorState.Closed;
+					return true;
+				}
+			}	
+			return false;
+		}
+	}
 }

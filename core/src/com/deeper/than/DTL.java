@@ -5,6 +5,7 @@ import java.io.Console;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
@@ -22,11 +23,18 @@ public class DTL extends Game {
 	public static final boolean TEXTDEBUG = true || GLOBALDEBUG;
 	public static boolean gameActive = false;
 	
+	private static int frameTarget;
+	
 	public static Screen previousScreen = Screens.MAINMENU.getScreen();
 	private FitViewport viewport;
 	public static Skin skin;
+	public static BitmapFont font;
 	
 	public static long startTime;
+	
+	public DTL(int frameTarget){
+		DTL.frameTarget = frameTarget;
+	}
 	
 	@Override
 	public void create () {
@@ -41,7 +49,7 @@ public class DTL extends Game {
 		viewport = new FitViewport(VWIDTH, VHEIGHT);
 		viewport.update(VWIDTH, VWIDTH, true);
 		skin = new Skin(Gdx.files.internal("uiskin.json"));
-		
+		font = skin.getFont("default-font");
 		Screens[] screens = Screens.values();
 		
 		for(Screens s : screens){
@@ -65,5 +73,20 @@ public class DTL extends Game {
 		}
 	}
 
+	public static int getFrameTarget() {
+		return frameTarget;
+	}
 
+	public static float getFrameTime() {
+		return 1f/frameTarget;
+	}
+
+	/**
+	 * Pass a rate per second, returns rate per frame
+	 * @param ratePerSecond
+	 * @return
+	 */
+	public static float getRatePerFrame(float ratePerSecond){
+		return ratePerSecond*getFrameTime();
+	}
 }

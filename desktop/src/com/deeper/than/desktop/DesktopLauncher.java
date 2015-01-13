@@ -6,16 +6,19 @@ import com.deeper.than.DTL;
 
 public class DesktopLauncher {
 	
-	private static final boolean MAXFRAMESGO = false;
+	
+	private static int fpsTarget = 100;
 	
 	public static void main (String[] arg) {
+		if(fpsTarget > 144){
+			DesktopLauncher.fpsTarget = 144;
+		}
+		
 		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
 		config.title = "DTL: Deeper Than Light";
-		if(MAXFRAMESGO){
-			config.vSyncEnabled = false; // Setting to false disables vertical sync
-			config.foregroundFPS = 0; // Setting to 0 disables foreground fps throttling
-			config.backgroundFPS = 0; // Setting to 0 disables background fps throttling
-		}
-		new LwjglApplication(new DTL(), config);
+		config.vSyncEnabled = false; // Setting to false disables vertical sync
+		config.foregroundFPS = fpsTarget; // Setting to 0 disables foreground fps throttling
+		config.backgroundFPS = fpsTarget; // Setting to 0 disables background fps throttling
+		new LwjglApplication(new DTL(fpsTarget), config);
 	}
 }

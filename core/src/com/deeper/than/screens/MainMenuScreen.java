@@ -2,6 +2,7 @@ package com.deeper.than.screens;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputMultiplexer;
+import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -31,6 +32,7 @@ public class MainMenuScreen implements EnumerableScreen {
 	TextButton exitButton;
 	
 	InputMultiplexer input;
+	InputProcessor input12;
 
 	private boolean loadtest = false;
 	
@@ -131,12 +133,12 @@ public class MainMenuScreen implements EnumerableScreen {
 	    if(!loadtest){
 
 	    	long newTime = System.currentTimeMillis()-DTL.startTime;
-	    	DTL.printDebug("Load took: " + newTime/1000f + " seconds" );
+	    	DTL.printDebug("Load took: " + newTime/1000l + " seconds" );
 	    	loadtest = true;
 	    }
 	    
+	    System.out.println(Gdx.graphics.getFramesPerSecond());
 		for(Actor a : stage2.getActors()){
-			//a.addAction(Actions.moveBy(1, 1));
 			a.addAction(Actions.rotateBy(10));
 
 		}

@@ -1,10 +1,13 @@
 package com.deeper.than.screens;
 
+import java.util.ArrayList;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.deeper.than.DTL;
@@ -17,6 +20,8 @@ public class GameplayScreen implements EnumerableScreen{
 	private Stage ui;
 	private Stage gameObjects;
 	private Ship ship;
+	private float timeAccumulator;
+	
 	
 	private InputMultiplexer input;
 
@@ -34,6 +39,7 @@ public class GameplayScreen implements EnumerableScreen{
 		input = new InputMultiplexer();
 		input.addProcessor(gameObjects);
 		
+		timeAccumulator = 0;
 	}
 	
 	public void loadAssets(){
@@ -58,12 +64,15 @@ public class GameplayScreen implements EnumerableScreen{
 	    }
 
 	    
-	    ship.update();
-	    gameObjects.act();
-	    
-	    
+	    timeAccumulator += delta;
+	    if(timeAccumulator > DTL.getFrameTime()){
+	    	ship.update();
+	    	gameObjects.act();
+	    	timeAccumulator -= DTL.getFrameTime();
+	    }
 	    
 	    gameObjects.draw();
+	    
 
 	    
 	}
