@@ -2,6 +2,9 @@ package com.deeper.than;
 
 import java.util.ArrayList;
 
+import com.badlogic.gdx.math.Vector2;
+import com.deeper.than.modules.Module;
+
 public class Room {
 	
 	private static final float BASETEMP = 50;
@@ -13,6 +16,7 @@ public class Room {
 	private Ship ship;
 	
 	private ArrayList<GridSquare> squares;
+	private Module module;
 	private int id;
 	
 	private float temp;
@@ -21,18 +25,51 @@ public class Room {
 	private float calculatedWaterLevel;
 	private float givenWater;
 	private float neighBorUpperboundWL;
-
+	/**
+	 * Center location in global coordinates
+	 */
+	private Vector2 centerLoc;
 
 	private ArrayList<RoomLink> linkedRooms;
 	
 	public Room(int id, Ship ship){
 		this.id = id;
 		this.ship = ship;
+		this.module = null;
 		squares = new ArrayList<GridSquare>();
 		linkedRooms = new ArrayList<RoomLink>();
 		temp = BASETEMP;
 		pressure = BASEPRESSURE;
 		waterLevel = BASEWATERLEVEL;
+		centerLoc = null;
+	}
+	
+	/**
+	 * Get the location in global coords
+	 * @return centerLoc
+	 */
+	public Vector2 getCenterLoc(){
+		if(centerLoc == null){
+			centerLoc = calculateCenter();
+		}
+		return centerLoc;
+	}
+	
+	private Vector2 calculateCenter(){
+		Vector2 center = new Vector2();
+		float minX = 1000000;
+		float minY = 1000000;
+		float maxX = 0;
+		float maxY = 0;
+		for(GridSquare square : squares){
+			minX = Math.min(minX, square.getX());
+			minY = Math.min(minY, square.getY());
+			maxX = Math.max(maxX, square.getX() + square.getWidth());
+			maxY = Math.max(maxY, square.getY() + square.getHeight());
+		}
+		center.x = ship.getX() +  minX + (maxX-minX)/2;
+		center.y = ship.getY() + minY + (maxY-minY)/2;
+		return center;
 	}
 	
 	public void calculateEnv(){
@@ -101,7 +138,7 @@ public class Room {
 		linkedRooms.add(new RoomLink(room, door));
 	}
 	
-	public void addRoom(GridSquare square){
+	public void addSquare(GridSquare square){
 		squares.add(square);
 	}
 	
@@ -174,6 +211,14 @@ public class Room {
 
 	public void setNeighBorUpperboundWL(float neighBorUpperboundWL) {
 		this.neighBorUpperboundWL = neighBorUpperboundWL;
+	}
+	
+	public void setModule(Module module){
+		this.module = module;
+	}
+	
+	public Module getModule(){
+		return module;
 	}
 
 	private class RoomLink{

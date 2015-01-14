@@ -14,8 +14,8 @@ public class Wall extends CellBorder{
 		exterior;
 	}
 	
-	private static  NinePatch exteriorWallImg;
-	private static NinePatch interiorWallImg;
+	private static  NinePatch exteriorWallImg = null;
+	private static NinePatch interiorWallImg = null;
 	
 	public static final float INTERIORWALLSHORTSIDE = Door.DOORSIZESHORT/2;
 	public static final float EXTERIORWALLSHORTSIDE = Door.DOORSIZESHORT/4;
@@ -100,9 +100,12 @@ public class Wall extends CellBorder{
 	
 	
 	public static void loadAssets(){
-		TextureAtlas textAtl = new TextureAtlas("wallParts.pack");
-		exteriorWallImg = textAtl.createPatch("wallPart");
-		interiorWallImg = exteriorWallImg;
+		if(interiorWallImg == null || exteriorWallImg == null){
+			TextureAtlas textAtl = new TextureAtlas("wallParts.pack");
+			exteriorWallImg = textAtl.createPatch("wallPart");
+			interiorWallImg = exteriorWallImg;
+			textAtl.dispose();
+		}
 	}
 	
 	public static NinePatch getExteriorWallImg() {

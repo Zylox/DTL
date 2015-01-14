@@ -15,6 +15,8 @@ import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.OrderedMap;
 import com.deeper.than.Wall.WallType;
+import com.deeper.than.modules.ClimateControlModule;
+import com.deeper.than.modules.Module;
 
 public class Ship extends Group{
 	
@@ -26,6 +28,7 @@ public class Ship extends Group{
 	private ArrayList<Room> rooms;
 	private ArrayList<Door>	doors;
 	private OrderedMap<Integer, CellBorder> walls;
+	private ArrayList<Module> modules;
 	protected int gridWidth;
 	protected int gridHeight;
 	private Sprite floorTileImg;
@@ -49,6 +52,7 @@ public class Ship extends Group{
 		doors = new ArrayList<Door>();
 		rooms = new ArrayList<Room>();
 		walls = new OrderedMap<Integer, CellBorder>();
+		modules = new ArrayList<Module>();
 		
 		
 		try {
@@ -162,17 +166,21 @@ public class Ship extends Group{
 //			}
 //		});
 		
-		Array<Actor> actors = getChildren();
-		
-		for(Actor a : actors){
-			
-		}
 		
 		for(Room r : rooms){
 			r.calculateEnv();
 		}
 		for(Room r : rooms){
 			r.updateEnv();
+		}
+	}
+
+	@Override
+	public void draw(Batch batch, float parentAlpha){
+		
+		super.draw(batch, parentAlpha);
+		for(Module m : modules){
+			m.draw(batch);
 		}
 	}
 	
@@ -305,8 +313,6 @@ public class Ship extends Group{
 		return new Wall(current.getPos().x, current.getPos().y, orientation, this, WallType.interior);
 	}
 	
-
-	
 	public Door doorBetweenNeighTile(GridSquare base, GridSquare ref, int orientation){
 		
 		if(base == null){
@@ -339,9 +345,8 @@ public class Ship extends Group{
 		doorImg      = texAtl.createPatch("doorhalf");
 	}
 	
-	@Override
-	public void drawChildren(Batch batch, float parentAlpha){
-		super.drawChildren(batch, parentAlpha);
+	public void dispose(){
+		texAtl.dispose();
 	}
 		
 	public String getName() {
@@ -384,6 +389,10 @@ public class Ship extends Group{
 		this.rooms.add(room);
 	}
 	
+	public void addModule(Module module){
+		this.modules.add(module);
+	}
+	
 	public int getGridWidth() {
 		return gridWidth;
 	}
@@ -421,6 +430,12 @@ public class Ship extends Group{
 	}
 	
 	public float getDrainRate(){
+		float drainRate = 0;
+		for(Module m : modules){
+			if(m instanceof ClimateControlModule){
+				drainRate = ((ClimateControlModule) m).getWaterDrainRate();
+			}
+		}
 		return drainRate;
 	}
 	

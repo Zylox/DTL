@@ -8,6 +8,8 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Pool;
 import com.badlogic.gdx.utils.Pool.Poolable;
+import com.deeper.than.modules.ClimateControlModule;
+import com.deeper.than.modules.Module;
 
 
 public class ScriptParser implements Poolable{
@@ -131,7 +133,8 @@ public class ScriptParser implements Poolable{
 			//floorlayout case
 			if(line.replaceAll("\\s", "").equals("layout=")){
 				Vector2 poss[] = null;
-				int roomId=-1;
+				int roomId = -1;
+				int moduleId = -1;
 				Room room;
 				FloorTile fl;
 				GridSquare gs;
@@ -141,7 +144,24 @@ public class ScriptParser implements Poolable{
 					if(line.startsWith("{")){
 						roomId++;
 						room = new Room(roomId, ship);
-						poss = getRoomValues(line);						
+						tokens = line.split(" , ");
+						if(tokens.length > 1){
+							if(tokens[1] != ""){
+								Module module = null;
+								int level = 1;
+								moduleId++;
+								if(tokens.length > 2){
+									level = Integer.parseInt(tokens[2]);
+								}
+								if(tokens[1].equals("ClimateControlModule")){
+									System.out.println(level);
+									module = new ClimateControlModule(moduleId++, level, room, ship);
+									room.setModule(module);
+									ship.addModule(module);
+								}
+							}
+						}
+						poss = getRoomValues(tokens[0]);						
 						for(Vector2 v : poss){
 							gs = new GridSquare();
 							fl = new FloorTile(v, gs);
@@ -150,7 +170,7 @@ public class ScriptParser implements Poolable{
 							gs.setShip(ship);
 							fl.setShip(ship);
 							ship.layout[(int)v.y][(int)v.x] = gs;
-							
+							room.addSquare(gs);
 						}
 						ship.addRoom(room);
 					}else if(line.equals("endlayout")){

@@ -52,7 +52,6 @@ public class MainMenuScreen implements EnumerableScreen {
 //		img.setBounds(img.getX(), img.getY(), img.getWidth(), img.getHeight());
 		img.addListener(new InputListener() {
 		    public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
-		        System.out.println("down");
 		        return true;
 		    }
 		});
@@ -137,7 +136,6 @@ public class MainMenuScreen implements EnumerableScreen {
 	    	loadtest = true;
 	    }
 	    
-	    System.out.println(Gdx.graphics.getFramesPerSecond());
 		for(Actor a : stage2.getActors()){
 			a.addAction(Actions.rotateBy(10));
 

@@ -13,6 +13,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.deeper.than.DTL;
 import com.deeper.than.Ship;
 import com.deeper.than.Wall;
+import com.deeper.than.modules.Modules;
 
 public class GameplayScreen implements EnumerableScreen{
 
@@ -29,7 +30,7 @@ public class GameplayScreen implements EnumerableScreen{
 	
 	public void create(DTL game){
 		this.game = game;
-		Wall.loadAssets();
+
 		loadAssets();
 		ship = new Ship(Gdx.files.internal("kes.ship"), game);
 		ship.setOrigin(ship.getWidth()/2, ship.getHeight()/2);
@@ -44,6 +45,8 @@ public class GameplayScreen implements EnumerableScreen{
 	
 	public void loadAssets(){
 		tempBackground = new Image(new Texture("tempbackground.png"));
+		Wall.loadAssets();
+		Modules.loadAllModuleAssets();
 	}
 	
 	@Override
@@ -59,10 +62,13 @@ public class GameplayScreen implements EnumerableScreen{
 		// TODO Auto-generated method stub
 	    Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
+	    
+	    ////Key inputs here
 	    if(Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)){
 	    	mainMenu();
 	    }
 
+	    //////Update logic goes here
 	    
 	    timeAccumulator += delta;
 	    if(timeAccumulator > DTL.getFrameTime()){
@@ -71,6 +77,7 @@ public class GameplayScreen implements EnumerableScreen{
 	    	timeAccumulator -= DTL.getFrameTime();
 	    }
 	    
+	   ////Rendering goes here
 	    gameObjects.draw();
 	    
 
@@ -110,8 +117,8 @@ public class GameplayScreen implements EnumerableScreen{
 	@Override
 	public void dispose() {
 		// TODO Auto-generated method stub
+		ship.dispose();
 		gameObjects.dispose();
-		
 	}
 
 }

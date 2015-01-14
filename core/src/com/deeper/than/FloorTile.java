@@ -46,7 +46,7 @@ public class FloorTile extends Actor{
 		batch.setColor(new Color(getRedComponent(),1,1,1f));
 		batch.draw(ship.getFloorTileImg(), getX(), getY(), getOriginX(), getOriginY(), getWidth(), getHeight(), getScaleX(), getScaleY(), getRotation());
 		batch.setColor(color);
-		DTL.font.draw(batch, Float.toString(gridSquare.getRoom().getWaterLevel()), getWidth()/2, getHeight()/2);
+		//DTL.font.draw(batch, Float.toString(gridSquare.getRoom().getWaterLevel()), getWidth()/2, getHeight()/2);
 	}
 	
 	private float getRedComponent(){
