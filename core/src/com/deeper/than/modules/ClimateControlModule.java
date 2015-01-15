@@ -3,10 +3,9 @@ package com.deeper.than.modules;
 import com.deeper.than.Room;
 import com.deeper.than.Ship;
 
-public class ClimateControlModule extends Module {
+public class ClimateControlModule extends MainModule {
 	
 	private static final String name = "ClimateControlModule";
-	protected static final String imagePath = "climateControl.png";
 	
 	public ClimateControlModule(int id, Room room,Ship ship) {
 		super(id, room, ship);
@@ -26,7 +25,6 @@ public class ClimateControlModule extends Module {
 		}else if(getLevel() == 3){
 			waterDrainRate = -.05f;
 		}
-		
 		return waterDrainRate;
 	}
 

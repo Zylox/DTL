@@ -7,6 +7,7 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.deeper.than.Wall.WallType;
+import com.deeper.than.modules.HatchControlModule;
 
 public class Door extends CellBorder{
 	
@@ -23,6 +24,7 @@ public class Door extends CellBorder{
 	
 
 	private int doorId;
+	private HatchControlModule hatchControl;
 	private DoorState doorState;
 	private float openAmount;
 	private WallType wallType;
@@ -101,17 +103,28 @@ public class Door extends CellBorder{
 	}
 	
 	public void changeOpen(){
-		if(doorState == DoorState.Open || doorState == DoorState.Opening){
-			doorState = DoorState.Closing;
-		}else{
-			doorState = DoorState.Opening;
+		if(hatchControl == null){
+			return;
 		}
 		
-		
-		addAction(new DoorOpen());
+		if(hatchControl.canControlDoors()){
+			if(doorState == DoorState.Open || doorState == DoorState.Opening){
+				doorState = DoorState.Closing;
+			}else{
+				doorState = DoorState.Opening;
+			}
+			addAction(new DoorOpen());
+		}
 	}
 	
 	public void printDoorState(){
+		if(hatchControl != null){
+			if(hatchControl.canControlDoors()){
+				DTL.printDebug("Door control disabled");
+			}
+		}else{
+			DTL.printDebug("No hatch control Module");
+		}
 		switch(doorState){
 		case Open : 
 			DTL.printDebug("Door open");
@@ -175,6 +188,10 @@ public class Door extends CellBorder{
 		}
 		return  false;
 	}	
+	
+	public void setHatchControlModule(HatchControlModule hcm){
+		this.hatchControl = hcm;
+	}
 	
 	public float getOpenAmount() {
 		return openAmount;

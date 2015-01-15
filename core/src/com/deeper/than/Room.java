@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import com.badlogic.gdx.math.Vector2;
 import com.deeper.than.modules.Module;
+import com.deeper.than.modules.SensorsModule;
 
 public class Room {
 	
@@ -25,6 +26,7 @@ public class Room {
 	private float calculatedWaterLevel;
 	private float givenWater;
 	private float neighBorUpperboundWL;
+	private SensorsModule sensors;
 	/**
 	 * Center location in global coordinates
 	 */
@@ -142,6 +144,17 @@ public class Room {
 		squares.add(square);
 	}
 	
+	public void setSensorsModule(SensorsModule sensors){
+		this.sensors = sensors;
+	}
+	
+	public boolean isVisible(){
+		if(sensors == null){
+			return false;
+		}
+		return sensors.canSeeOwnShip() || ship.isCrewInRoom(this);
+	}
+	
 	public int getRoomId(){
 		return id;
 	}
@@ -190,8 +203,6 @@ public class Room {
 		this.calculatedWaterLevel = waterLevel;
 		this.neighBorUpperboundWL= upperBound;
 	}
-	
-	
 	
 	public float getGivenWater() {
 		return givenWater;

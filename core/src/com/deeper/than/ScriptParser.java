@@ -8,8 +8,12 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Pool;
 import com.badlogic.gdx.utils.Pool.Poolable;
+import com.deeper.than.modules.BridgeModule;
 import com.deeper.than.modules.ClimateControlModule;
+import com.deeper.than.modules.EngineModule;
+import com.deeper.than.modules.HatchControlModule;
 import com.deeper.than.modules.Module;
+import com.deeper.than.modules.SensorsModule;
 
 
 public class ScriptParser implements Poolable{
@@ -154,11 +158,18 @@ public class ScriptParser implements Poolable{
 									level = Integer.parseInt(tokens[2]);
 								}
 								if(tokens[1].equals("ClimateControlModule")){
-									System.out.println(level);
 									module = new ClimateControlModule(moduleId++, level, room, ship);
-									room.setModule(module);
-									ship.addModule(module);
+								}else if(tokens[1].equals("EngineModule")){
+									module = new EngineModule(moduleId++, level, room, ship);
+								}else if(tokens[1].equals("BridgeModule")){
+									module = new BridgeModule(moduleId++, level, room, ship);
+								}else if(tokens[1].equals("SensorsModule")){
+									module = new SensorsModule(moduleId++, level, room, ship);
+								}else if(tokens[1].equals("HatchControlModule")){
+									module = new HatchControlModule(moduleId++, level, room, ship);
 								}
+								room.setModule(module);
+								ship.addModule(module);
 							}
 						}
 						poss = getRoomValues(tokens[0]);						

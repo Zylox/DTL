@@ -5,13 +5,13 @@ floortileimg= floortile.png
 doorimg= door.pack
 layout=
 {2,0 3,0}
-{1,1 1,2} 
-{2,1 2,2}
+{1,1 1,2}
+{2,1 2,2} , HatchControlModule
 {3,1 3,2}
 {4,1 4,2}
-{1,3 1,4}
+{1,3 1,4} , EngineModule
 {4,3 4,4}
-{2,4 2,5}
+{2,4 2,5} , SensorsModule
 {3,4 3,5}
 {0,6 0,7}
 {1,6 1,7 2,6 2,7} , ClimateControlModule
@@ -22,7 +22,7 @@ layout=
 {2,10 2,11}
 {3,10 3,11}
 {2,12 2,13 3,12 3,13}
-{2,14 3,14}
+{2,14 3,14} , BridgeModule
 endlayout
 doors=
 {2,0 left}

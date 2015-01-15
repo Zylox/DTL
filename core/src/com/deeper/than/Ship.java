@@ -10,13 +10,13 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.NinePatch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
-import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
-import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.OrderedMap;
 import com.deeper.than.Wall.WallType;
 import com.deeper.than.modules.ClimateControlModule;
+import com.deeper.than.modules.HatchControlModule;
 import com.deeper.than.modules.Module;
+import com.deeper.than.modules.SensorsModule;
 
 public class Ship extends Group{
 	
@@ -54,7 +54,6 @@ public class Ship extends Group{
 		walls = new OrderedMap<Integer, CellBorder>();
 		modules = new ArrayList<Module>();
 		
-		
 		try {
 			ScriptParser parser = ScriptParser.parserPool.obtain();
 			parser.loadShipScript(this, filepath);
@@ -79,10 +78,28 @@ public class Ship extends Group{
 			cb.init();
 		}
 //		
+		HatchControlModule hcm = null;
+		SensorsModule sensors = null;
+		
+		
+		for(Module m : modules){
+			if(m instanceof HatchControlModule){
+				hcm = (HatchControlModule) m;
+			}else if(m instanceof SensorsModule){
+				sensors = (SensorsModule) m;
+			}
+		}
+		
+		for(Room r : rooms){
+			r.setSensorsModule(sensors);
+		}
+		
 		for(Door d : doors){		
 			GridSquare curGrid = layout[(int)d.pos.y][(int)d.pos.x];
 			GridSquare neighGrid  = null;
 			wallIdCounter++;
+			
+			d.setHatchControlModule(hcm);
 			d.setId(wallIdCounter);
 			d.init();
 			CellBorder removedWall = curGrid.getBorder(d.orientation);
@@ -365,6 +382,15 @@ public class Ship extends Group{
 		this.crew = crew;
 	}
 	
+	public boolean isCrewInRoom(Room room){
+		for(Crew c : crew){
+			if(c.getRoom() == room){
+				return true;
+			}
+		}
+		return false;
+	}
+	
 	public GridSquare[][] getLayout() {
 		return layout;
 	}
@@ -438,7 +464,6 @@ public class Ship extends Group{
 		}
 		return drainRate;
 	}
-	
 	
 
 }

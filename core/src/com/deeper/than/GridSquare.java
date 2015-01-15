@@ -2,6 +2,7 @@ package com.deeper.than;
 
 import java.util.Random;
 
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.math.Vector2;
@@ -47,7 +48,6 @@ public class GridSquare extends Group{
 		CellBorder border = borders[orientation];
 		return border;
 	}
-	
 	
 	public Door getDoor(int orientation){
 		CellBorder border = borders[orientation];
@@ -130,6 +130,17 @@ public class GridSquare extends Group{
 			DTL.printDebug("Left: null");
 		}else{
 			DTL.printDebug("Left: " + borders[Neighbors.LEFT].getClass() + " pos: " +borders[Neighbors.LEFT].getX() + " " + borders[Neighbors.LEFT].getY());	
+		}
+	}
+
+	@Override
+	public void draw(Batch batch, float parentAlpha){
+		super.draw(batch, parentAlpha);
+		if(!room.isVisible()){
+			Color color = batch.getColor();
+			batch.setColor(new Color(.5f,.5f,.5f,1f));
+			batch.draw(ship.getFloorTileImg(), getX(), getY(), getOriginX(), getOriginY(), getWidth(), getHeight(), getScaleX(), getScaleY(), getRotation());
+			batch.setColor(color);
 		}
 	}
 	
