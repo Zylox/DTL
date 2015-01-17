@@ -109,7 +109,7 @@ public class Room {
 				}
 				
 				if(neighWaterLevel > this.waterLevel){
-					float transmission =DTL.getRatePerFrame((neighWaterLevel * WATERTRANSMISSIONRATE * 60));
+					float transmission =DTL.getRatePerTimeStep((neighWaterLevel * WATERTRANSMISSIONRATE * 60));
 					if(waterLevelAcc+transmission+getWaterLevel() > neighWaterLevel-transmission){
 						transmission =(neighWaterLevel-(waterLevelAcc+getWaterLevel()))/2;
 					}
@@ -126,10 +126,10 @@ public class Room {
 		}
 
 		if(roomClosed){
-			waterLevelAcc = DTL.getRatePerFrame(ship.getDrainRate()*60);
+			waterLevelAcc = DTL.getRatePerTimeStep(ship.getDrainRate()*60);
 		}
 
-		setCalculatedWaterLevel(getWaterLevel() + waterLevelAcc + DTL.getRatePerFrame(ship.getDrainRate()*60) , highestWaterLevel);
+		setCalculatedWaterLevel(getWaterLevel() + waterLevelAcc + DTL.getRatePerTimeStep(ship.getDrainRate()*60) , highestWaterLevel);
 			
 		
 		

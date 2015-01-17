@@ -119,7 +119,7 @@ public class Door extends CellBorder{
 	
 	public void printDoorState(){
 		if(hatchControl != null){
-			if(hatchControl.canControlDoors()){
+			if(!hatchControl.canControlDoors()){
 				DTL.printDebug("Door control disabled");
 			}
 		}else{
@@ -188,7 +188,7 @@ public class Door extends CellBorder{
 		}
 		return  false;
 	}	
-	
+		
 	public void setHatchControlModule(HatchControlModule hcm){
 		this.hatchControl = hcm;
 	}
@@ -265,14 +265,14 @@ public class Door extends CellBorder{
 				longSide = getHeight()/2;
 			}
 			if(doorState == DoorState.Opening){
-				openAmount += DTL.getRatePerFrame(DOORSIZELONG/16*60);
+				openAmount += DTL.getRatePerTimeStep(DOORSIZELONG/16*60);
 				if(openAmount >= longSide-DOORSIZELONG/8){
 					openAmount = longSide-DOORSIZELONG/8;
 					doorState = DoorState.Open;
 					return true;
 				}
 			}else if(doorState == DoorState.Closing){
-				openAmount -= DTL.getRatePerFrame(DOORSIZELONG/16*60);;
+				openAmount -= DTL.getRatePerTimeStep(DOORSIZELONG/16*60);;
 				if(openAmount <=0){
 					openAmount = 0;
 					doorState = DoorState.Closed;

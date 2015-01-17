@@ -82,11 +82,11 @@ public class DTL extends Game {
 	}
 
 	/**
-	 * Pass a rate per second, returns rate per frame
+	 * Pass a rate per second, returns rate per timeStep, which should be one frametime
 	 * @param ratePerSecond
 	 * @return
 	 */
-	public static float getRatePerFrame(float ratePerSecond){
+	public static float getRatePerTimeStep(float ratePerSecond){
 		return ratePerSecond*getFrameTime();
 	}
 }

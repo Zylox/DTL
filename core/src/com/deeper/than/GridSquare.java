@@ -107,6 +107,12 @@ public class GridSquare extends Group{
 		return -1;
 	}
 	
+	public void setReflectedDoor(Door doorToReflect){
+		doorToReflect.getFullFlip();		
+		this.addBorder(doorToReflect);
+		doorToReflect.getFullFlip();
+	}
+	
 	public void printWalls(){
 		if(borders[Neighbors.UP] == null){
 			DTL.printDebug("Up: null");

@@ -8,6 +8,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Pool;
 import com.badlogic.gdx.utils.Pool.Poolable;
+import com.deeper.than.modules.*;
 import com.deeper.than.modules.BridgeModule;
 import com.deeper.than.modules.ClimateControlModule;
 import com.deeper.than.modules.EngineModule;
@@ -167,6 +168,10 @@ public class ScriptParser implements Poolable{
 									module = new SensorsModule(moduleId++, level, room, ship);
 								}else if(tokens[1].equals("HatchControlModule")){
 									module = new HatchControlModule(moduleId++, level, room, ship);
+								}else if(tokens[1].equals("MedbayModule")){
+									module = new MedbayModule(moduleId++, level, room, ship);
+								}else if(tokens[1].equals("DockingModule")){
+									module = new DockingModule(moduleId++, level, room, ship);
 								}
 								room.setModule(module);
 								ship.addModule(module);
