@@ -1,0 +1,15 @@
+name= o
+xDim= 10
+yDim= 10
+floortileimg= floortile.png
+doorimg= door.pack
+layout=
+{4,3 4,4 5,3 5,4}
+}
+}
+}
+}
+}
+endlayout
+doors=
+enddoors

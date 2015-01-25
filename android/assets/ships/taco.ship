@@ -1,0 +1,11 @@
+name= taco
+xDim= 10
+yDim= 10
+floortileimg= floortile.png
+doorimg= door.pack
+layout=
+{6,2 6,3 7,2 7,3}
+}
+endlayout
+doors=
+enddoors

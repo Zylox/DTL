@@ -10,8 +10,10 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.NinePatch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.utils.OrderedMap;
+import com.badlogic.gdx.utils.SnapshotArray;
 import com.deeper.than.Wall.WallType;
 import com.deeper.than.modules.ClimateControlModule;
 import com.deeper.than.modules.HatchControlModule;
@@ -51,6 +53,7 @@ public class Ship extends Group{
 	private TextureAtlas texAtl;
 	private String doorImgHandle;
 	private int wallIdCounter;
+	private boolean colorizeRooms = false;
 	
 	/**
 	 * Creates a ship based on the shipScript added in.
@@ -75,82 +78,145 @@ public class Ship extends Group{
 			e.printStackTrace();
 		}
 		
-		////Actors are added to the group in layers essentially:
-		//The floor being first, 
-		//Followed by the walls,
-		//Followed by modules,
-		//Followed by crew when they get implemented,
-		//Followed by doors.
+		init();
+	}
+	
+	public Ship(String script, DTL game){
 		
-		//Adds the Gridsquares, which hold the floor primarily 
-		//and references to the walls, to the group
-		for(GridSquare[] g : layout){
-			for(GridSquare gs : g){
-				if(gs != null){
-					addActor(gs);
+		this.game = game;
+		crew = new ArrayList<Crew>();
+		doors = new ArrayList<Door>();
+		rooms = new ArrayList<Room>();
+		walls = new OrderedMap<Integer, CellBorder>();
+		modules = new ArrayList<Module>();
+		
+		try {
+			//Pulls a parser from the parser pool and loads the script
+			ScriptParser parser = ScriptParser.parserPool.obtain();
+			parser.loadShipScript(this, script);
+			ScriptParser.parserPool.free(parser);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+		init();
+	}
+	
+	public void reInit(FileHandle filepath){
+		clearCollections();
+		try {
+			//Pulls a parser from the parser pool and loads the script
+			ScriptParser parser = ScriptParser.parserPool.obtain();
+			parser.loadShipScript(this, filepath);
+			ScriptParser.parserPool.free(parser);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		init();
+	}
+	
+	public void reInit(String script){
+		clearCollections();
+		try {
+			//Pulls a parser from the parser pool and loads the script
+			ScriptParser parser = ScriptParser.parserPool.obtain();
+			parser.loadShipScript(this, script);
+			ScriptParser.parserPool.free(parser);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		init();
+	}
+	
+	private void clearCollections(){
+		SnapshotArray<Actor> actors = this.getChildren();
+		for(Actor a : actors){
+			this.removeActor(a);
+		}
+		crew.clear();
+		doors.clear();
+		rooms.clear();
+		walls.clear();
+		modules.clear();		
+	}
+	
+	private void init(){
+	////Actors are added to the group in layers essentially:
+			//The floor being first, 
+			//Followed by the walls,
+			//Followed by modules,
+			//Followed by crew when they get implemented,
+			//Followed by doors.
+			
+			//Adds the Gridsquares, which hold the floor primarily 
+			//and references to the walls, to the group
+			for(GridSquare[] g : layout){
+				for(GridSquare gs : g){
+					if(gs != null){
+						addActor(gs);
+					}
 				}
 			}
-		}
-		
-		//Determines walls based on neighbors.
-		//Doors do not factor in atm.
-		determineWalls();
-		for(CellBorder cb : walls.values()){
-			addActor(cb);
-			cb.init();
-		}
-		HatchControlModule hcm = null;
-		SensorsModule sensors = null;
-		
-		//Some modules require explicit reference, so we get them here.
-		//This implementation assumes only one of each module is in the list.
-		//Uniqueness isnt strictly implemented anywhere at this point.
-		for(Module m : modules){
-			if(m instanceof HatchControlModule){
-				hcm = (HatchControlModule) m;
-			}else if(m instanceof SensorsModule){
-				sensors = (SensorsModule) m;
+			
+			//Determines walls based on neighbors.
+			//Doors do not factor in atm.
+			determineWalls();
+			for(CellBorder cb : walls.values()){
+				addActor(cb);
+				cb.init();
 			}
-		}
-		
-		//Rooms have the sensor module set to determine visibility later.
-		for(Room r : rooms){
-			r.setSensorsModule(sensors);
-		}
-		
-		//The door adding logic.
-		for(Door d : doors){		
-			GridSquare curGrid = layout[(int)d.pos.y][(int)d.pos.x];
+			HatchControlModule hcm = null;
+			SensorsModule sensors = null;
 			
-			wallIdCounter++;
-			
-			//Initialize needed door values
-			//hatch control reference set to see if doors will open.
-			d.setHatchControlModule(hcm);
-			d.setId(wallIdCounter);
-			d.init();
-			//remove the wall to put the door in
-			CellBorder removedWall = curGrid.getBorder(d.orientation);
-			if(removedWall instanceof Wall){
-				//the new door will be of the same walltype as the one being removed (interior or exterior)
-				d.setWallType(((Wall) removedWall).getWallType());
+			//Some modules require explicit reference, so we get them here.
+			//This implementation assumes only one of each module is in the list.
+			//Uniqueness isnt strictly implemented anywhere at this point.
+			for(Module m : modules){
+				if(m instanceof HatchControlModule){
+					hcm = (HatchControlModule) m;
+				}else if(m instanceof SensorsModule){
+					sensors = (SensorsModule) m;
+				}
 			}
-			removeActor(removedWall);
-			walls.remove(removedWall.getId());
-			curGrid.addBorder(d);
-			//Reflects the door to be added to the neighbor of curgrid that shares the door.
-			resolveDoorReflections(curGrid, d);
-			addActor(d);
-		}	
 			
+			//Rooms have the sensor module set to determine visibility later.
+			for(Room r : rooms){
+				r.setSensorsModule(sensors);
+			}
+			
+			//The door adding logic.
+			for(Door d : doors){		
+				GridSquare curGrid = layout[(int)d.pos.y][(int)d.pos.x];
+				
+				wallIdCounter++;
+				
+				//Initialize needed door values
+				//hatch control reference set to see if doors will open.
+				d.setHatchControlModule(hcm);
+				d.setId(wallIdCounter);
+				d.init();
+				//remove the wall to put the door in
+				CellBorder removedWall = curGrid.getBorder(d.orientation);
+				if(removedWall instanceof Wall){
+					//the new door will be of the same walltype as the one being removed (interior or exterior)
+					d.setWallType(((Wall) removedWall).getWallType());
+				}
+				removeActor(removedWall);
+				walls.remove(removedWall.getId());
+				curGrid.addBorder(d);
+				//Reflects the door to be added to the neighbor of curgrid that shares the door.
+				resolveDoorReflections(curGrid, d);
+				addActor(d);
+			}	
+				
 
-		
-		int x = FloorTile.TILESIZE*layout[0].length;
-		int y = FloorTile.TILESIZE*layout.length;
-		
-		setBounds(game.getViewport().getWorldWidth()/2 - x/2,game.getViewport().getWorldHeight()/2 - y/2, x, y);
-		
-		loadAssets();
+			
+			int x = FloorTile.TILESIZE*layout[0].length;
+			int y = FloorTile.TILESIZE*layout.length;
+			
+			setBounds(game.getViewport().getWorldWidth()/2 - x/2,game.getViewport().getWorldHeight()/2 - y/2, x, y);
+			
+			loadAssets();
 	}
 	
 	/**
@@ -160,7 +226,7 @@ public class Ship extends Group{
 	 */
 	private void resolveDoorReflections(GridSquare curGrid, Door d){
 		GridSquare neighGrid  = null;
-		
+		Room neighRoom = null;
 		//Check which orientation to figure out which neighbor to use
 		//add a link between the rooms
 		//add the reflected door to the neighbor
@@ -170,7 +236,12 @@ public class Ship extends Group{
 		if(d.orientation == Neighbors.RIGHT){
 			if(d.pos.x+1 < gridWidth){
 				neighGrid = layout[(int)d.pos.y][(int)d.pos.x+1];
-				linkRooms(curGrid.getRoom(), neighGrid.getRoom(), d);
+				if(neighGrid == null){
+					neighRoom = null;
+				}else{
+					neighRoom = neighGrid.getRoom();
+				}
+				linkRooms(curGrid.getRoom(), neighRoom, d);
 				if(neighGrid != null){
 					neighGrid.setReflectedDoor(d);
 				}
@@ -180,7 +251,12 @@ public class Ship extends Group{
 		}else if(d.orientation == Neighbors.LEFT){
 			if(d.pos.x > 1){
 				neighGrid = layout[(int)d.pos.y][(int)d.pos.x-1];
-				linkRooms(curGrid.getRoom(), neighGrid.getRoom(), d);
+				if(neighGrid == null){
+					neighRoom = null;
+				}else{
+					neighRoom = neighGrid.getRoom();
+				}
+				linkRooms(curGrid.getRoom(), neighRoom, d);
 				if(neighGrid != null){
 					neighGrid.setReflectedDoor(d);
 				}
@@ -190,7 +266,12 @@ public class Ship extends Group{
 		}else if(d.orientation == Neighbors.UP){
 			if(d.pos.y+1 < gridHeight){
 				neighGrid = layout[(int)d.pos.y+1][(int)d.pos.x];
-				linkRooms(curGrid.getRoom(), neighGrid.getRoom(), d);
+				if(neighGrid == null){
+					neighRoom = null;
+				}else{
+					neighRoom = neighGrid.getRoom();
+				}
+				linkRooms(curGrid.getRoom(), neighRoom, d);
 				if(neighGrid != null){
 					neighGrid.setReflectedDoor(d);
 				}
@@ -200,7 +281,12 @@ public class Ship extends Group{
 		}else if(d.orientation == Neighbors.DOWN){
 			if(d.pos.y > 1){
 				neighGrid = layout[(int)d.pos.y-1][(int)d.pos.x];
-				linkRooms(curGrid.getRoom(), neighGrid.getRoom(), d);
+				if(neighGrid == null){
+					neighRoom = null;
+				}else{
+					neighRoom = neighGrid.getRoom();
+				}
+				linkRooms(curGrid.getRoom(), neighRoom, d);
 				if(neighGrid != null){
 					neighGrid.setReflectedDoor(d);
 				}
@@ -344,9 +430,16 @@ public class Ship extends Group{
 	 * Loads visual and audio assets needed for the ship.
 	 */
 	private void loadAssets(){
-		floorTileImg = new Sprite(new Texture(Gdx.files.internal(floorTileImgHandle)));
-		texAtl       = new TextureAtlas(doorImgHandle);
-		doorImg      = texAtl.createPatch("doorhalf");
+		if(texAtl != null && texAtl.getRegions().size != 0){
+			texAtl.dispose();
+		}
+		if(floorTileImgHandle != null){
+			floorTileImg = new Sprite(new Texture(Gdx.files.internal(floorTileImgHandle)));
+		}
+		if(doorImgHandle != null){
+			texAtl       = new TextureAtlas(doorImgHandle);
+			doorImg      = texAtl.createPatch("doorhalf");
+		}
 	}
 	
 	public void dispose(){
@@ -445,6 +538,30 @@ public class Ship extends Group{
 	
 	public void setDoorImgHandle(String handle){
 		doorImgHandle = handle;
+	}
+	
+	public void setLayoutTile(int x, int y, GridSquare square){
+		this.layout[y][x] = square;
+	}
+	
+	public int getXdim(){
+		return layout[0].length;
+	}
+	
+	public int getYdim(){
+		return layout.length;
+	}
+	
+	public boolean isDrawable(){
+		return !(floorTileImg == null || doorImg == null);
+	}
+	
+	public boolean colorizeRooms(){
+		return colorizeRooms;
+	}
+	
+	public void setColorizeRooms(boolean colorize){
+		this.colorizeRooms = colorize;
 	}
 	
 	/**

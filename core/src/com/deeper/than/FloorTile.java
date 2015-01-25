@@ -1,8 +1,9 @@
 package com.deeper.than;
 
-import java.awt.Font;
+import java.util.Random;
 
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.Colors;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
@@ -67,7 +68,14 @@ public class FloorTile extends Actor{
 	@Override
 	public void draw(Batch batch, float alpha){
 		Color color = batch.getColor();
-		batch.setColor(new Color(getRedComponent(),getGreenComponent(),1,1f));
+		if(ship.colorizeRooms()){
+			long seed = gridSquare.getRoom().getId();
+			Random ran = new Random(seed);
+			
+			batch.setColor(new Color(ran.nextFloat(),ran.nextFloat(),ran.nextFloat(),1f));
+		}else{
+			batch.setColor(new Color(getRedComponent(),getGreenComponent(),1,1f));
+		}
 		batch.draw(ship.getFloorTileImg(), getX(), getY(), getOriginX(), getOriginY(), getWidth(), getHeight(), getScaleX(), getScaleY(), getRotation());
 		batch.setColor(color);
 		//DTL.font.draw(batch, Float.toString(gridSquare.getRoom().getWaterLevel()), getWidth()/2, getHeight()/2);
@@ -90,10 +98,14 @@ public class FloorTile extends Actor{
 			return .40f;
 		}else if(waterLevel < 80){
 			return .20f;
+		}else if(waterLevel < 90){
+			return .10f;
 		}else if(waterLevel >= 90){
 			return 0f;
+		}else if(waterLevel > 0){
+			
 		}
-		return 0;
+		return 1;
 		//return 1-waterLevel/100f;
 	}
 	

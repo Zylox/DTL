@@ -6,32 +6,50 @@ import com.badlogic.gdx.math.Vector2;
 import com.deeper.than.modules.Module;
 import com.deeper.than.modules.SensorsModule;
 
+/**
+ * A room is a collection of gridsquares in a ship that occupy the same "room".
+ * @author zach
+ *
+ */
 public class Room {
 	
+	//Initial constants
 	private static final float BASETEMP = 50;
 	private static final float BASEPRESSURE = 50;
 	private static final float BASEWATERLEVEL= 0;
 	
+	/**Rate that water flows between doors*/
 	private static final float WATERTRANSMISSIONRATE = .005f;
 	
+	//Ship this room belongs to
 	private Ship ship;
 	
+	/**The squares that make up the rooms.*/
 	private ArrayList<GridSquare> squares;
+	/**The module in the room if one exists*/
 	private Module module;
 	private int id;
 	
 	private float temp;
 	private float pressure;
+	/**Current water level recognized by the game*/
 	private float waterLevel;
+	/**Water level that has been calcuated for next frame*/
 	private float calculatedWaterLevel;
+	/**Amount of water given to adjacent rooms this cylce.*/
 	private float givenWater;
+	/**The highest waterlevel a neighbor has that is open to this room.
+	*The new water level can't be higher than its highest open neighbors.*/
 	private float neighBorUpperboundWL;
+	/**Sensor module reference to determine visibility.*/
 	private SensorsModule sensors;
+	
 	/**
 	 * Center location in global coordinates
 	 */
 	private Vector2 centerLoc;
 
+	/**All rooms linked to this one*/
 	private ArrayList<RoomLink> linkedRooms;
 	
 	public Room(int id, Ship ship){
@@ -44,6 +62,7 @@ public class Room {
 		pressure = BASEPRESSURE;
 		waterLevel = BASEWATERLEVEL;
 		centerLoc = null;
+		sensors = null;
 	}
 	
 	/**
@@ -57,31 +76,49 @@ public class Room {
 		return centerLoc;
 	}
 	
+	/**
+	 * Calculates the center in global coords.
+	 * @return Global coord center location.
+	 */
 	private Vector2 calculateCenter(){
 		Vector2 center = new Vector2();
+		//"infinite"
 		float minX = 1000000;
 		float minY = 1000000;
 		float maxX = 0;
 		float maxY = 0;
+		//Find the botom left and top right corner essentially.
+		//This means rroms have to be square as far as modules are concerned.
 		for(GridSquare square : squares){
 			minX = Math.min(minX, square.getX());
 			minY = Math.min(minY, square.getY());
 			maxX = Math.max(maxX, square.getX() + square.getWidth());
 			maxY = Math.max(maxY, square.getY() + square.getHeight());
 		}
+
 		center.x = ship.getX() +  minX + (maxX-minX)/2;
 		center.y = ship.getY() + minY + (maxY-minY)/2;
 		return center;
 	}
-	
+
+	/**
+	 * Calculates Enviroment conditions for the next cycle.
+	 * Currently this means water level
+	 */
 	public void calculateEnv(){
 		calculateWaterLevel();
 	}
 	
+	/**
+	 * Set the values taht were previously calculated.
+	 */
 	public void updateEnv(){
+		//Update calculated level accounting for the given water amount.
 		setCalculatedWaterLevel(getCalculatedWaterLevel() - getGivenWater(), neighBorUpperboundWL);
+		//Reset values
 		setGivenWater(0);
 		setNeighBorUpperboundWL(1000000);
+		//Ayy Lmao - Nick Ferguson, 2014
 		setWaterLevel(calculatedWaterLevel);
 	}
 	
@@ -230,6 +267,10 @@ public class Room {
 	
 	public Module getModule(){
 		return module;
+	}
+	
+	public int getId(){
+		return id;
 	}
 
 	private class RoomLink{

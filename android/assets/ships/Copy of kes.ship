@@ -1,5 +1,5 @@
 name= kes
-xDim= 16
+xDim= 15
 yDim= 6
 floortileimg= floortile.png
 doorimg= door.pack
@@ -15,10 +15,10 @@ layout=
 {3,4 3,5}
 {0,6 0,7}
 {1,6 1,7 2,6 2,7} , ClimateControlModule
-{3,6 3,7 4,6 4,7}
+{3,6 3,7 4,6 4,7} 
 {5,6 5,7}
 {1,8 1,9 2,8 2,9}
-{3,8 3,9 4,8 4,9}
+{3,8 3,9 4,8 4,9} , MedbayModule
 {2,10 2,11}
 {3,10 3,11}
 {2,12 2,13 3,12 3,13}

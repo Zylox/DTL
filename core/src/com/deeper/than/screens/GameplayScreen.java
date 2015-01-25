@@ -11,6 +11,7 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.deeper.than.DTL;
+import com.deeper.than.GridSquare;
 import com.deeper.than.Ship;
 import com.deeper.than.Wall;
 import com.deeper.than.modules.Modules;
@@ -32,7 +33,7 @@ public class GameplayScreen implements EnumerableScreen{
 		this.game = game;
 
 		loadAssets();
-		ship = new Ship(Gdx.files.internal("kes.ship"), game);
+		ship = new Ship(Gdx.files.internal("ships/kes.ship"), game);
 		ship.setOrigin(ship.getWidth()/2, ship.getHeight()/2);
 		gameObjects = new Stage(game.getViewport());
 		gameObjects.addActor(tempBackground);
@@ -67,6 +68,7 @@ public class GameplayScreen implements EnumerableScreen{
 	    if(Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)){
 	    	mainMenu();
 	    }
+	
 
 	    //////Update logic goes here
 	    

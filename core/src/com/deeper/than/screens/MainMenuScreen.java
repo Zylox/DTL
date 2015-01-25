@@ -2,7 +2,6 @@ package com.deeper.than.screens;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputMultiplexer;
-import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -32,9 +31,8 @@ public class MainMenuScreen implements EnumerableScreen {
 	TextButton exitButton;
 	
 	InputMultiplexer input;
-	InputProcessor input12;
 
-	private boolean loadtest = false;
+	private boolean loadtest = true;
 	
 	public MainMenuScreen(){
 
@@ -87,6 +85,9 @@ public class MainMenuScreen implements EnumerableScreen {
 		    }
 		});
 		
+		
+		
+		
 		table.add().expandX();
 		table.add().expand().height(400);
 		table.add().expandX();
@@ -98,14 +99,30 @@ public class MainMenuScreen implements EnumerableScreen {
 		table.add().expandX();
 		table.add(optionsButton).width(300).height(50).pad(10);
 		table.add().expandX();
+		if(DTL.developmentMode){
+			TextButton shipBuilderButton = new TextButton("Ship Builder", DTL.skin);
+			shipBuilderButton.addListener(new ChangeListener() {
+				public void changed (ChangeEvent event, Actor actor) {
+					goToShipBuilder();
+				}
+			});
+
+			table.row();
+			table.add().expandX();
+			table.add(shipBuilderButton).width(300).height(50).pad(10);
+			table.add().expandX();
+		}
 		table.row();
 		table.add().expandX();
 		table.add(exitButton).width(300).height(50).pad(10);
 		table.add().expandX();
 		table.row();
 		table.add().expandX();
+		table.row();
+		table.add().expandX();
 		table.add().expand().height(300);
 		table.add().expandX();
+		
 		
 		table.setDebug(DTL.GRAPHICALDEBUG);
 		img.setDebug(DTL.GRAPHICALDEBUG);
@@ -129,11 +146,11 @@ public class MainMenuScreen implements EnumerableScreen {
 		// TODO Auto-generated method stub
 	    Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 	    
-	    if(!loadtest){
+	    if(loadtest){
 
 	    	long newTime = System.currentTimeMillis()-DTL.startTime;
-	    	DTL.printDebug("Load took: " + newTime/1000l + " seconds" );
-	    	loadtest = true;
+	    	DTL.printDebug("Load took: " + newTime/1000f + " seconds" );
+	    	loadtest = false;
 	    }
 	    
 		for(Actor a : stage2.getActors()){
@@ -164,6 +181,10 @@ public class MainMenuScreen implements EnumerableScreen {
 		}else{
 			game.setScreen(Screens.NEWGAME.getScreen());
 		}
+	}
+	
+	public void goToShipBuilder(){
+		game.setScreen(Screens.SHIPBUILDER.getScreen());
 	}
 	
 	public void options(){

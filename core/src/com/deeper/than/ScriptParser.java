@@ -28,9 +28,16 @@ public class ScriptParser implements Poolable{
 	
 	
 	private int lineNum=0;
-
+	
+	public int loadShipScript(Ship ship, String str) throws IOException{
+		return loadShipScript(ship, new Scanner(str));
+	}
+	
 	public int loadShipScript(Ship ship, FileHandle filepath) throws IOException{
-		Scanner scanner = new Scanner(filepath.read());
+		return loadShipScript(ship, new Scanner(filepath.read()));
+	}
+
+	public int loadShipScript(Ship ship, Scanner scanner) throws IOException{
 		lineNum =0;
 		
 		//checks to see if there is anything other than comments
@@ -43,12 +50,14 @@ public class ScriptParser implements Poolable{
 		lineNum++;
 		//sets name
 		String[] tokens = line.split(" ");
-		if(tokens[0].equals("name=")){
-			ship.name = tokens[1].replaceAll("\\s", "");
-		}else{
-			System.out.println("name= XXX expected at line " + lineNum);
-			scanner.close();
-			return -1;
+		if(tokens.length > 1){
+			if(tokens[0].equals("name=")){
+				ship.name = tokens[1].replaceAll("\\s", "");
+			}else{
+				System.out.println("name= XXX expected at line " + lineNum);
+				scanner.close();
+				return -1;
+			}
 		}
 		
 		//Getting x and y dim for grid
@@ -108,12 +117,14 @@ public class ScriptParser implements Poolable{
 		lineNum++;
 		tokens = line.split(" ");
 		
-		if(tokens[0].equals("floortileimg=")){
-			ship.setFloorTileImgHandle(tokens[1]);	
-		}else{
-			System.out.println("floortileimg= XXX expected at line " + lineNum);
-			scanner.close();
-			return -1;
+		if(tokens.length > 1){
+			if(tokens[0].equals("floortileimg=")){
+				ship.setFloorTileImgHandle(tokens[1]);	
+			}else{
+				System.out.println("floortileimg= XXX expected at line " + lineNum);
+				scanner.close();
+				return -1;
+			}
 		}
 		
 		line = getNextNonCommentLine(scanner);
@@ -124,14 +135,15 @@ public class ScriptParser implements Poolable{
 		lineNum++;
 		tokens = line.split(" ");
 		
-		if(tokens[0].equals("doorimg=")){
-			ship.setDoorImgHandle(tokens[1]);	
-		}else{
-			System.out.println("doorimg= XXX expected at line " + lineNum);
-			scanner.close();
-			return -1;
+		if(tokens.length > 1){
+			if(tokens[0].equals("doorimg=")){
+				ship.setDoorImgHandle(tokens[1]);	
+			}else{
+				System.out.println("doorimg= XXX expected at line " + lineNum);
+				scanner.close();
+				return -1;
+			}
 		}
-		
 		while(scanner.hasNext()){
 			lineNum++;
 			line = scanner.nextLine();
@@ -238,14 +250,14 @@ public class ScriptParser implements Poolable{
 	}
 	
 	
-	private String stripCurly(String line){
+	public static String stripCurly(String line){
 		line = line.replace("{", "");
 		line = line.replace("}", "");
 		
 		return line;
 	}
 	
-	private Vector2[] getRoomValues(String line){
+	public static Vector2[] getRoomValues(String line){
 		line = stripCurly(line);
 		String[] tokens = line.split(" ");
 		Vector2 poss[] = new Vector2[tokens.length];
@@ -258,13 +270,13 @@ public class ScriptParser implements Poolable{
 		return poss;
 	}
 	
-	private Vector2 getCoordFromPair(String couple){
+	public static Vector2 getCoordFromPair(String couple){
 		String[] tuple = new String[2];
 		tuple = couple.split(",");
 		return new Vector2(Integer.parseInt(tuple[1]), Integer.parseInt(tuple[0]));
 	}
 	
-	private int getDirection(String dir){
+	public static int getDirection(String dir){
 		if(dir.equals("up")){
 			return Neighbors.UP;
 		}else if(dir.equals("down")){

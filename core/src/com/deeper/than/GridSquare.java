@@ -142,7 +142,7 @@ public class GridSquare extends Group{
 	@Override
 	public void draw(Batch batch, float parentAlpha){
 		super.draw(batch, parentAlpha);
-		if(!room.isVisible()){
+		if(!room.isVisible() && !ship.colorizeRooms()){
 			Color color = batch.getColor();
 			batch.setColor(new Color(.5f,.5f,.5f,1f));
 			batch.draw(ship.getFloorTileImg(), getX(), getY(), getOriginX(), getOriginY(), getWidth(), getHeight(), getScaleX(), getScaleY(), getRotation());

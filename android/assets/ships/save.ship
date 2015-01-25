@@ -1,0 +1,10 @@
+name= save
+xDim= 10
+yDim= 10
+floortileimg= floortile.png
+doorimg= door.pack
+layout=
+}
+endlayout
+doors=
+enddoors

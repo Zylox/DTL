@@ -22,6 +22,7 @@ public class DTL extends Game {
 	@SuppressWarnings("unused")
 	public static final boolean TEXTDEBUG = true || GLOBALDEBUG;
 	public static boolean gameActive = false;
+	public static boolean developmentMode = true;
 	
 	private static int frameTarget;
 	
