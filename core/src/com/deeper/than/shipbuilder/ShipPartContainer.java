@@ -10,6 +10,7 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.deeper.than.DTL;
 import com.deeper.than.FloorTile;
@@ -88,8 +89,8 @@ public class ShipPartContainer {
 		reLoadShip();
 	}
 	
-	public void draw(Batch batch){
-		drawGrid();
+	public void draw(Batch batch, Stage ui){
+		drawGrid(ui, batch);
 		if(ship != null && ship.isDrawable()){
 			batch.begin();
 			ship.draw(batch,1);
@@ -97,17 +98,23 @@ public class ShipPartContainer {
 		}
 	}
 	
-	private void drawGrid(){
-		float initialX = Gdx.graphics.getWidth()/2 - (xDim*FloorTile.TILESIZE)/2;
-		float initialY = Gdx.graphics.getHeight()/2 - (yDim*FloorTile.TILESIZE)/2;
+	private void drawGrid(Stage ui, Batch batch){
+		float initialX = ui.getWidth()/2 - (xDim*FloorTile.TILESIZE)/2;
+		float initialY =  ui.getHeight()/2- (yDim*FloorTile.TILESIZE)/2;
 		
 		shapeRen.setAutoShapeType(true);
 		shapeRen.begin();
+
+		Vector2 point1 = new Vector2();
+		point1.x = initialX;
+		point1.y = initialY;
+		Vector2 sides = new Vector2(FloorTile.TILESIZE, FloorTile.TILESIZE);
 		
+		//ui.getViewport().unproject(point1);
 		for(int j = 0; j<yDim; j++){
 			for(int i = 0; i< xDim; i++){
 				
-				shapeRen.rect(initialX+i*FloorTile.TILESIZE,initialY+j*FloorTile.TILESIZE,FloorTile.TILESIZE,FloorTile.TILESIZE);
+				shapeRen.rect(point1.x+i*sides.x,point1.y+j*sides.y,sides.x,sides.y);
 			}
 		}
 		
@@ -311,25 +318,23 @@ public class ShipPartContainer {
 		}
 	}
 	
-	public Vector2[] intersectedSections(float x1, float y1, float x2, float y2 ){
-		return intersectedSections(new Vector2(x1,y1), new Vector2(x2,y2));
+	public Vector2[] intersectedSections(float x1, float y1, float x2, float y2, Stage ui){
+		return intersectedSections(new Vector2(x1,y1), new Vector2(x2,y2), ui);
 	}
 	
-	public Vector2[] intersectedSections(Vector2 pos1, Vector2 pos2){
-		float initialX = Gdx.graphics.getWidth()/2 - (xDim*FloorTile.TILESIZE)/2;
-		float initialY = Gdx.graphics.getHeight()/2 - (yDim*FloorTile.TILESIZE)/2;
-		pos1.y = Gdx.graphics.getHeight() - pos1.y;
-		pos2.y = Gdx.graphics.getHeight() - pos2.y;
+	public Vector2[] intersectedSections(Vector2 pos1, Vector2 pos2, Stage ui){
+
+//		pos1.y = ui.getHeight() - pos1.y;
+//		pos2.y = ui.getHeight() - pos2.y;
 		
-		Vector2 lowerLeft = new Vector2(Math.min(pos1.x, pos2.x), Math.min(pos1.y, pos2.y));
-		Vector2 upperRight = new Vector2(Math.max(pos1.x, pos2.x), Math.max(pos1.y, pos2.y));
-		lowerLeft = convertToSquareCoord(lowerLeft);
-		upperRight = convertToSquareCoord(upperRight);
+		Vector2 lowerLeft = new Vector2(Math.min(pos1.x, pos2.x), Math.max(pos1.y, pos2.y));
+		Vector2 upperRight = new Vector2(Math.max(pos1.x, pos2.x), Math.min(pos1.y, pos2.y));
+		lowerLeft = convertToSquareCoord(lowerLeft, ui);
+		upperRight = convertToSquareCoord(upperRight, ui);
 		
 		ArrayList<Vector2> squares = new ArrayList<Vector2>();
 		for(int j = (int)Math.max(lowerLeft.y, 0); j<=Math.min(upperRight.y, yDim-1); j++){
 			for(int i = (int)Math.max(lowerLeft.x, 0); i<= Math.min(upperRight.x,xDim-1); i++){
-				System.out.println("eh111111111111111111111111111111111111111111111111111111111111111111111111");
 				squares.add(new Vector2(i,j));
 			}
 		}
@@ -340,14 +345,18 @@ public class ShipPartContainer {
 	}
 	
 	
-	public Vector2 convertToSquareCoord(Vector2 pos){
-		float initialX = Gdx.graphics.getWidth()/2 - (xDim*FloorTile.TILESIZE)/2;
-		float initialY = Gdx.graphics.getHeight()/2 - (yDim*FloorTile.TILESIZE)/2;
-		
-		pos.x = pos.x - initialX;
-		pos.y = pos.y - initialY;
+	public Vector2 convertToSquareCoord(Vector2 pos, Stage ui){
+		float initialX =   ui.getWidth()/2 - (xDim*FloorTile.TILESIZE)/2;// - ui.getViewport().getLeftGutterWidth();
+		float initialY =  ui.getHeight()/2 - (yDim*FloorTile.TILESIZE)/2;// + ui.getViewport().getBottomGutterHeight();
+		Vector2 initial = new Vector2(initialX, initialY);
+		ui.getViewport().unproject(pos);
+		System.out.println(pos.toString() + " gutterTop: " + ui.getViewport().getTopGutterHeight());
+		pos.x = pos.x - initial.x;
+		pos.y = pos.y - initial.y;
+		System.out.println(pos.toString());
 		pos.x = (float)Math.floor(pos.x/FloorTile.TILESIZE);
 		pos.y = (float)Math.floor(pos.y/FloorTile.TILESIZE);
+		System.out.println(pos.toString());
 		return pos;
 	}
 	

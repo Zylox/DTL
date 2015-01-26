@@ -283,8 +283,8 @@ public class ShipBuilderScreen implements EnumerableScreen{
 	    
 	    timeAccumulator += delta;
 	    if(timeAccumulator > DTL.getFrameTime()){
-	    	ui.act(DTL.getFrameTime());
-	    	gameObjects.act(DTL.getFrameTime());
+	    	ui.act();
+	    	gameObjects.act();
 	    	timeAccumulator -= DTL.getFrameTime();
 	    }
 	   // shipParts.reLoadShip();
@@ -292,7 +292,7 @@ public class ShipBuilderScreen implements EnumerableScreen{
 	   ////Rendering goes here
 	    syncButtons();
 	    gameObjects.draw();
-	    shipParts.draw(ui.getBatch());
+	    shipParts.draw(ui.getBatch(), ui);
 	    ui.draw();
 	    
 
@@ -315,7 +315,7 @@ public class ShipBuilderScreen implements EnumerableScreen{
 	public void resize(int width, int height) {
 		// TODO Auto-generated method stub
 		gameObjects.getViewport().update(width, height, true);
-		ui.getViewport().update(width, height, true);
+		ui.setViewport(gameObjects.getViewport());
 		game.setViewport(gameObjects.getViewport());
 	}
 
@@ -408,9 +408,9 @@ public class ShipBuilderScreen implements EnumerableScreen{
 			clicking = false;
 			if(drawMode == DrawMode.rooms){
 				if(touchDownButton == Buttons.LEFT){
-					shipParts.createRoom(shipParts.intersectedSections(click1Pos, new Vector2(screenX, screenY)));
+					shipParts.createRoom(shipParts.intersectedSections(click1Pos, new Vector2(screenX, screenY), ui));
 				}else if(touchDownButton == Buttons.RIGHT){
-					shipParts.removeTiles(shipParts.intersectedSections(click1Pos, new Vector2(screenX, screenY)));
+					shipParts.removeTiles(shipParts.intersectedSections(click1Pos, new Vector2(screenX, screenY), ui));
 				}
 				
 			}else if(drawMode == DrawMode.doors){
@@ -431,7 +431,7 @@ public class ShipBuilderScreen implements EnumerableScreen{
 					}
 				}
 				Vector2 doorPos = new Vector2(click1Pos.x, Gdx.graphics.getHeight() - click1Pos.y);
-				doorPos = shipParts.convertToSquareCoord(doorPos);
+				doorPos = shipParts.convertToSquareCoord(doorPos, ui);
 				if(touchDownButton == Buttons.LEFT){
 					shipParts.createDoor(doorPos, direction);
 				}else if(touchDownButton == Buttons.RIGHT){
