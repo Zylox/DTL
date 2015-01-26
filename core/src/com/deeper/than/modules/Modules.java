@@ -4,6 +4,8 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.utils.ObjectMap;
+import com.deeper.than.Room;
+import com.deeper.than.Ship;
 
 /**
  * A list of all module types. Holds logic to initialize all module assets.
@@ -23,6 +25,7 @@ public enum Modules {
 	private String name;
 	private String imagePath;
 	private Sprite icon;
+	
 	
 	/**
 	 * Static array of all module icons since only one instance of each is needed.
@@ -45,6 +48,37 @@ public enum Modules {
 		}
 		icon = new Sprite(new Texture(Gdx.files.internal(imagePath)));
 		icons.put(name, icon);
+	}
+	
+	public Module instantiateModule(Ship ship){
+		return instantiateModule(ship.getHighestModuleID(), null, ship);
+	}
+	
+	public Module instantiateModule(Ship ship, Room room){
+		return instantiateModule(ship.getHighestModuleID(), room, ship);
+	}
+	
+	public Module instantiateModule(int id, Room room, Ship ship){
+		if(this == ClimateControl){
+			return new ClimateControlModule(id, room, ship);
+		}
+		if(this == Engine){
+			return new EngineModule(id, room, ship);
+		}
+		if(this == Bridge){
+			return new BridgeModule(id, room, ship);
+		}
+		if(this == HatchControl){
+			return new HatchControlModule(id, room, ship);
+		}
+		if(this == Sensors){
+			return new SensorsModule(id, room, ship);
+		}
+		if(this == Docking){
+			return new DockingModule(id, room, ship);
+		}
+	
+		return null;
 	}
 	
 	/**

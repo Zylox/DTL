@@ -1,4 +1,4 @@
-package com.deeper.than;
+package com.deeper.than.shipbuilder;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -11,6 +11,11 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.deeper.than.DTL;
+import com.deeper.than.FloorTile;
+import com.deeper.than.Neighbors;
+import com.deeper.than.ScriptParser;
+import com.deeper.than.Ship;
 
 public class ShipPartContainer {
 	
@@ -182,6 +187,23 @@ public class ShipPartContainer {
 			return;
 		}
 		Vector2 neighPos = new Vector2();
+		neighPos.x = pos.x;
+		neighPos.y = pos.y;
+		if(dir == Neighbors.DOWN){
+			neighPos.y -= 1;
+		}else if(dir == Neighbors.UP){
+			neighPos.y += 1;
+		}else if(dir == Neighbors.LEFT){
+			neighPos.x -= 1;
+		}else if(dir == Neighbors.RIGHT){
+			neighPos.x += 1;
+		}
+		if(neighPos.x < xDim || pos.y < yDim || pos.x > -1 || pos.y > -1){
+			if(isSameRoom(pos, neighPos)){
+				System.out.println("same room");
+				return;
+			}
+		}
 		for(DoorContainer door : doors){
 			if(door.getPos().equals(pos) && door.getDirection() == dir){
 				return;
@@ -199,24 +221,6 @@ public class ShipPartContainer {
 				}
 				if(pos.equals(neighPos) && dir == Neighbors.reverseOrienation(door.getDirection())){
 					return;
-				}else{
-					neighPos.x = pos.x;
-					neighPos.y = pos.y;
-					if(dir == Neighbors.DOWN){
-						neighPos.y -= 1;
-					}else if(dir == Neighbors.UP){
-						neighPos.y += 1;
-					}else if(dir == Neighbors.LEFT){
-						neighPos.x -= 1;
-					}else if(dir == Neighbors.RIGHT){
-						neighPos.x += 1;
-					}
-					if(neighPos.x < xDim || pos.y < yDim || pos.x > -1 || pos.y > -1){
-						if(isSameRoom(pos, neighPos)){
-							System.out.println("same room");
-							return;
-						}
-					}
 				}
 			}
 		}
@@ -278,6 +282,33 @@ public class ShipPartContainer {
 		}
 		doors.removeAll(doorsToRemove);
 		reLoadShip();
+	}
+	
+	public void removeDoor(Vector2 pos, int dir){
+		Vector2 neighPos = new Vector2();
+		for(DoorContainer d : doors){
+			if(d.getPos().equals(pos) && d.getDirection() == dir){
+				doors.remove(d);
+				reLoadShip();
+				return;
+			}
+			neighPos.x = pos.x;
+			neighPos.y = pos.y;
+			if(dir == Neighbors.DOWN){
+				neighPos.y -= 1;
+			}else if(dir == Neighbors.UP){
+				neighPos.y += 1;
+			}else if(dir == Neighbors.LEFT){
+				neighPos.x -= 1;
+			}else if(dir == Neighbors.RIGHT){
+				neighPos.x += 1;
+			}
+			if(d.getPos().equals(neighPos) && d.getDirection() == Neighbors.reverseOrienation(dir)){
+				doors.remove(d);
+				reLoadShip();
+				return;
+			}
+		}
 	}
 	
 	public Vector2[] intersectedSections(float x1, float y1, float x2, float y2 ){

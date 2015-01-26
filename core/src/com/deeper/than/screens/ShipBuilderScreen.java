@@ -17,6 +17,7 @@ import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.ui.SelectBox;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
@@ -26,9 +27,10 @@ import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.deeper.than.DTL;
 import com.deeper.than.Neighbors;
-import com.deeper.than.ShipPartContainer;
 import com.deeper.than.Wall;
+import com.deeper.than.modules.Module;
 import com.deeper.than.modules.Modules;
+import com.deeper.than.shipbuilder.ShipPartContainer;
 
 public class ShipBuilderScreen implements EnumerableScreen{
 
@@ -62,6 +64,8 @@ public class ShipBuilderScreen implements EnumerableScreen{
 	private TextField xValue;
 	private TextField yValue;
 	
+	private SelectBox<Modules> modulesBox;
+	
 	private Label drawModeLabel;
 	
 	private Vector2 click1Pos;
@@ -82,11 +86,11 @@ public class ShipBuilderScreen implements EnumerableScreen{
 		ui = new Stage(game.getViewport());
 		input = new InputMultiplexer();
 		input.addProcessor(new ClickManager());
-		input.addProcessor(gameObjects);
 		input.addProcessor(ui);
+		input.addProcessor(gameObjects);
 		
 		shipParts = new ShipPartContainer(game, gameObjects);
-//		shipParts.loadNewShip(Gdx.files.internal("ships/kes.ship"));
+		shipParts.loadNewShip(Gdx.files.internal("ships/kes.ship"));
 		Table table = new Table(DTL.skin);
 		table.setFillParent(true);
 		ui.addActor(table);
@@ -189,8 +193,21 @@ public class ShipBuilderScreen implements EnumerableScreen{
 			
 		});
 		
+		modulesBox = new SelectBox<Modules>(DTL.skin);
+		modulesBox.setItems(Modules.values());
+		modulesBox.addListener(new ChangeListener() {
+			public void changed (ChangeEvent event, Actor actor) {
+				System.out.println(modulesBox.getSelected());
+			}
+		});
+		
+		modulesBox.setSelectedIndex(0);
+		
+		
 		drawModeLabel = new Label("DrawMode: " + drawMode.toString(), DTL.skin);
 		changeDrawMode(drawMode);
+		
+		
 		
 		table.add(nameLabel);
 		table.add(nameValue);
@@ -204,7 +221,8 @@ public class ShipBuilderScreen implements EnumerableScreen{
 		table.add(xValue);
 		table.add().pad(10);
 		table.add(yDim);
-		table.add(yValue);
+		table.add(yValue).pad(10);
+		table.add(modulesBox);
 		table.add().expandX();
 		table.add(save);
 		
@@ -217,6 +235,12 @@ public class ShipBuilderScreen implements EnumerableScreen{
 	
 	public void loadAssets(){
 		tempBackground = new Image(new Texture("tempbackground.png"));
+		tempBackground.addListener(new ClickListener(){
+			@Override
+			public void clicked(InputEvent event, float x, float y){
+				ui.setKeyboardFocus(null);
+			}
+		});
 		Wall.loadAssets();
 		Modules.loadAllModuleAssets();
 	}
@@ -259,7 +283,8 @@ public class ShipBuilderScreen implements EnumerableScreen{
 	    
 	    timeAccumulator += delta;
 	    if(timeAccumulator > DTL.getFrameTime()){
-	    	gameObjects.act();
+	    	ui.act(DTL.getFrameTime());
+	    	gameObjects.act(DTL.getFrameTime());
 	    	timeAccumulator -= DTL.getFrameTime();
 	    }
 	   // shipParts.reLoadShip();
@@ -407,7 +432,11 @@ public class ShipBuilderScreen implements EnumerableScreen{
 				}
 				Vector2 doorPos = new Vector2(click1Pos.x, Gdx.graphics.getHeight() - click1Pos.y);
 				doorPos = shipParts.convertToSquareCoord(doorPos);
-				shipParts.createDoor(doorPos, direction);
+				if(touchDownButton == Buttons.LEFT){
+					shipParts.createDoor(doorPos, direction);
+				}else if(touchDownButton == Buttons.RIGHT){
+					shipParts.removeDoor(doorPos, direction);
+				}
 			}
 			return false;
 		}

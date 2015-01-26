@@ -17,7 +17,7 @@ import com.badlogic.gdx.scenes.scene2d.InputListener;
  */
 public class FloorTile extends Actor{
 	
-	public static final int TILESIZE = 64;
+	public static final int TILESIZE = 32;
 	protected Vector2 pos;
 	private GridSquare gridSquare;
 	

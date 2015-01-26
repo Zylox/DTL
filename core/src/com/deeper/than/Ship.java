@@ -53,6 +53,7 @@ public class Ship extends Group{
 	private TextureAtlas texAtl;
 	private String doorImgHandle;
 	private int wallIdCounter;
+	private int highestModuleId = -1;
 	private boolean colorizeRooms = false;
 	
 	/**
@@ -150,6 +151,7 @@ public class Ship extends Group{
 			
 			//Adds the Gridsquares, which hold the floor primarily 
 			//and references to the walls, to the group
+			wallIdCounter = 0;
 			for(GridSquare[] g : layout){
 				for(GridSquare gs : g){
 					if(gs != null){
@@ -501,6 +503,7 @@ public class Ship extends Group{
 	}
 	
 	public void addModule(Module module){
+		highestModuleId = Math.max(module.getId(), highestModuleId);
 		this.modules.add(module);
 	}
 	
@@ -562,6 +565,10 @@ public class Ship extends Group{
 	
 	public void setColorizeRooms(boolean colorize){
 		this.colorizeRooms = colorize;
+	}
+	
+	public int getHighestModuleID(){
+		return highestModuleId;
 	}
 	
 	/**
