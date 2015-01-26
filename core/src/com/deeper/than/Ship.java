@@ -315,9 +315,11 @@ public class Ship extends Group{
 	@Override
 	public void draw(Batch batch, float parentAlpha){
 		//draw the other stuff the ship is supposed to draw, then the modules
-		super.draw(batch, parentAlpha);
-		for(Module m : modules){
-			m.draw(batch);
+		if(isDrawable()){
+			super.draw(batch, parentAlpha);
+			for(Module m : modules){
+				m.draw(batch);
+			}
 		}
 	}
 	

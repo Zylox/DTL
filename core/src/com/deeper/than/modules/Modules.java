@@ -14,15 +14,16 @@ import com.deeper.than.Ship;
  *
  */
 public enum Modules {
-	ClimateControl(ClimateControlModule.class.getCanonicalName(), "climateControl.png"),
-	Engine(EngineModule.class.getCanonicalName(), "engine.png"),
-	Bridge(BridgeModule.class.getCanonicalName(), "bridge.png"),
-	HatchControl(HatchControlModule.class.getCanonicalName(), "hatchControl.png"),
-	Sensors(SensorsModule.class.getCanonicalName(), "sensors.png"),
-	Medbay(MedbayModule.class.getCanonicalName(), "medbay.png"),
-	Docking(DockingModule.class.getCanonicalName(), null);
+	ClimateControl(ClimateControlModule.class.getCanonicalName(), "ClimateControlModule", "climateControl.png"),
+	Engine(EngineModule.class.getCanonicalName(), "EngineModule", "engine.png"),
+	Bridge(BridgeModule.class.getCanonicalName(), "BridgeModule", "bridge.png"),
+	HatchControl(HatchControlModule.class.getCanonicalName(), "HatchControlModule", "hatchControl.png"),
+	Sensors(SensorsModule.class.getCanonicalName(), "SensorsModule", "sensors.png"),
+	Medbay(MedbayModule.class.getCanonicalName(), "MedbayModule", "medbay.png"),
+	Docking(DockingModule.class.getCanonicalName(), "DockingModule", null);
 	
 	private String name;
+	private String stringRep;
 	private String imagePath;
 	private Sprite icon;
 	
@@ -32,8 +33,9 @@ public enum Modules {
 	 */
 	private static ObjectMap<String, Sprite> icons = new ObjectMap<String, Sprite>();
 	
-	private Modules(String name, String imagePath){
+	private Modules(String name, String stringRep,String imagePath){
 		this.name = name;
+		this.stringRep = stringRep;
 		this.imagePath = imagePath;
 		icon = null;
 	}
@@ -48,6 +50,10 @@ public enum Modules {
 		}
 		icon = new Sprite(new Texture(Gdx.files.internal(imagePath)));
 		icons.put(name, icon);
+	}
+	
+	public String getStringRep(){
+		return stringRep;
 	}
 	
 	public Module instantiateModule(Ship ship){
@@ -79,6 +85,26 @@ public enum Modules {
 		}
 	
 		return null;
+	}
+
+	public static String stringRep(Module module){
+		String stringRep = "";
+		
+		if(module instanceof ClimateControlModule){
+			stringRep = ClimateControl.getStringRep();
+		}else if(module instanceof EngineModule){
+			stringRep = Engine.getStringRep();
+		}else if(module instanceof BridgeModule){
+			stringRep = Bridge.getStringRep();
+		}else if(module instanceof HatchControlModule){
+			stringRep = HatchControl.getStringRep();
+		}else if(module instanceof SensorsModule){
+			stringRep = Sensors.getStringRep();
+		}else if(module instanceof DockingModule){
+			stringRep = Docking.getStringRep();
+		}
+		
+		return stringRep;
 	}
 	
 	/**

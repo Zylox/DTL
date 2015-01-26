@@ -10,13 +10,14 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.deeper.than.DTL;
 import com.deeper.than.FloorTile;
 import com.deeper.than.Neighbors;
 import com.deeper.than.ScriptParser;
 import com.deeper.than.Ship;
+import com.deeper.than.modules.Module;
+import com.deeper.than.modules.Modules;
 
 public class ShipPartContainer {
 	
@@ -91,11 +92,6 @@ public class ShipPartContainer {
 	
 	public void draw(Batch batch, Stage ui){
 		drawGrid(ui, batch);
-		if(ship != null && ship.isDrawable()){
-			batch.begin();
-			ship.draw(batch,1);
-			batch.end();
-		}
 	}
 	
 	private void drawGrid(Stage ui, Batch batch){
@@ -110,10 +106,8 @@ public class ShipPartContainer {
 		point1.y = initialY;
 		Vector2 sides = new Vector2(FloorTile.TILESIZE, FloorTile.TILESIZE);
 		
-		//ui.getViewport().unproject(point1);
 		for(int j = 0; j<yDim; j++){
 			for(int i = 0; i< xDim; i++){
-				
 				shapeRen.rect(point1.x+i*sides.x,point1.y+j*sides.y,sides.x,sides.y);
 			}
 		}
@@ -318,15 +312,47 @@ public class ShipPartContainer {
 		}
 	}
 	
+	public void addModuleToRoomAtPoint(Vector2 pos, String moduleStringRep, Stage ui){
+		if(doesModuleAlreadyExist(moduleStringRep)){
+			return;
+		}
+		pos = convertToSquareCoord(pos, ui);
+		for(RoomContainer room : rooms){
+			
+			if(room.isInRoom(pos)){
+				room.addModule(moduleStringRep);
+				reLoadShip();
+				return;
+			}
+		}
+	}
+	
+	private boolean doesModuleAlreadyExist(String moduleStringRep){
+		for(RoomContainer room : rooms){
+			if(room.getModule().equals(moduleStringRep)){
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	public void removeModuleInRoomAtPoint(Vector2 pos, Stage ui){
+		pos = convertToSquareCoord(pos, ui);
+		for(RoomContainer room : rooms){
+			
+			if(room.isInRoom(pos)){
+				room.addModule("");
+				reLoadShip();
+				return;
+			}
+		}
+	}
+	
 	public Vector2[] intersectedSections(float x1, float y1, float x2, float y2, Stage ui){
 		return intersectedSections(new Vector2(x1,y1), new Vector2(x2,y2), ui);
 	}
 	
 	public Vector2[] intersectedSections(Vector2 pos1, Vector2 pos2, Stage ui){
-
-//		pos1.y = ui.getHeight() - pos1.y;
-//		pos2.y = ui.getHeight() - pos2.y;
-		
 		Vector2 lowerLeft = new Vector2(Math.min(pos1.x, pos2.x), Math.max(pos1.y, pos2.y));
 		Vector2 upperRight = new Vector2(Math.max(pos1.x, pos2.x), Math.min(pos1.y, pos2.y));
 		lowerLeft = convertToSquareCoord(lowerLeft, ui);
@@ -350,13 +376,10 @@ public class ShipPartContainer {
 		float initialY =  ui.getHeight()/2 - (yDim*FloorTile.TILESIZE)/2;// + ui.getViewport().getBottomGutterHeight();
 		Vector2 initial = new Vector2(initialX, initialY);
 		ui.getViewport().unproject(pos);
-		System.out.println(pos.toString() + " gutterTop: " + ui.getViewport().getTopGutterHeight());
 		pos.x = pos.x - initial.x;
 		pos.y = pos.y - initial.y;
-		System.out.println(pos.toString());
 		pos.x = (float)Math.floor(pos.x/FloorTile.TILESIZE);
 		pos.y = (float)Math.floor(pos.y/FloorTile.TILESIZE);
-		System.out.println(pos.toString());
 		return pos;
 	}
 	
@@ -637,8 +660,6 @@ public class ShipPartContainer {
 			return acc;
 		}
 		
-
-		
 		public boolean loadFromString(String info){
 			String[] tokens = info.split(" , ");
 			if(tokens.length > 0){
@@ -658,6 +679,10 @@ public class ShipPartContainer {
 		
 		public int getId(){
 			return id;
+		}
+		
+		public String getModule(){
+			return module;
 		}
 	}
 }

@@ -1,6 +1,7 @@
 package com.deeper.than.screens;
 
 import java.io.IOException;
+import java.util.ArrayList;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
@@ -28,7 +29,6 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.deeper.than.DTL;
 import com.deeper.than.Neighbors;
 import com.deeper.than.Wall;
-import com.deeper.than.modules.Module;
 import com.deeper.than.modules.Modules;
 import com.deeper.than.shipbuilder.ShipPartContainer;
 
@@ -37,7 +37,8 @@ public class ShipBuilderScreen implements EnumerableScreen{
 	private enum DrawMode{
 		rooms,
 		doors,
-		shipControl;
+		shipControl,
+		modules;
 		
 		public String toString(){
 
@@ -47,6 +48,8 @@ public class ShipBuilderScreen implements EnumerableScreen{
 				return "shipControlMode";
 			}else if(this == doors){
 				return "doorsMode";
+			}else if(this == modules){
+				return "modulesMode";
 			}
 			return "unknown";
 		}
@@ -64,7 +67,7 @@ public class ShipBuilderScreen implements EnumerableScreen{
 	private TextField xValue;
 	private TextField yValue;
 	
-	private SelectBox<Modules> modulesBox;
+	private SelectBox<String> modulesBox;
 	
 	private Label drawModeLabel;
 	
@@ -82,7 +85,6 @@ public class ShipBuilderScreen implements EnumerableScreen{
 		loadAssets();
 		
 		gameObjects = new Stage(game.getViewport());
-		gameObjects.addActor(tempBackground);
 		ui = new Stage(game.getViewport());
 		input = new InputMultiplexer();
 		input.addProcessor(new ClickManager());
@@ -193,8 +195,13 @@ public class ShipBuilderScreen implements EnumerableScreen{
 			
 		});
 		
-		modulesBox = new SelectBox<Modules>(DTL.skin);
-		modulesBox.setItems(Modules.values());
+		modulesBox = new SelectBox<String>(DTL.skin);
+		ArrayList<String> moduleItems = new ArrayList<String>();
+		for(Modules m : Modules.values()){
+			moduleItems.add(m.getStringRep());
+		}
+		String[] moduleStrings = moduleItems.toArray(new String[moduleItems.size()]);
+		modulesBox.setItems(moduleStrings);
 		modulesBox.addListener(new ChangeListener() {
 			public void changed (ChangeEvent event, Actor actor) {
 				System.out.println(modulesBox.getSelected());
@@ -291,8 +298,11 @@ public class ShipBuilderScreen implements EnumerableScreen{
 	    
 	   ////Rendering goes here
 	    syncButtons();
-	    gameObjects.draw();
+	    gameObjects.getBatch().begin();
+	    tempBackground.draw(gameObjects.getBatch(), 1);
+	    gameObjects.getBatch().end();
 	    shipParts.draw(ui.getBatch(), ui);
+	    gameObjects.draw();
 	    ui.draw();
 	    
 
@@ -308,6 +318,8 @@ public class ShipBuilderScreen implements EnumerableScreen{
 			shipParts.setColorizedRooms(true);
 		}else if(drawMode == DrawMode.shipControl){
 			shipParts.setColorizedRooms(false);
+		}else if(drawMode == DrawMode.modules){
+			shipParts.setColorizedRooms(true);
 		}
 	}
 
@@ -361,6 +373,8 @@ public class ShipBuilderScreen implements EnumerableScreen{
 			    	changeDrawMode(DrawMode.shipControl);
 			    }else if(Keys.D == keycode){
 			    	changeDrawMode(DrawMode.doors);
+			    }else if(Keys.M == keycode){
+			    	changeDrawMode(DrawMode.modules);
 			    }
 			}
 			
@@ -437,6 +451,14 @@ public class ShipBuilderScreen implements EnumerableScreen{
 				}else if(touchDownButton == Buttons.RIGHT){
 					shipParts.removeDoor(doorPos, direction);
 				}
+			}else if(drawMode == DrawMode.modules){
+				//if(shipParts.convertToSquareCoord(click1Pos, ui).equals(shipParts.convertToSquareCoord(new Vector2(screenX, screenY), ui))){
+					if(touchDownButton == Buttons.LEFT){
+						shipParts.addModuleToRoomAtPoint(click1Pos, modulesBox.getSelected(), ui);
+					}else if(touchDownButton == Buttons.RIGHT){
+						shipParts.removeModuleInRoomAtPoint(click1Pos, ui);
+					}
+				//}
 			}
 			return false;
 		}
