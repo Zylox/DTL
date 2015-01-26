@@ -430,7 +430,7 @@ public class ShipBuilderScreen implements EnumerableScreen{
 						direction = Neighbors.UP;
 					}
 				}
-				Vector2 doorPos = new Vector2(click1Pos.x, Gdx.graphics.getHeight() - click1Pos.y);
+				Vector2 doorPos = new Vector2(click1Pos.x, click1Pos.y);
 				doorPos = shipParts.convertToSquareCoord(doorPos, ui);
 				if(touchDownButton == Buttons.LEFT){
 					shipParts.createDoor(doorPos, direction);

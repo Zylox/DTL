@@ -251,7 +251,7 @@ public class Ship extends Group{
 				linkRooms(curGrid.getRoom(), null, d);
 			}
 		}else if(d.orientation == Neighbors.LEFT){
-			if(d.pos.x > 1){
+			if(d.pos.x >= 1){
 				neighGrid = layout[(int)d.pos.y][(int)d.pos.x-1];
 				if(neighGrid == null){
 					neighRoom = null;
@@ -281,7 +281,7 @@ public class Ship extends Group{
 				linkRooms(curGrid.getRoom(), null, d);
 			}
 		}else if(d.orientation == Neighbors.DOWN){
-			if(d.pos.y > 1){
+			if(d.pos.y >= 1){
 				neighGrid = layout[(int)d.pos.y-1][(int)d.pos.x];
 				if(neighGrid == null){
 					neighRoom = null;
