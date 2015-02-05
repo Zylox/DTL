@@ -204,7 +204,7 @@ public class ShipBuilderScreen implements EnumerableScreen{
 					System.out.println("gonna write a file");
 					shipParts.writeToFile();
 					System.out.println("finished writing file");
-					populateShipSelect();
+					//populateShipSelect();
 					loadNewShip(shipSelect.getSelected());
 				} catch (IOException e) {
 					// TODO Auto-generated catch block
