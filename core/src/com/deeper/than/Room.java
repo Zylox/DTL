@@ -127,7 +127,7 @@ public class Room {
 		RoomLink link = null;
 		Room linkedRoom = null;
 		float neighWaterLevel = 0;
-		float highestWaterLevel = 100;
+		float highestWaterLevel = 1000000000;
 		boolean roomClosed = true;
 
 		int i;
@@ -190,6 +190,10 @@ public class Room {
 			return false;
 		}
 		return sensors.canSeeOwnShip() || ship.isCrewInRoom(this);
+	}
+	
+	public int getSize(){
+		return squares.size();
 	}
 	
 	public int getRoomId(){
