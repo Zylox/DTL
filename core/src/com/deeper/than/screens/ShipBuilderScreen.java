@@ -3,9 +3,9 @@ package com.deeper.than.screens;
 import java.io.IOException;
 import java.util.ArrayList;
 
+import com.badlogic.gdx.Application.ApplicationType;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
-import com.badlogic.gdx.Application.ApplicationType;
 import com.badlogic.gdx.Input.Buttons;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.InputMultiplexer;
@@ -36,6 +36,8 @@ import com.deeper.than.shipbuilder.ShipPartContainer;
 
 public class ShipBuilderScreen implements EnumerableScreen{
 
+	private static final String BASEDIR = "ships";
+	
 	private enum DrawMode{
 		rooms,
 		doors,
@@ -83,7 +85,13 @@ public class ShipBuilderScreen implements EnumerableScreen{
 
 	Image tempBackground;
 	
-	private void loadNewShip(){
+	private void loadNewShip(String shipName){
+		//shipParts = new ShipPartContainer(game, gameObjects);
+		shipParts.loadNewShip(Gdx.files.internal("ships/"+shipName+".ship"));
+		
+		xValue.setText(shipParts != null ? Integer.toString(shipParts.getXdim()) : "10");
+		yValue.setText(shipParts != null ? Integer.toString(shipParts.getYdim()) : "10");
+		nameValue.setText(shipParts.getName());
 		
 	}
 	
@@ -100,13 +108,13 @@ public class ShipBuilderScreen implements EnumerableScreen{
 		input.addProcessor(gameObjects);
 		
 		shipParts = new ShipPartContainer(game, gameObjects);
-		shipParts.loadNewShip(Gdx.files.internal("ships/kes.ship"));
 		Table table = new Table(DTL.skin);
 		table.setFillParent(true);
 		ui.addActor(table);
 		
 		Label nameLabel = new Label("Name= ", DTL.skin);
-		nameValue = new TextField(shipParts.getName(), DTL.skin);
+//		nameValue = new TextField(shipParts.getName(), DTL.skin);
+		nameValue = new TextField("", DTL.skin);
 		nameValue.setTextFieldListener(new TextFieldListener(){
 		@Override
 			public void keyTyped(TextField textField, char c) {
@@ -132,7 +140,8 @@ public class ShipBuilderScreen implements EnumerableScreen{
 		
 		Label xDim = new Label("xDim= ", DTL.skin);
 		Label yDim = new Label("yDim= ", DTL.skin);
-		xValue = new TextField(shipParts != null ? Integer.toString(shipParts.getXdim()) : "10", DTL.skin);
+		//xValue = new TextField(shipParts != null ? Integer.toString(shipParts.getXdim()) : "10", DTL.skin);
+		xValue = new TextField("",DTL.skin);
 		xValue.setTextFieldFilter(new TextFieldFilter() {
 			@Override
 			public boolean acceptChar (TextField textField, char c) {
@@ -157,7 +166,8 @@ public class ShipBuilderScreen implements EnumerableScreen{
 		        return true;
 		    }
 		});
-		yValue = new TextField(shipParts != null ? Integer.toString(shipParts.getXdim()) : "10", DTL.skin);
+		//yValue = new TextField(shipParts != null ? Integer.toString(shipParts.getXdim()) : "10", DTL.skin);
+		yValue = new TextField("",DTL.skin);
 		yValue.setTextFieldFilter(new TextFieldFilter() {
 			@Override
 			public boolean acceptChar (TextField textField, char c) {
@@ -194,6 +204,7 @@ public class ShipBuilderScreen implements EnumerableScreen{
 					System.out.println("gonna write a file");
 					shipParts.writeToFile();
 					System.out.println("finished writing file");
+					populateShipSelect();
 				} catch (IOException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -233,6 +244,13 @@ public class ShipBuilderScreen implements EnumerableScreen{
 		drawModeLabel = new Label("DrawMode: ", DTL.skin);
 		changeDrawMode(drawMode);
 		
+		shipSelect = new SelectBox<String>(DTL.skin);
+		shipSelect.addListener(new ChangeListener() {
+			public void changed (ChangeEvent event, Actor actor) {
+				loadNewShip(shipSelect.getSelected());
+			}
+		});
+		
 		
 		
 		table.add(nameLabel);
@@ -252,12 +270,17 @@ public class ShipBuilderScreen implements EnumerableScreen{
 		table.add(yValue).pad(10);
 		table.add(modulesBox);
 		table.add().expandX();
+		table.add(shipSelect).pad(20);
 		table.add(save);
 		
 
 		
 		timeAccumulator = 0;
 		click1Pos = new Vector2();
+		
+		populateShipSelect();
+
+		loadNewShip(shipSelect.getSelected());
 //		ui.setDebugAll(true);
 	}
 	
@@ -285,10 +308,10 @@ public class ShipBuilderScreen implements EnumerableScreen{
 		}
 	}
 	
-//	private void populateShipSelect(){
-//		shipSelect.clearItems();
-//		shipSelect.setItems(getShipFileHandles(BASEDIR));
-//	}
+	private void populateShipSelect(){
+		shipSelect.clearItems();
+		shipSelect.setItems(getShipFileHandles(BASEDIR));
+	}
 	
 	public String[] getShipFileHandles(String baseDir){
 		
@@ -343,9 +366,11 @@ public class ShipBuilderScreen implements EnumerableScreen{
 	    
 	   ////Rendering goes here
 	    syncButtons();
+	    
 	    gameObjects.getBatch().begin();
 	    tempBackground.draw(gameObjects.getBatch(), 1);
 	    gameObjects.getBatch().end();
+	    
 	    shipParts.draw(ui.getBatch(), ui);
 	    gameObjects.draw();
 	    ui.draw();

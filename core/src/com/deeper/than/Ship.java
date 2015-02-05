@@ -450,7 +450,7 @@ public class Ship extends Group{
 		texAtl.dispose();
 	}
 		
-	public String getName() {
+	public String getShipName() {
 		return name;
 	}
 	

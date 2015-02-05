@@ -67,16 +67,24 @@ public class ShipPartContainer {
 		if(ship != null){
 			ship.remove();
 		}
+		rooms.clear();
+		doors.clear();
+		System.out.println(filepath.name());
 		ship = new Ship(filepath, game);
 		shipStage.addActor(ship);
 		ship.setX(Gdx.graphics.getWidth()/2 - ship.getWidth()/2);
 		ship.setY(Gdx.graphics.getHeight()/2 - ship.getHeight()/2);
+		this.name = ship.getShipName();
+		this.xDim = ship.getXdim();
+		this.yDim = ship.getYdim();
 		loadShipFromScript(filepath);
+		setColorizedRooms(colorizeRooms);
+		//name = ship.getShipName();
 	}
 	
 	public void reLoadShip(){
 //		ship.reInit(getShipString());
-		System.out.println(getShipString());
+		
 		if(ship != null){
 			ship.remove();
 		}
