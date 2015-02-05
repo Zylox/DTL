@@ -205,6 +205,7 @@ public class ShipBuilderScreen implements EnumerableScreen{
 					shipParts.writeToFile();
 					System.out.println("finished writing file");
 					populateShipSelect();
+					loadNewShip(shipSelect.getSelected());
 				} catch (IOException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -245,12 +246,13 @@ public class ShipBuilderScreen implements EnumerableScreen{
 		changeDrawMode(drawMode);
 		
 		shipSelect = new SelectBox<String>(DTL.skin);
-		shipSelect.addListener(new ChangeListener() {
+		shipSelect.addCaptureListener(new ChangeListener() {
 			public void changed (ChangeEvent event, Actor actor) {
-				loadNewShip(shipSelect.getSelected());
+				if(shipSelect.getSelected() != null){
+					loadNewShip(shipSelect.getSelected());
+				}
 			}
 		});
-		
 		
 		
 		table.add(nameLabel);
@@ -309,8 +311,15 @@ public class ShipBuilderScreen implements EnumerableScreen{
 	}
 	
 	private void populateShipSelect(){
+		//String shipSelected = shipSelect.getSelected();
 		shipSelect.clearItems();
+		
 		shipSelect.setItems(getShipFileHandles(BASEDIR));
+		if(shipSelect.getItems().contains(nameValue.getMessageText(), false)){
+			shipSelect.setSelected(nameValue.getMessageText());
+		}else{
+			shipSelect.setSelectedIndex(0);
+		}
 	}
 	
 	public String[] getShipFileHandles(String baseDir){

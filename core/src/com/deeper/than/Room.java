@@ -34,8 +34,11 @@ public class Room {
 	private float pressure;
 	/**Current water level recognized by the game*/
 	private float waterLevel;
+	private float waterCapacity;
+	private static final float tileWaterCapcity = 100;
 	/**Water level that has been calcuated for next frame*/
 	private float calculatedWaterLevel;
+	private float calculatedCapacity;
 	/**Amount of water given to adjacent rooms this cylce.*/
 	private float givenWater;
 	/**The highest waterlevel a neighbor has that is open to this room.
@@ -114,12 +117,14 @@ public class Room {
 	 */
 	public void updateEnv(){
 		//Update calculated level accounting for the given water amount.
-		setCalculatedWaterLevel(getCalculatedWaterLevel() - getGivenWater(), neighBorUpperboundWL);
+		//setCalculatedWaterLevel(getCalculatedWaterLevel() - getGivenWater(), neighBorUpperboundWL);
+		setCalculatedCapcity(calculatedCapacity - getGivenWater(), neighBorUpperboundWL);
 		//Reset values
 		setGivenWater(0);
 		setNeighBorUpperboundWL(1000000);
 		//Ayy Lmao - Nick Ferguson, 2014
-		setWaterLevel(calculatedWaterLevel);
+		//setWaterLevel(calculatedWaterLevel);
+		setCapacity(calculatedCapacity);
 	}
 	
 	private void calculateWaterLevel(){
@@ -146,7 +151,7 @@ public class Room {
 				}
 				
 				if(neighWaterLevel > this.waterLevel){
-					float transmission =DTL.getRatePerTimeStep((neighWaterLevel * WATERTRANSMISSIONRATE * 60));
+					float transmission =DTL.getRatePerTimeStep((neighWaterLevel * WATERTRANSMISSIONRATE *60));
 					if(waterLevelAcc+transmission+getWaterLevel() > neighWaterLevel-transmission){
 						transmission =(neighWaterLevel-(waterLevelAcc+getWaterLevel()))/2;
 					}
@@ -154,7 +159,7 @@ public class Room {
 					waterLevelAcc +=  transmission;
 					if(linkedRoom != null){
 //						if(transmission > .00000000000009f){
-							linkedRoom.addGivenWater(transmission);
+							linkedRoom.addGivenWater(transmission*squares.size());
 //						}
 					}
 					highestWaterLevel = Math.max(neighWaterLevel, highestWaterLevel);
@@ -162,12 +167,12 @@ public class Room {
 			}
 		}
 
-		if(roomClosed){
-			waterLevelAcc = DTL.getRatePerTimeStep(ship.getDrainRate()*60);
-		}
+//		if(roomClosed){
+//			waterLevelAcc = DTL.getRatePerTimeStep(ship.getDrainRate()*60);
+//		}
 
-		setCalculatedWaterLevel(getWaterLevel() + waterLevelAcc + DTL.getRatePerTimeStep(ship.getDrainRate()*60) , highestWaterLevel);
-			
+		//setCalculatedWaterLevel(getWaterLevel() + waterLevelAcc + DTL.getRatePerTimeStep(ship.getDrainRate()*60) , highestWaterLevel);
+		setCalculatedCapcity(waterCapacity + waterLevelAcc+DTL.getRatePerTimeStep(ship.getDrainRate()*60)*squares.size(), highestWaterLevel);
 		
 		
 	}
@@ -221,14 +226,14 @@ public class Room {
 	}
 	
 	public float getWaterLevel() {
-		return waterLevel;
+		
+		return waterCapacity/squares.size();
+		//return waterLevel;
 	}
 	
 	public void setWaterLevel(float waterLevel) {
 		this.waterLevel = waterLevel;
-//		if(waterLevel - (int)waterLevel > .99f){
-//			waterLevel = (float)Math.ceil(waterLevel);
-//		}
+
 		if(waterLevel > neighBorUpperboundWL){
 			this.waterLevel = neighBorUpperboundWL;
 		}else if(waterLevel < 0){
@@ -243,6 +248,27 @@ public class Room {
 	public void setCalculatedWaterLevel(float waterLevel, float upperBound) {
 		this.calculatedWaterLevel = waterLevel;
 		this.neighBorUpperboundWL= upperBound;
+	}
+	
+	public void setCalculatedCapcity(float capacity, float upperBound){
+		this.calculatedCapacity = capacity;
+		this.neighBorUpperboundWL= upperBound;
+	}
+	
+	public void setCapacity(float capacity){
+		if(capacity / squares.size() < neighBorUpperboundWL){
+			if(capacity > tileWaterCapcity*squares.size()){
+				this.waterCapacity = tileWaterCapcity*squares.size();
+			}else{
+				this.waterCapacity = capacity;
+			}
+		}else{
+			this.waterCapacity = neighBorUpperboundWL*squares.size();
+		}
+		
+		if(waterCapacity < 0){
+			this.waterCapacity = 0;
+		}
 	}
 	
 	public float getGivenWater() {

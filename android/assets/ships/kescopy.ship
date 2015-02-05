@@ -1,0 +1,54 @@
+name= kescopy
+xDim= 15
+yDim= 6
+floortileimg= floortile.png
+doorimg= door.pack
+layout=
+{2,0 3,0}
+{1,1 1,2}
+{2,1 2,2} , HatchControlModule
+{3,1 3,2}
+{4,1 4,2}
+{1,3 1,4} , EngineModule
+{4,3 4,4}
+{2,4 2,5} , SensorsModule
+{3,4 3,5}
+{0,6 0,7}
+{1,6 1,7 2,6 2,7} , ClimateControlModule
+{3,6 3,7 4,6 4,7}
+{5,6 5,7}
+{1,8 1,9 2,8 2,9}
+{3,8 3,9 4,8 4,9} , MedbayModule
+{2,10 2,11}
+{3,10 3,11}
+{2,12 2,13 3,12 3,13}
+{2,14 3,14} , BridgeModule
+endlayout
+doors=
+{2,0 left}
+{2,0 right}
+{3,0 left}
+{3,0 right}
+{1,2 up}
+{1,2 right}
+{4,2 down}
+{4,2 right}
+{1,4 up}
+{4,4 down}
+{2,5 right}
+{3,5 right}
+{0,6 down}
+{0,7 down}
+{0,7 up}
+{1,7 right}
+{4,7 right}
+{5,7 down}
+{5,7 up}
+{5,6 up}
+{2,8 up}
+{2,9 right}
+{3,9 right}
+{2,11 right}
+{3,11 right}
+{2,13 right}
+enddoors
