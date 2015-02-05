@@ -9,6 +9,7 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
+import com.deeper.than.screens.NewGameScreen;
 import com.deeper.than.screens.Screens;
 
 public class DTL extends Game {
@@ -58,6 +59,11 @@ public class DTL extends Game {
 		}
 		
 		setScreen(Screens.MAINMENU.getScreen());
+	}
+	
+	public String getSelectedShip(){
+		String name = ((NewGameScreen) Screens.NEWGAME.getScreen()).getSelectedShip();
+		return name;
 	}
 	
 	public Viewport getViewport(){

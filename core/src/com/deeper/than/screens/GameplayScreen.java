@@ -33,15 +33,9 @@ public class GameplayScreen implements EnumerableScreen{
 		this.game = game;
 
 		loadAssets();
-		ship = new Ship(Gdx.files.internal("ships/kes.ship"), game);
-		ship.setOrigin(ship.getWidth()/2, ship.getHeight()/2);
-		gameObjects = new Stage(game.getViewport());
-		gameObjects.addActor(tempBackground);
-		gameObjects.addActor(ship);
-		input = new InputMultiplexer();
-		input.addProcessor(gameObjects);
 		
-		timeAccumulator = 0;
+		
+		
 	}
 	
 	public void loadAssets(){
@@ -50,10 +44,27 @@ public class GameplayScreen implements EnumerableScreen{
 		Modules.loadAllModuleAssets();
 	}
 	
+	private void initializeGame(){
+		ship = new Ship(Gdx.files.internal("ships/" + game.getSelectedShip() +".ship"), game);
+		ship.setOrigin(ship.getWidth()/2, ship.getHeight()/2);
+		gameObjects = new Stage(game.getViewport());
+		gameObjects.addActor(tempBackground);
+		gameObjects.addActor(ship);
+		
+		input = new InputMultiplexer();
+		input.addProcessor(gameObjects);
+		
+		timeAccumulator = 0;
+	}
+	
 	@Override
 	public void show() {
 		// TODO Auto-generated method stub
 		DTL.printDebug("gameplay state ");
+		
+		if(DTL.gameActive != true){
+			initializeGame();
+		}
 		DTL.gameActive = true;
 		Gdx.input.setInputProcessor(input);
 	}
@@ -106,7 +117,7 @@ public class GameplayScreen implements EnumerableScreen{
 	}
 	
 	public void mainMenu(){
-		DTL.gameActive = false;
+		//DTL.gameActive = false;
 		game.setScreen(Screens.MAINMENU.getScreen());
 	}
 

@@ -5,10 +5,12 @@ import java.util.ArrayList;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.Application.ApplicationType;
 import com.badlogic.gdx.Input.Buttons;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.InputProcessor;
+import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Vector2;
@@ -69,6 +71,7 @@ public class ShipBuilderScreen implements EnumerableScreen{
 	
 	private SelectBox<String> modulesBox;
 	private SelectBox<DrawMode> drawModeSelect;
+	private SelectBox<String> shipSelect;
 	
 	private Label drawModeLabel;
 	
@@ -79,6 +82,10 @@ public class ShipBuilderScreen implements EnumerableScreen{
 	private InputMultiplexer input;
 
 	Image tempBackground;
+	
+	private void loadNewShip(){
+		
+	}
 	
 	public void create(DTL game){
 		this.game = game;
@@ -276,6 +283,30 @@ public class ShipBuilderScreen implements EnumerableScreen{
 		if(ui.getKeyboardFocus() != nameValue){
 			nameValue.setText(shipParts.getName());
 		}
+	}
+	
+//	private void populateShipSelect(){
+//		shipSelect.clearItems();
+//		shipSelect.setItems(getShipFileHandles(BASEDIR));
+//	}
+	
+	public String[] getShipFileHandles(String baseDir){
+		
+		FileHandle dirHandle;
+		if (Gdx.app.getType() == ApplicationType.Desktop) {
+		   dirHandle = Gdx.files.internal("./bin/" + baseDir);
+		}else  {
+			//(Gdx.app.getType() == ApplicationType.Android)
+			dirHandle = Gdx.files.internal(baseDir);
+		}
+		
+		FileHandle[] fileHandles = dirHandle.list();
+		String[] names = new String[fileHandles.length-1];
+		for(int i = 1; i<fileHandles.length; i++){
+			names[i-1] = fileHandles[i].nameWithoutExtension();  
+		}
+		
+		return names;
 	}
 	
 	@Override
