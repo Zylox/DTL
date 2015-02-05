@@ -68,6 +68,7 @@ public class ShipBuilderScreen implements EnumerableScreen{
 	private TextField yValue;
 	
 	private SelectBox<String> modulesBox;
+	private SelectBox<DrawMode> drawModeSelect;
 	
 	private Label drawModeLabel;
 	
@@ -211,7 +212,18 @@ public class ShipBuilderScreen implements EnumerableScreen{
 		modulesBox.setSelectedIndex(0);
 		
 		
-		drawModeLabel = new Label("DrawMode: " + drawMode.toString(), DTL.skin);
+		
+		DrawMode[] drawModeItems = DrawMode.values();
+		drawModeSelect = new SelectBox<DrawMode>(DTL.skin);
+		drawModeSelect.setItems(drawModeItems);
+		drawModeSelect.addListener(new ChangeListener() {
+			public void changed (ChangeEvent event, Actor actor) {
+				changeDrawMode(drawModeSelect.getSelected());
+			}
+		});
+		drawModeSelect.setSelected(drawMode);
+		
+		drawModeLabel = new Label("DrawMode: ", DTL.skin);
 		changeDrawMode(drawMode);
 		
 		
@@ -220,7 +232,9 @@ public class ShipBuilderScreen implements EnumerableScreen{
 		table.add(nameValue);
 		table.add().expandX().colspan(5);
 		table.row();
-		table.add(drawModeLabel).expandX().colspan(7).left();
+		table.add(drawModeLabel).pad(10);
+		table.add(drawModeSelect);
+		table.add().expandX().colspan(6).left();
 		table.row();
 		table.add().expand().colspan(7);
 		table.row();
@@ -311,7 +325,7 @@ public class ShipBuilderScreen implements EnumerableScreen{
 	
 	private void changeDrawMode(DrawMode drawMode){
 		this.drawMode = drawMode;
-		drawModeLabel.setText("DrawMode: " + drawMode.toString());
+		drawModeSelect.setSelected(drawMode);
 		if(drawMode == DrawMode.rooms){
 			shipParts.setColorizedRooms(true);
 		}else if(drawMode == DrawMode.doors){
@@ -452,13 +466,11 @@ public class ShipBuilderScreen implements EnumerableScreen{
 					shipParts.removeDoor(doorPos, direction);
 				}
 			}else if(drawMode == DrawMode.modules){
-				//if(shipParts.convertToSquareCoord(click1Pos, ui).equals(shipParts.convertToSquareCoord(new Vector2(screenX, screenY), ui))){
-					if(touchDownButton == Buttons.LEFT){
-						shipParts.addModuleToRoomAtPoint(click1Pos, modulesBox.getSelected(), ui);
-					}else if(touchDownButton == Buttons.RIGHT){
-						shipParts.removeModuleInRoomAtPoint(click1Pos, ui);
-					}
-				//}
+				if(touchDownButton == Buttons.LEFT){
+					shipParts.addModuleToRoomAtPoint(click1Pos, modulesBox.getSelected(), ui);
+				}else if(touchDownButton == Buttons.RIGHT){
+					shipParts.removeModuleInRoomAtPoint(click1Pos, ui);
+				}
 			}
 			return false;
 		}
