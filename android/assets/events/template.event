@@ -1,0 +1,6 @@
+title=what goes in the title bar
+text=the main text that appears in the text box
+input1=what shows up at input option 1
+input2=what shows up at input option 2
+inputn=what shows up at input option n
+#this is obviously just an initial example, we'll need to find a way to set up responses to inputs, and how you may get rewarded/punished for them.
