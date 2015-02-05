@@ -1,3 +1,13 @@
-title=Volcano
-text=A volcano is errupting on the sea floor.  Tempuratures are rising fast, fires may begin to start if you don't get out of here quickly!
-input1=Okay
+<event>
+	<title>
+		Volcano
+	</title>
+	<text>
+		A volcano is errupting on the sea floor.  Tempuratures are rising fast, fires may begin to start if you don't get out of here quickly!
+	</text>
+	<inputs>
+		<input id="1">
+			Okay
+		</input>
+	</inputs>
+</event>
