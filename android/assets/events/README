@@ -9,5 +9,8 @@ individual inputs inbetween <input id="n"> and </input> where n is the number of
 the n-th possible response to the event.  This is also the number button that 
 will be mapped to selecting that input on the keyboard.
 
-leave the top line alone, as that needs to remain that way for java to know
+Leave the top line alone, as that needs to remain that way for java to know
 what it's about to parse is XML. 
+
+You can edit these events with pretty much anything, however on linux, vim will do syntax highlighting. Notepad++ should do it for Windows too. 
+

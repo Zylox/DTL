@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<event>
+	<title>
+		Merchant ship
+	</title>
+	<text>
+		On the way down, you come across a sub bearing merchant insignias.  He sends you a radio signal asking if you want to board and see his wares.  What do you do?
+	</text>
+	<inputs>
+		<input id="1">
+			Let's go shopping!
+		</input>
+		<input id="2">
+			No thanks, maybe another time.
+		</input>
+	</inputs>
+</event>
