@@ -1,0 +1,33 @@
+name= tres
+xDim= 6
+yDim= 10
+floortileimg= floortile.png
+doorimg= door.pack
+layout=
+{8,1 8,2 8,3 9,1 9,2 9,3} , SensorsModule
+{8,4 8,5 9,4 9,5} , MedbayModule
+{4,4 4,5 5,4 5,5} , BridgeModule
+{0,4 0,5 1,4 1,5} , ClimateControlModule
+{0,1 0,2 0,3 1,1 1,2 1,3} , HatchControlModule
+{8,0 9,0}
+{0,0 1,0}
+{4,1 4,2 4,3 5,1 5,2 5,3} , EngineModule
+{6,4 6,5 7,4 7,5}
+{2,4 2,5 3,4 3,5}
+endlayout
+doors=
+{9,3 right}
+{4,5 down}
+{0,4 left}
+{9,0 left}
+{8,0 left}
+{1,0 left}
+{0,0 left}
+{9,0 right}
+{0,0 right}
+{4,3 right}
+{5,3 right}
+{2,5 down}
+{5,5 up}
+{7,5 up}
+enddoors
