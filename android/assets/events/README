@@ -1,16 +1,13 @@
 to make a new event, copy template.event as whaterver.event.
 
-Put the title of the event between <title> and </title>
+Put the title of the event after "title":" and before ",
 
-Put the main text body of the event between <text> and </text>
+Put the main text body of the event after "text":" and before ",
 
-Put what the input options should stay in the <inputs> and </inputs> area, with
-individual inputs inbetween <input id="n"> and </input> where n is the number of
-the n-th possible response to the event.  This is also the number button that 
-will be mapped to selecting that input on the keyboard.
+Put what the input options should stay in the "inputs":[ and ] area, with
+individual inputs inbetween begining with their number, ending with the string the user will click,
+and a comma if followed by another input.  Currently there is an arbitrary number of inputs allowed,
+though I am sure we will cap it at something reasonable.
 
-Leave the top line alone, as that needs to remain that way for java to know
-what it's about to parse is XML. 
-
-You can edit these events with pretty much anything, however on linux, vim will do syntax highlighting. Notepad++ should do it for Windows too. 
+You can edit these events with pretty much any text editor, however, an event writer will be made soon
 

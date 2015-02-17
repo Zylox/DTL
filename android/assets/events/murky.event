@@ -1,15 +1,7 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<event>
-	<title>
-		Murky waters
-	</title>
-	<text>
-		You have fallen upon some murky waters.  Your sensors will be disrupted here, battle with caution!
-	</text>
-	<inputs>
-		<input id="1">
-			...Okay....
-		</input>
-	</inputs>
-</event>
-
+{
+	"title":"Murky waters",
+	"text":"You have fallen upon some murky waters.  Your sensors will be disrupted here, battle with caution!",
+	"inputs":[
+		1:"...Okay..."
+	]
+}
