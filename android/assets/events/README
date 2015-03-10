@@ -1,3 +1,7 @@
+THIS IS NOW DEPRECATED, user EventWriter.java in utils!
+
+
+============DEPRECATED BELOW THIS LINE=====================================
 to make a new event, copy template.event as whaterver.event.
 
 Put the title of the event after "title":" and before ",
