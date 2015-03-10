@@ -4,39 +4,5 @@ A writter will be designed to export to JSON.  This may just be a simple CLI app
 
 A loader will be designed in the main game to load the JSON files into the game, and display a pop up box that will show the user the text from the JSON files, and load the possible responses.  
 
-The event json will look something like this:
-
-event = 
-{
-	"Title":"<insert title here, must be unique>",
-	"Body Text":"<insert body text here>",
-	"Inputs":[
-		{
-			1:"<insert response 1 text here>",
-			2:"<insert response 2 text here>",
-			3:"<insert response 3 text here>"...
-		}
-	]
-}
 
 The plan here is that the event name will also be in a reward look up table, and you search into that table with your event title (which is unique) and the number of the input they selected.  The reward look up table will take those two things and find what it should send to the player, be it another event, money, items, damage, new crew member, etc.  This may also be stored in a flat JSON file.  
-
-response = 
-{
-	"Title":"<Must match corresponding event>",
-	"reactions":[
-		1:{
-			"type":"<type of response>",  //crew, damage, item, new event, money, etc.
-			"responseText":"<What the text box says to the user>",
-			"params":[
-				1:arg1,	//These are the args that should be sent to the constructor of the type of response 
-				2:arg2,	//in numerical order, as there are many different types of responses.
-				...
-			]
-		},
-		2:{
-			...
-		},
-		...
-	]
-}
