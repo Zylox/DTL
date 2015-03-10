@@ -1,0 +1,8 @@
+{
+title: default,
+text: "this is some filler text",
+inputs: [
+	yes,
+	no
+]
+}

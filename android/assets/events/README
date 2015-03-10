@@ -1,0 +1,13 @@
+to make a new event, copy template.event as whaterver.event.
+
+Put the title of the event after "title":" and before ",
+
+Put the main text body of the event after "text":" and before ",
+
+Put what the input options should stay in the "inputs":[ and ] area, with
+individual inputs inbetween begining with their number, ending with the string the user will click,
+and a comma if followed by another input.  Currently there is an arbitrary number of inputs allowed,
+though I am sure we will cap it at something reasonable.
+
+You can edit these events with pretty much any text editor, however, an event writer will be made soon
+

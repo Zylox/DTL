@@ -1,0 +1,9 @@
+{
+	"title":"This text goes into the pop up title bar, must be unique for response lookup",
+	"text":"This is the text that goes into the main text box",
+	"inputs":[
+		1:"This is the text for input option 1",
+		2:"This is the text for input option 2",
+		3:"This is the text for input option 3"
+	]
+}
