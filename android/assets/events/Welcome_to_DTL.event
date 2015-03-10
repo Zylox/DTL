@@ -1,7 +1,9 @@
 {
 title: "Welcome to DTL",
-text: "Welcome to the world of DTL.  A mysterious radio signal is emminating from the bottom of the ocean, claiming they have a lot of treasure!  We are going to explore it!  However, it looks like a lot of other submarines in the area also are going to try and see what it is.  Let's try to get there first okay?",
-inputs: [
-	Okay!
+text: "Welcome to the world of DTL.  A mysterious radio signal is emminating from the bottom of the ocean, claiming they have a lot of treasure! We are going to explore it!  However, it looks like a lot of other submarines in the area also are going to try and see what it is.  Let's try to get there first okay?",
+responses: [
+	{
+		inputText: Okay!
+	}
 ]
 }

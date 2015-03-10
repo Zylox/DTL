@@ -9,13 +9,15 @@ import java.util.ArrayList;
 
 import com.badlogic.gdx.utils.Json;
 import com.deeper.than.Event;
+import com.deeper.than.Response;
 	/* 
 	 * Class:	EventWriter.java
 	 * Author:	Nick
 	 * Purpose:	Write event JSON files
 	 */
 public class EventWriter {
-
+	private static final String PATH = "../android/assets/events/";
+	
 	public static void main(String[] args) {
 		System.out.print("Enter the event title: ");
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
@@ -37,13 +39,13 @@ public class EventWriter {
 			ioe.printStackTrace();
 			System.exit(1);
 		}
-		ArrayList<String> inputs = new ArrayList<String>();
+		ArrayList<Response> responses = new ArrayList<Response>();
 		String temp="0";
 		while(!temp.equals("-1")){
 			System.out.print("Enter input response (-1 to exit): ");
 			try{
 				temp=br.readLine();
-				if(!temp.equals("-1")) inputs.add(temp);
+				if(!temp.equals("-1")) responses.add(new Response(temp));
 			} catch (IOException ioe){
 				System.err.println("Error reading inputs...");
 				ioe.printStackTrace();
@@ -51,13 +53,14 @@ public class EventWriter {
 			}
 		}
 		
-		Event event = new Event(title, text, inputs);
+		Event event = new Event(title, text, responses);
 		Json json = new Json();
+		String fileTitle = title.replace(' ', '_');
 		String output = json.prettyPrint(event);
 		System.out.println(output);
 		PrintWriter out;
 		try {
-			out = new PrintWriter("../android/assets/events/"+title+".event");
+			out = new PrintWriter(PATH+fileTitle+".event");
 			out.println(output);
 			out.close();
 		} catch (FileNotFoundException e) {
@@ -65,7 +68,7 @@ public class EventWriter {
 			e.printStackTrace();
 			System.exit(1);
 		}
-		System.out.println("File " + title +".event successfully written!");
+		System.out.println("File " + fileTitle +".event successfully written!");
 	}
 
 }

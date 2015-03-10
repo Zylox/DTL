@@ -1,7 +1,9 @@
 {
-title: "Murky waters",
+title: "Murky Waters",
 text: "You have fallen upon some murky waters.  Your sensors will be disrupted here, battle with caution!",
-inputs: [
-	...okay...
+responses: [
+	{
+		inputText: Okay...
+	}
 ]
 }

@@ -8,12 +8,12 @@ import java.util.ArrayList;
 public class Event {
 	private String	title;
 	private String	text;
-	private ArrayList<String> inputs;
+	private ArrayList<Response> responses;
 	
-	public Event(String title, String text, ArrayList<String> inputs){
+	public Event(String title, String text, ArrayList<Response> responses){
 		setTitle(title);
 		setText(text);
-		setInputs(inputs);
+		setResponses(responses);
 	}
 	
 	public void setTitle(String title){
@@ -24,8 +24,8 @@ public class Event {
 		this.text = text;
 	}
 	
-	public void setInputs(ArrayList<String> inputs){
-		this.inputs = inputs;
+	public void setResponses(ArrayList<Response> responses){
+		this.responses = responses;
 	}
 	
 	public String getTitle(){
@@ -36,7 +36,7 @@ public class Event {
 		return this.text;
 	}
 	
-	public ArrayList<String> getInputs(){
-		return this.inputs;
+	public ArrayList<Response> getInputs(){
+		return this.responses;
 	}
 }

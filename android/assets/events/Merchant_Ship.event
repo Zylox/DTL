@@ -1,8 +1,12 @@
 {
-title: "Merchant ship",
+title: "Merchant Ship",
 text: "On the way down, you come across a sub bearing merchant insignias.  He sends you a radio signal asking if you want to board and see his wares.  What do you do?",
-inputs: [
-	"Let's go shopping!",
-	"No thanks... Maybe another time!"
+responses: [
+	{
+		inputText: "Let's go shopping!"
+	},
+	{
+		inputText: "No thanks, maybe later."
+	}
 ]
 }
