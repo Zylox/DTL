@@ -45,7 +45,15 @@ public class EventWriter {
 			System.out.print("Enter input response (-1 to exit): ");
 			try{
 				temp=br.readLine();
-				if(!temp.equals("-1")) responses.add(new Response(temp));
+				String nextEvent = null;
+				String yn=null;
+				System.out.print("Does this response trigger another event?(y/n): ");
+				yn=br.readLine();
+				if(yn.toLowerCase().startsWith("y")){
+					System.out.print("Enter the title of the event it triggers: ");
+					nextEvent = br.readLine();
+				}
+				if(!temp.equals("-1")) responses.add(new Response(temp, nextEvent));
 			} catch (IOException ioe){
 				System.err.println("Error reading inputs...");
 				ioe.printStackTrace();
