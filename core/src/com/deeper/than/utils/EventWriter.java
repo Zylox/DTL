@@ -45,6 +45,7 @@ public class EventWriter {
 			System.out.print("Enter input response (-1 to exit): ");
 			try{
 				temp=br.readLine();
+				if(temp.equals("-1")) break;
 				String nextEvent = null;
 				String yn=null;
 				System.out.print("Does this response trigger another event?(y/n): ");
