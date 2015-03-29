@@ -62,7 +62,7 @@ public class EventWriter {
 			}
 		}
 		
-		Event event = new Event(title, text, responses);
+		DTLEvent event = new DTLEvent(title, text, responses);
 		Json json = new Json();
 		String fileTitle = title.replace(' ', '_');
 		String output = json.prettyPrint(event);

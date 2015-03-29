@@ -5,7 +5,7 @@ import java.util.ArrayList;
  * Author:	Nick
  */
 
-public class Event {
+public class DTLEvent {
 	private String	title;
 	private String	text;
 	private ArrayList<Response> responses;
