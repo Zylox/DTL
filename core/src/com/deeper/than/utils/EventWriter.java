@@ -8,7 +8,7 @@ import java.io.PrintWriter;
 import java.util.ArrayList;
 
 import com.badlogic.gdx.utils.Json;
-import com.deeper.than.Event;
+import com.deeper.than.DTLEvent;
 import com.deeper.than.Response;
 	/* 
 	 * Class:	EventWriter.java

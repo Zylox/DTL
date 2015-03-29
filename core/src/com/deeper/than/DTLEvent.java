@@ -10,7 +10,7 @@ public class DTLEvent {
 	private String	text;
 	private ArrayList<Response> responses;
 	
-	public Event(String title, String text, ArrayList<Response> responses){
+	public DTLEvent(String title, String text, ArrayList<Response> responses){
 		setTitle(title);
 		setText(text);
 		setResponses(responses);
