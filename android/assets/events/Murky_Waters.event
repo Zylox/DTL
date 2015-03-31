@@ -3,7 +3,8 @@ title: "Murky Waters",
 text: "You have fallen upon some murky waters.  Your sensors will be disrupted here, battle with caution!",
 responses: [
 	{
-		inputText: Okay...
+		inputText: Okay...,
+		triggersEvent: null
 	}
 ]
 }
