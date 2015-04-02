@@ -1,0 +1,14 @@
+{
+title: "Pay_For_Apprentice",
+text: ""Captain, my apprentice is a really good worker, would you be willing to buy him off of me?"",
+responses: [
+	{
+		inputText: "Yes (Gain a new crew member)",
+		triggersEvent: null
+	},
+	{
+		inputText:"No (Leave area)",
+		triggersEvent: null
+	}
+]
+}

@@ -1,0 +1,14 @@
+{
+title: "Ambushed_Shop",
+text: ""We're under attack, Captain if you will save us I'll give you a fine reward."",
+responses: [
+	{
+		inputText: "Yes (Begin combat)",
+		triggersEvent: null
+	},
+	{
+		inputText:"No (Leave them to die a horrible death)",
+		triggersEvent: null
+	}
+]
+}

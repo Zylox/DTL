@@ -1,0 +1,18 @@
+{
+title: "Trapped_NPC",
+text: "You see what seems to be an enemy ship that looks to be trapped under some debris, what do you do?",
+responses: [
+	{
+		inputText: "Attempt to save them",
+		triggersEvent: null
+	},
+	{
+		inputText:"Nothing (Continue to next node),
+		triggersEvent: null
+	},
+	{
+		inputText:"Attack (Begin combat)",
+		triggersEvent: null
+	}
+]
+}

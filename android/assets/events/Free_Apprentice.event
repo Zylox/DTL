@@ -1,0 +1,14 @@
+{
+title: "Free_Apprentice",
+text: ""Captain, I no longer have any need for my apprentice any more, would you consider letting them join your crew?"",
+responses: [
+	{
+		inputText: "Yes (Gain a new crew member)",
+		triggersEvent: null
+	},
+	{
+		inputText:"No (Leave area)",
+		triggersEvent: null
+	}
+]
+}

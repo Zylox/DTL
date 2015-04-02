@@ -1,0 +1,14 @@
+{
+title: "Blind_Ambush",
+text: "You are attacked completely out of nowhere, you were not prepared ;)",
+responses: [
+	{
+		inputText: "Attack (Begin combat)",
+		triggersEvent: null
+	},
+	{
+		inputText:"Try to escape",
+		triggersEvent: null
+	}
+]
+}

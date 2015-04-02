@@ -1,0 +1,18 @@
+{
+title: "Lost_NPC",
+text: ""Friendly ship in unfamiliar area, can someone please assist us with our location?"",
+responses: [
+	{
+		inputText: "Offer to help",
+		triggersEvent: null
+	},
+	{
+		inputText:"Ignore them (Move to next node",
+		triggersEvent: null
+	},
+	{
+		inputText:"Attack (Begin Combat)",
+		triggersEvent: null
+	}
+]
+}

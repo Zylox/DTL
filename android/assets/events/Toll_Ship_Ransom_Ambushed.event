@@ -1,0 +1,14 @@
+{
+title: "Toll_Ship_Ransom_Ambushed",
+text: "Off in the distance you see a shady looking ship that calls out to you saying, "Today is your unlucky day, you can either pay toll and leave, or we will have to take it by force."",
+responses: [
+	{
+		inputText: "Pay Toll (Enemy attacks anyway)",
+		triggersEvent: null
+	},
+	{
+		inputText:"No (Begin Combat)",
+		triggersEvent: null
+	}
+]
+}

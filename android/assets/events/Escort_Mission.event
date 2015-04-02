@@ -1,0 +1,18 @@
+{
+title: "Escort_Mission",
+text: "Hello Captain, it looks like we're heading the same way, would you mind providing us with some assistance?",
+responses: [
+	{
+		inputText: "Yes (Allow the ship to accompany you)",
+		triggersEvent: null
+	},
+	{
+		inputText:"No (Continue to next node),
+		triggersEvent: null
+	},
+	{
+		inputText:"Attack (Begin combat)",
+		triggersEvent: null
+	}
+]
+}

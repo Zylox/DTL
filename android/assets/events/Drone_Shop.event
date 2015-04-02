@@ -1,0 +1,18 @@
+{
+title: "Drone_Shop",
+text: "As you get closer you notice various small drones rotating this ship. When you get within range you are met with, "I've got all the drones you could ever want, all you need is the cash to buy em'."",
+responses: [
+	{
+		inputText: "Yes (Proceeds to open shop)",
+		triggersEvent: null
+	},
+	{
+		inputText: "Sell option (If we want to include this it would just open our inventory)",
+		triggersEvent: null
+	},
+	{
+		inputText:"No (Leave area)",
+		triggersEvent: null
+	}
+]
+}

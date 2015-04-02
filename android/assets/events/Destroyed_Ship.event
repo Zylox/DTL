@@ -1,0 +1,18 @@
+{
+title: "Destroyed_Ship",
+text: "You hear a nearby ship declaring critical damages and calling out for help",
+responses: [
+	{
+		inputText: "Approach the ship (Gain crew members because their ship is beyond repair)",
+		triggersEvent: null
+	},
+	{
+		inputText:"Ignore it (Move to next node)",
+		triggersEvent: null
+	},
+	{
+		inputText:"Attack (Begin Combat, but they're probably defenceless)",
+		triggersEvent: null
+	}
+]
+}
