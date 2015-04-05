@@ -70,7 +70,7 @@ public class ShipPartContainer {
 		rooms.clear();
 		doors.clear();
 		ship.dispose();
-		ship = new Ship(filepath, game);
+		ship = new Ship(filepath, game, DTL.firstOpenId++);
 		shipStage.addActor(ship);
 		ship.setX(Gdx.graphics.getWidth()/2 - ship.getWidth()/2);
 		ship.setY(Gdx.graphics.getHeight()/2 - ship.getHeight()/2);
@@ -88,7 +88,7 @@ public class ShipPartContainer {
 		if(ship != null){
 			ship.remove();
 		}
-		ship = new Ship(getShipString(), game);
+		ship = new Ship(getShipString(), game, ship.getId());
 		shipStage.addActor(ship);
 		ship.setColorizeRooms(colorizeRooms);
 	}

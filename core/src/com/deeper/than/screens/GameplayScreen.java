@@ -45,7 +45,7 @@ public class GameplayScreen implements EnumerableScreen{
 	}
 	
 	private void initializeGame(){
-		ship = new Ship(Gdx.files.internal("ships/" + game.getSelectedShip() +".ship"), game);
+		ship = new Ship(Gdx.files.internal("ships/" + game.getSelectedShip() +".ship"), game, DTL.firstOpenId++);
 		ship.setOrigin(ship.getWidth()/2, ship.getHeight()/2);
 		gameObjects = new Stage(game.getViewport());
 		gameObjects.addActor(tempBackground);

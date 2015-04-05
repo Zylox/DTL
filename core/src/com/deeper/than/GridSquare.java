@@ -1,14 +1,12 @@
 package com.deeper.than;
 
-import java.util.Random;
-
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Batch;
-import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
+import com.deeper.than.crew.Crew;
 
 public class GridSquare extends Group{
 	
@@ -16,6 +14,13 @@ public class GridSquare extends Group{
 	private CellBorder[] borders;
 	private Crew crewMember;
 	private Vector2 pos;
+	
+	private GridSquare pathPointer;
+	private float hValue;
+	private float gValue;
+	private boolean pathClosed;
+	private boolean onClosedList;
+	private boolean onOpenList;
 
 	private Room room;
 	
@@ -26,6 +31,12 @@ public class GridSquare extends Group{
 		tile = null;
 		borders = new CellBorder[4];
 		room = null;
+		pathPointer = null;
+		hValue = 0;
+		gValue = 0;
+		pathClosed = false;
+		onOpenList = false;
+		onClosedList = false;
 		
 		setDebug(DTL.GRAPHICALDEBUG);
 	}
@@ -154,6 +165,14 @@ public class GridSquare extends Group{
 		this.crewMember = crew;
 	}
 	
+	public GridSquare getPathPointer(){
+		return pathPointer;
+	}
+	
+	public void setPathPointer(GridSquare pathPointer){
+		this.pathPointer = pathPointer;
+	}
+	
 	public void setShip(Ship ship){
 		this.ship = ship;
 	}
@@ -181,4 +200,57 @@ public class GridSquare extends Group{
 	public void setPos(Vector2 pos) {
 		this.pos = pos;
 	}
+
+	public float getHValue() {
+		return hValue;
+	}
+
+	public void setHValue(float hValue) {
+		this.hValue = hValue;
+	}
+	
+	public void setHManh(Vector2 dest){
+		float distance = Math.abs(dest.x-pos.x) + Math.abs(dest.y-pos.y);
+		setHValue(distance);
+	}
+
+	public float getGValue() {
+		return gValue;
+	}
+
+	public void setGValue(float gValue) {
+		this.gValue = gValue;
+	}
+	
+	public float getFValue(){
+		return getGValue() + getHValue();
+	}
+
+	public boolean isPathClosed() {
+		return pathClosed;
+	}
+
+	public void setPathClosed(boolean pathClosed) {
+		this.pathClosed = pathClosed;
+	}
+
+	public boolean isOnClosedList() {
+		return onClosedList;
+	}
+
+	public void setOnClosedList(boolean onClosedList) {
+		this.onClosedList = onClosedList;
+	}
+
+	public boolean isOnOpenList() {
+		return onOpenList;
+	}
+
+	public void setOnOpenList(boolean onOpenList) {
+		this.onOpenList = onOpenList;
+	}
+	
+	
+	
+	
 }

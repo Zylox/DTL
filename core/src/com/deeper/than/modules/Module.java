@@ -2,9 +2,9 @@ package com.deeper.than.modules;
 
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.deeper.than.Crew;
 import com.deeper.than.Room;
 import com.deeper.than.Ship;
+import com.deeper.than.crew.Crew;
 
 public abstract class Module {
 	

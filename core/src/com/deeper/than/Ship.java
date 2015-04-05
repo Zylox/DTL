@@ -15,6 +15,7 @@ import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.utils.OrderedMap;
 import com.badlogic.gdx.utils.SnapshotArray;
 import com.deeper.than.Wall.WallType;
+import com.deeper.than.crew.Crew;
 import com.deeper.than.modules.ClimateControlModule;
 import com.deeper.than.modules.HatchControlModule;
 import com.deeper.than.modules.Module;
@@ -30,7 +31,7 @@ public class Ship extends Group{
 	 * A reference to the game for reasons. Don't ask the reasons.
 	 */
 	private DTL game;
-	
+	private int id;
 	/**Name from the script. Not a unique identifier*/
 	protected String name;
 	/**A list of crew owned by this ship.*/
@@ -61,7 +62,7 @@ public class Ship extends Group{
 	 * @param filepath Internal path to the script. ex. "kes.ship".
 	 * @param game Reference to the game object
 	 */
-	public Ship(FileHandle filepath, DTL game){
+	public Ship(FileHandle filepath, DTL game, int id){
 		
 		this.game = game;
 		crew = new ArrayList<Crew>();
@@ -82,7 +83,7 @@ public class Ship extends Group{
 		init();
 	}
 	
-	public Ship(String script, DTL game){
+	public Ship(String script, DTL game, int id){
 		
 		this.game = game;
 		crew = new ArrayList<Crew>();
@@ -446,6 +447,18 @@ public class Ship extends Group{
 		}
 	}
 	
+	public GridSquare[][] getLayoutCopy(){
+		GridSquare[][] copy = new GridSquare[layout.length][];
+		
+		for(int i = 0; i>layout.length; i++){
+			GridSquare[] copyRow = layout[i];
+			copy[i] = new GridSquare[copyRow.length];
+			System.arraycopy(copyRow, 0, copy[i], 0, copyRow.length);
+		}
+		
+		return copy;
+	}
+	
 	public void dispose(){
 		texAtl.dispose();
 	}
@@ -571,6 +584,10 @@ public class Ship extends Group{
 	
 	public int getHighestModuleID(){
 		return highestModuleId;
+	}
+	
+	public int getId(){
+		return id;
 	}
 	
 	/**

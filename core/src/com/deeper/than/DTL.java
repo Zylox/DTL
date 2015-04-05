@@ -34,6 +34,8 @@ public class DTL extends Game {
 	
 	public static long startTime;
 	
+	public static int firstOpenId = 0;
+	
 	public DTL(int frameTarget){
 		DTL.frameTarget = frameTarget;
 	}

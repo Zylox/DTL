@@ -7,6 +7,7 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.deeper.than.Wall.WallType;
+import com.deeper.than.crew.Crew;
 import com.deeper.than.modules.HatchControlModule;
 
 public class Door extends CellBorder{
@@ -188,6 +189,18 @@ public class Door extends CellBorder{
 		}
 		return  false;
 	}	
+	
+	public boolean isOpenableByCrewMem(Crew crewMem){
+		boolean isEnemy = false;
+		if(crewMem.getOwnerShipId() != ship.getId()){
+			isEnemy = true;
+		}
+		if(!hatchControl.canControlDoors() || (isEnemy && !hatchControl.canEnemiesUseDoors())){
+			return false;
+		}
+		
+		return true;
+	}
 		
 	public void setHatchControlModule(HatchControlModule hcm){
 		this.hatchControl = hcm;
