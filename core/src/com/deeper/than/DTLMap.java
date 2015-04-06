@@ -5,11 +5,11 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class DTLMap {
-	//list of every point on the current map
+	//list of every node on the current map
 	private ArrayList<DTLMapPoint> nodes = new ArrayList<DTLMapPoint>();
-	//current level, starts at 1
+	//current level, first is 1
 	private int level;
-	//lattice of connection of nodes, not set up until nodes are set up
+	//lattice of connection of nodes, not set up until after nodes are set up
 	private Map<Integer,Integer> lattice = new HashMap<Integer,Integer>();
 	
 	public DTLMap(int level){

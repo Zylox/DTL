@@ -1,10 +1,10 @@
 package com.deeper.than;
 
 public class DTLMapPoint {
-	//x and y coords of where on the map the point will be
+	//x and y coords of where on the map the node will be
 	private int x;
 	private int y;
-	//The filename of the Event that will be triggered by going to this point
+	//The filename of the Event that will be triggered by going to this node
 	private String event;
 	//false by default, true if player has been to node already
 	private boolean visited;

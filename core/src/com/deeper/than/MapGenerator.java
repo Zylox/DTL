@@ -59,12 +59,9 @@ public class MapGenerator {
 			
 			//add the node to the map
 			map.addNode(new DTLMapPoint(x,y,event));
-			
-			//generates the connections between all the nodes
-			generateLattice();
 		}
-		
-		
+		//generates the connections between all the nodes
+		generateLattice();
 	}
 	
 	public void generateLattice(){
