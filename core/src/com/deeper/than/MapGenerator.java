@@ -15,8 +15,8 @@ public class MapGenerator {
 		level++;
 		map = new DTLMap(level);
 		
-		//this little block declares how many nodes will be on this map. minPoints is the minimum number of
-		//nodes that can be generated, and minPoints+variance is the max number of nodes that can be generated
+		//this block declares how many nodes will be on this map. minPoints is the minimum number of nodes
+		//that can be generated, and minPoints+variance is the max number of nodes that can be generated
 		double minPoints = 20.0;
 		double variance = 10.0;
 		int size = (int) ( (variance * Math.random()) + minPoints );
@@ -27,7 +27,7 @@ public class MapGenerator {
 			int x,y,xMax,yMax,xMin,yMin;
 			
 			//this block decides which event to assign to a node
-			//this should be mostly random, with the Welcome_to_DTL.event added for the very first node of the game
+			//this should be mostly random, with the Welcome_to_DTL.event added to the very first node of the game
 			if(i==0 && level==1)
 				event="Welcome_to_DTL.event";
 			else{
@@ -76,7 +76,7 @@ public class MapGenerator {
 		this.level=0;
 	}
 	
-	public void resetMap(){
+	private void resetMap(){
 		map = null;
 	}
 }
