@@ -8,6 +8,7 @@ public class DTLMap {
 	
 	public DTLMap(int level){
 		setLevel(level);
+		nodes.clear();
 	}
 	
 	public int getLevel(){
