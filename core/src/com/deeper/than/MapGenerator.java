@@ -11,7 +11,7 @@ public class MapGenerator {
 	
 	public void generate(){
 		//this block initializes the map object
-		this.resetMap();
+		resetMap();
 		level++;
 		map = new DTLMap(level);
 		
@@ -59,9 +59,58 @@ public class MapGenerator {
 			
 			//add the node to the map
 			map.addNode(new DTLMapPoint(x,y,event));
+			
+			//generates the connections between all the nodes
+			generateLattice();
 		}
 		
 		
+	}
+	
+	public void generateLattice(){
+		//how far away things should and still be connected
+		int range=50;
+		int size=map.getNodes().size();
+		
+		for(int i=0; i<size ;i++){
+			int ix = map.getNodes().get(i).getX();
+			int iy = map.getNodes().get(i).getY();
+			//keep track if a node is orphaned or not
+			boolean connected=false;
+			
+			for(int j=i+1; j<size ;j++){
+				int jx = map.getNodes().get(j).getX();
+				int jy = map.getNodes().get(j).getY();
+				
+				//if two nodes are within range of each other connect them
+				if(Math.abs(ix-jx) < range && Math.abs(iy-jy) < range){
+					connected=true;
+					map.addConnection(i, j);
+					map.addConnection(j, i);
+				}
+			}
+			//if a node is orphaned, connect it to its nearest neighbor
+			if(!connected){
+				//nearest is the physically nearest node, distance is how many units away it is
+				int nearest=0;
+				int distance=Integer.MAX_VALUE;
+				
+				//find the nearest neighbor
+				for(int j=0;j<size;j++){
+					int jx = map.getNodes().get(j).getX();
+					int jy = map.getNodes().get(j).getY();
+					
+					//logic for keeping track of the nearest neighbor, distance starts at MAX_VALUE,
+					//so it is guaranteed to be entered at least once
+					if(Math.abs(ix-jx)+Math.abs(iy-jy)<distance){
+						distance=Math.abs(ix-jx)+Math.abs(iy-jy);
+						nearest=j;
+					}
+				}
+				map.addConnection(i, nearest);
+				map.addConnection(nearest, i);
+			}
+		}
 	}
 	
 	public int getLevel(){
