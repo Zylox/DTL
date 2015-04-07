@@ -1,0 +1,18 @@
+{
+title: "No_Fuel_NPC",
+text: ""Someone please help, we have ran out of fuel and are unable to continue onward."",
+responses: [
+	{
+		inputText: "Offer to help",
+		triggersEvent: null
+	},
+	{
+		inputText:"Ignore them (Move to next node",
+		triggersEvent: null
+	},
+	{
+		inputText:"Attack (Begin Combat)",
+		triggersEvent: null
+	}
+]
+}

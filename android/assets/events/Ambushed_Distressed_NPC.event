@@ -1,0 +1,14 @@
+{
+title: "Ambushed_Distressed_NPC",
+text: "As you're approaching the distressed ship you are shot in the side by another ship! It's an ambush, they must have also heard the distress signal!",
+responses: [
+	{
+		inputText: "Attack (Begin Combat)",
+		triggersEvent: null
+	},
+	{
+		inputText:"Try to escape",
+		triggersEvent: null
+	}
+]
+}

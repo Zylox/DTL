@@ -1,0 +1,18 @@
+{
+title: "One_Item_Shop",
+text: "As you arrive you see a lone man and he says, "It's you're lucky day, I only have one thing left and I'm looking to sell it soon. You want to have a look?"",
+responses: [
+	{
+		inputText: "Yes (Proceeds to open shop)",
+		triggersEvent: null
+	},
+	{
+		inputText: "Sell option (If we want to include this it would just open our inventory)",
+		triggersEvent: null
+	},
+	{
+		inputText:"No (Leave area)",
+		triggersEvent: null
+	}
+]
+}

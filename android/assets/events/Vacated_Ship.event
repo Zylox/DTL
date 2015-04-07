@@ -1,0 +1,18 @@
+{
+title: "Vacated_Ship",
+text: "The ship has its distress beacon on, but there's nothing on the radio.",
+responses: [
+	{
+		inputText: "Approach the ship (Attempt to loot it)",
+		triggersEvent: null
+	},
+	{
+		inputText:"Ignore it (Move to next node)",
+		triggersEvent: null
+	},
+	{
+		inputText:"Attack (Begin Combat/But ship is empty)",
+		triggersEvent: null
+	}
+]
+}

@@ -1,0 +1,18 @@
+{
+title: "Damaged_NPC",
+text: ""Calling for repairs, our engine is badly damaged and we are unable to proceed."",
+responses: [
+	{
+		inputText: "Offer to help",
+		triggersEvent: null
+	},
+	{
+		inputText:"Ignore them (Move to next node",
+		triggersEvent: null
+	},
+	{
+		inputText:"Attack (Begin Combat)",
+		triggersEvent: null
+	}
+]
+}

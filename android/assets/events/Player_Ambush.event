@@ -1,0 +1,18 @@
+{
+title: "Player_Ambush",
+text: "You see what seems to be an enemy ship that hasn't noticed you yet, what do you do?",
+responses: [
+	{
+		inputText: "Attack (Begin combat)",
+		triggersEvent: null
+	},
+	{
+		inputText:"Let them pass by",
+		triggersEvent: null
+	},
+	{
+		inputText:"Demand ransom (Try to get a currency/crew member payment)",
+		triggersEvent: null
+	}
+]
+}

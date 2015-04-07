@@ -1,0 +1,14 @@
+{
+title: "Fake_Merchant",
+text: "As you move closer to the merchant ship it turns and fires at you!",
+responses: [
+	{
+		inputText: "Attack (Begin combat)",
+		triggersEvent: null
+	},
+	{
+		inputText:"Try to escape",
+		triggersEvent: null
+	}
+]
+}

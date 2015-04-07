@@ -1,0 +1,18 @@
+{
+title: "Treasure_Mission",
+text: "Hello Captain, in my possession I have an incredibly rare treasure map that I'd be willing to sell to you. Are you interested in purchasing it?",
+responses: [
+	{
+		inputText: "Yes (Buy the map)",
+		triggersEvent: null
+	},
+	{
+		inputText:"No (Continue to next node),
+		triggersEvent: null
+	},
+	{
+		inputText:"Attack (Begin combat)",
+		triggersEvent: null
+	}
+]
+}

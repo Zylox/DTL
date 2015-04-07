@@ -1,0 +1,14 @@
+{
+title: "Merchant Ship",
+text: "On the way down, you come across a sub bearing merchant insignias.  He sends you a radio signal asking if you want to board and see his wares.  What do you do?",
+responses: [
+	{
+		inputText: Okay!,
+		triggersEvent: store.event
+	},
+	{
+		inputText: "Maybe another time...",
+		triggersEvent: null
+	}
+]
+}

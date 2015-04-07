@@ -1,0 +1,14 @@
+{
+title: "Hired_Shopkeep",
+text: ""I could maybe be of some service to you. All that I ask for is fair pay."",
+responses: [
+	{
+		inputText: "Yes (Gain a new crew member)",
+		triggersEvent: null
+	},
+	{
+		inputText:"No (Leave area)",
+		triggersEvent: null
+	}
+]
+}

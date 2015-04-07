@@ -1,0 +1,18 @@
+{
+title: "Delivery_Mission",
+text: "Hello Captain, would you be interested in delivering this package for us?",
+responses: [
+	{
+		inputText: "Yes (Take the package with you)",
+		triggersEvent: null
+	},
+	{
+		inputText:"No (Continue to next node),
+		triggersEvent: null
+	},
+	{
+		inputText:"Attack (Begin combat)",
+		triggersEvent: null
+	}
+]
+}

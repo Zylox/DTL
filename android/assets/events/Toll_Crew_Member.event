@@ -1,0 +1,18 @@
+{
+title: "Toll_Crew_Member",
+text: "You are stopped by a ship and they yell the demand, "If you want us to leave you alone you'll have to hand over your most valuable member."",
+responses: [
+	{
+		inputText: "Yes (Choose a crew member to forfeit)",
+		triggersEvent: null
+	},
+	{
+		inputText:"No (Begin Combat)",
+		triggersEvent: null
+	},
+	{
+		inputText:"Attack (Begin Combat)",
+		triggersEvent: null
+	}
+]
+}

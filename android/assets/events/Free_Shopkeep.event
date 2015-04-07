@@ -1,0 +1,14 @@
+{
+title: "Free_Shopkeep",
+text: ""I have always wanted to travel the ocean. I will gladly join your crew if you will have me."",
+responses: [
+	{
+		inputText: "Yes (Gain a new crew member)",
+		triggersEvent: null
+	},
+	{
+		inputText:"No (Leave area)",
+		triggersEvent: null
+	}
+]
+}

@@ -1,0 +1,14 @@
+{
+title: template,
+text: "This is the main text that goes in the pop up window",
+responses: [
+	{
+		inputText: "Input option 1",
+		triggersEvent: null
+	},
+	{
+		inputText: "Input option 2 (triggers the event Welcome_to_DTL.event)",
+		triggersEvent: Welcome_to_DTL.event
+	}
+]
+}
