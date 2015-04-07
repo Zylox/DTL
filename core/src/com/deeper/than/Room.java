@@ -13,6 +13,9 @@ import com.deeper.than.modules.SensorsModule;
  */
 public class Room {
 	
+	//start swimming at 50%
+	public static final float SWIM_THRESHOLD = .5f;
+	
 	//Initial constants
 	private static final float BASETEMP = 50;
 	private static final float BASEPRESSURE = 50;
@@ -170,6 +173,13 @@ public class Room {
 			
 		
 		
+	}
+	
+	public boolean isWaterSwimHeight(){
+		if(getWaterLevel()/100 > SWIM_THRESHOLD){
+			return true;
+		}
+		return false;
 	}
 	
 	public void addLink(Room room, Door door){

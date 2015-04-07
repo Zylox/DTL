@@ -2,9 +2,11 @@ package com.deeper.than.crew;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.List;
 
-import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.g2d.Animation;
+import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Action;
 import com.badlogic.gdx.scenes.scene2d.Actor;
@@ -12,6 +14,7 @@ import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.deeper.than.CellBorder;
 import com.deeper.than.DTL;
 import com.deeper.than.Door;
+import com.deeper.than.FloorTile;
 import com.deeper.than.GridSquare;
 import com.deeper.than.Neighbors;
 import com.deeper.than.NoWall;
@@ -24,6 +27,7 @@ public abstract class Crew extends Actor{
 	private static final float DIAGONAL_MOVE = 14;
 	private static final float SQUARE_MOVE = 10;
 	
+	
 	private static final String crewImage = "firstDraftHuman.png";
 
 	private Ship ownerShip;
@@ -31,23 +35,59 @@ public abstract class Crew extends Actor{
 	private Room room;
 	private Vector2 tilePos;
 	private String name;
-	private Sprite crewSprite;
 	private int direction;
+	private float stateTime;
+	private Races race;
 	private ArrayList<Vector2> moves;
 	private boolean moving;
 	
 	private ArrayList<GridSquare> openList;
 	private ArrayList<GridSquare> closedList;
 		
-	public Crew(String name, Ship ship){
+	public Crew(String name, Races race, Ship ship){
 		this.ownerShip = ship;
 		this.occupiedShip = ship;
 		this.name = name;
 		moving = false;
+		moves = new ArrayList<Vector2>();
+		direction = Neighbors.DOWN;
+		stateTime = 0;
+	}
+	
+
+	
+	public void update(){
+		setNextMove();
+	}
+	
+	@Override
+	public void draw(Batch batch, float parentAlpha){
+		float delta = Gdx.graphics.getDeltaTime();
+		stateTime += delta;
+		batch.draw(getFrame(stateTime, direction), getX(), getY(), getOriginX(), getOriginY(), getWidth(), getHeight(), getScaleX(), getScaleY(), getRotation());
+	}
+	
+	private TextureRegion getFrame(float stateTime, int direction){
+		if(direction == Neighbors.UP){
+			return race.getUpAnim().getKeyFrame(stateTime, true);
+		}
+		if(direction == Neighbors.DOWN){
+			race.getDownAnim().getKeyFrame(stateTime, true);
+		}
+		
+		if(direction == Neighbors.LEFT){
+			race.getLeftAnim().getKeyFrame(stateTime, true);
+		}
+		
+		if(direction == Neighbors.RIGHT){
+			race.getRightAnim().getKeyFrame(stateTime, true);
+		}
+		
+		return null;
 	}
 	
 	public void moveTo(Vector2 tile){
-		moves = aStarfindPath(tilePos, tile);
+		moves = aStarFindPath(tilePos, tile);
 	}
 	
 	private void setNextMove(){
@@ -55,8 +95,43 @@ public abstract class Crew extends Actor{
 		if(moves.isEmpty()) return;
 		Vector2 move = moves.remove(0);
 		if(isWalkable(tilePos, move)){
-			moveTo(move);
+			int xDiff = (int) (move.x - tilePos.x);
+			int yDiff = (int) (move.y - tilePos.y);
+			float moveFactor;
+			float speedRatio;
+			if(xDiff != 0 && yDiff != 0){
+				moveFactor = DIAGONAL_MOVE/10;
+			}else{
+				moveFactor = SQUARE_MOVE/10;
+			}
+			if(yDiff == -1){
+				direction = Neighbors.DOWN;
+			}else if(yDiff == 1){
+				direction = Neighbors.UP;
+			}
+			
+			//This will overide changes due to Y. This is intentional.
+			//We dont have a diagonal movement anim, so any diagonal movement will be represented by a side movement.
+			if(xDiff == -1){
+				direction = Neighbors.LEFT;
+			}else if(xDiff == 1){
+				direction = Neighbors.RIGHT;
+			}
+			
+			GridSquare[][] layout = occupiedShip.getLayout();
+			if(layout[(int)tilePos.y][(int)tilePos.x].getRoom().isWaterSwimHeight()){
+				speedRatio= race.getSwimRatio();
+			}else{
+				speedRatio = race.getWalkRatio();
+			}
+			stateTime = 0;
+			this.addAction(Actions.sequence(Actions.moveTo(move.x*FloorTile.TILESIZE+FloorTile.TILESIZE/2, move.y*FloorTile.TILESIZE+FloorTile.TILESIZE/2, moveFactor * speedRatio), new SetTile(move)));
 			moving = true;
+		}else{
+			move = moves.get(moves.size()-1);
+			moves.clear();
+			moves = aStarFindPath(tilePos, move);
+			setNextMove();
 		}
 	}
 	
@@ -112,7 +187,7 @@ public abstract class Crew extends Actor{
 	
 
 	
-	private ArrayList<Vector2> aStarfindPath(Vector2 start, Vector2 end){
+	private ArrayList<Vector2> aStarFindPath(Vector2 start, Vector2 end){
 		GridSquare[][] layout = occupiedShip.getLayout();
 		openList = new ArrayList<GridSquare>();
 		closedList = new ArrayList<GridSquare>();
@@ -136,11 +211,11 @@ public abstract class Crew extends Actor{
 		currSq.setPathPointer(null);
 		addToOpen(currSq);
 		
-		
+		ArrayList<Vector2> moves = new ArrayList<Vector2>();
 		while(true){
 			if(openList.isEmpty()){
 				DTL.printDebug("no path");
-				return null;
+				return moves;
 			}
 			currSq = popSmallest(openList);
 			addToClosed(currSq);
@@ -159,7 +234,7 @@ public abstract class Crew extends Actor{
 		
 		
 		
-		ArrayList<Vector2> moves = new ArrayList<Vector2>();
+		
 		while(currSq.getPathPointer() != null){
 			moves.add(currSq.getPos());
 			currSq = currSq.getPathPointer();
