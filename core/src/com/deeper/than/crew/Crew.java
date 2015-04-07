@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -30,9 +31,9 @@ public class Crew extends Actor{
 	private static final float LARGE_ENOUGH = 999999999;
 	private static final float DIAGONAL_MOVE = 14;
 	private static final float SQUARE_MOVE = 10;
-	public static final int CREW_HEIGHT = 64;
-	public static final int CREW_WIDTH = 64;
-	public static final float SCALE = 2f;
+	public static final int CREW_HEIGHT = FloorTile.TILESIZE;
+	public static final int CREW_WIDTH = FloorTile.TILESIZE;
+	public static final float SCALE = 1.5f;
 
 	private Ship ownerShip;
 	private Ship occupiedShip;
@@ -45,6 +46,7 @@ public class Crew extends Actor{
 	private ArrayList<Vector2> moves;
 	private boolean moving;
 	private Door doorToClose;
+	private float health;
 	
 	private ArrayList<GridSquare> openList;
 	private ArrayList<GridSquare> closedList;
@@ -54,6 +56,7 @@ public class Crew extends Actor{
 		this.occupiedShip = ship;
 		this.name = name;
 		this.race = race;
+		health = race.getHealth();
 		moving = false;
 		moves = new ArrayList<Vector2>();
 		direction = Neighbors.DOWN;
@@ -92,7 +95,13 @@ public class Crew extends Actor{
 		}else{
 			stateTime = Races.FRAME_TIME;
 		}
-		batch.draw(getFrame(stateTime, direction), getX(), getY(), getOriginX(), getOriginY(), getWidth(), getHeight(), getScaleX(), getScaleY(), getRotation());
+		TextureRegion tex = getFrame(stateTime, direction);
+		tex.getTexture().setFilter(TextureFilter.Linear, TextureFilter.Linear);
+		batch.draw(tex, getX(), getY(), getOriginX(), getOriginY(), getWidth(), getHeight(), getScaleX(), getScaleY(), getRotation());
+	}
+	
+	public TextureRegion getIcon(){
+		return getFrame(stateTime, Neighbors.DOWN);
 	}
 	
 	private TextureRegion getFrame(float stateTime, int direction){
@@ -154,9 +163,9 @@ public class Crew extends Actor{
 			
 			GridSquare[][] layout = occupiedShip.getLayout();
 			if(layout[(int)tilePos.y][(int)tilePos.x].getRoom().isWaterSwimHeight()){
-				speedRatio= race.getSwimRatio();
+				speedRatio= 1/race.getSwimRatio();
 			}else{
-				speedRatio = race.getWalkRatio();
+				speedRatio = 1/race.getWalkRatio();
 			}
 			stateTime = 0;
 			layout[(int)move.y][(int)move.x].setCrewMember(this);
@@ -167,8 +176,10 @@ public class Crew extends Actor{
 			moving = true;
 		}else{
 			System.out.println(moves.toString());
-			move = moves.get(moves.size()-1);
-			moves.clear();
+			if(moves.size() != 0){
+				move = moves.get(moves.size()-1);
+				moves.clear();
+			}
 			moves = aStarFindPath(tilePos, move);
 			setNextMove();
 		}
@@ -556,14 +567,18 @@ public class Crew extends Actor{
 		return newSquare;
 	}
 	
-	public void draw(){
-		
-	}
-	
 	private void setTilePos(Vector2 tilePos){
 		this.tilePos = tilePos;
 	}
 	
+	public float getHealth() {
+		return health;
+	}
+
+	public void setHealth(float health) {
+		this.health = health;
+	}
+
 	public Room getRoom(){
 		return room;
 	}

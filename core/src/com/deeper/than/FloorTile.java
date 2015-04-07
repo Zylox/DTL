@@ -19,7 +19,7 @@ import com.deeper.than.screens.Screens;
  */
 public class FloorTile extends Actor{
 	
-	public static final int TILESIZE = 64;
+	public static final int TILESIZE = 32;
 	protected Vector2 pos;
 	private GridSquare gridSquare;
 	

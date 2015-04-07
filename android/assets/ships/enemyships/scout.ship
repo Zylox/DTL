@@ -1,0 +1,20 @@
+name= scout
+xDim= 4
+yDim= 5
+floortileimg= floortile.png
+doorimg= door.pack
+layout=
+{0,0 1,0}
+{0,1 0,2} , EngineModule , 1
+{1,1 1,2}
+{0,3 1,3} , ClimateControlModule , 1
+{2,1 2,2 3,2 3,1}
+{4,1 4,2} , BridgeModule , 1
+endlayout
+doors=
+{0,0 right}
+{0,2 up}
+{0,2 right}
+{1,1 up}
+{3,2 up}
+enddoors

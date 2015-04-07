@@ -70,7 +70,7 @@ public class ShipPartContainer {
 		rooms.clear();
 		doors.clear();
 		ship.dispose();
-		ship = new Ship(filepath, game, DTL.firstOpenId++);
+		ship = new Ship(filepath, true, game, DTL.firstOpenId++);
 		shipStage.addActor(ship);
 		ship.setX(Gdx.graphics.getWidth()/2 - ship.getWidth()/2);
 		ship.setY(Gdx.graphics.getHeight()/2 - ship.getHeight()/2);

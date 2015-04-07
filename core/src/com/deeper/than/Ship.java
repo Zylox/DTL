@@ -58,13 +58,15 @@ public class Ship extends Group{
 	private int wallIdCounter;
 	private int highestModuleId = -1;
 	private boolean colorizeRooms = false;
+	private float health;
+	private boolean isPlayerShip;
 	
 	/**
 	 * Creates a ship based on the shipScript added in.
 	 * @param filepath Internal path to the script. ex. "kes.ship".
 	 * @param game Reference to the game object
 	 */
-	public Ship(FileHandle filepath, DTL game, int id){
+	public Ship(FileHandle filepath, boolean isPlayerShip, DTL game, int id){
 		
 		this.game = game;
 		crew = new ArrayList<Crew>();
@@ -72,6 +74,7 @@ public class Ship extends Group{
 		rooms = new ArrayList<Room>();
 		walls = new OrderedMap<Integer, CellBorder>();
 		modules = new ArrayList<Module>();
+		this.isPlayerShip = isPlayerShip;
 		
 		try {
 			//Pulls a parser from the parser pool and loads the script
@@ -221,10 +224,16 @@ public class Ship extends Group{
 			int x = FloorTile.TILESIZE*layout[0].length;
 			int y = FloorTile.TILESIZE*layout.length;
 			
-			setBounds(game.getViewport().getWorldWidth()/2 - x/2,game.getViewport().getWorldHeight()/2 - y/2, x, y);
+			if(isPlayerShip){
+				setBounds(game.getViewport().getWorldWidth()/3 - x/2,game.getViewport().getWorldHeight()/2 - y/2, x, y);
+			}
+			
+			health = 100;
 			
 			loadAssets();
 	}
+	
+	//public
 	
 	/**
 	 * Takes in a gridSquare and a door taht is on it, then reflects it and adds it to the coorsponding neighbor.
@@ -611,6 +620,27 @@ public class Ship extends Group{
 		return highestModuleId;
 	}
 	
+	public float getHealth() {
+		return health;
+	}
+
+	public void setHealth(float health) {
+		this.health = health;
+	}
+	
+	public int getSheildSections(){
+		//TODO
+		return 5;
+	}
+
+	public boolean isPlayerShip() {
+		return isPlayerShip;
+	}
+
+	public void setPlayerShip(boolean isPlayerShip) {
+		this.isPlayerShip = isPlayerShip;
+	}
+
 	public int getId(){
 		return id;
 	}

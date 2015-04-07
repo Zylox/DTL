@@ -2,20 +2,24 @@ package com.deeper.than.screens;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.Input.Buttons;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.InputProcessor;
-import com.badlogic.gdx.Input.Buttons;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.deeper.than.DTL;
-import com.deeper.than.Ship;
+import com.deeper.than.EnemyShip;
+import com.deeper.than.PlayerShip;
 import com.deeper.than.Wall;
 import com.deeper.than.crew.Crew;
 import com.deeper.than.crew.Races;
 import com.deeper.than.modules.Modules;
+import com.deeper.than.ui.CrewPlate;
+import com.deeper.than.ui.UITopBar;
 
 public class GameplayScreen implements EnumerableScreen{
 	
@@ -25,9 +29,10 @@ public class GameplayScreen implements EnumerableScreen{
 	private DTL game;
 	private Stage ui;
 	private Stage gameObjects;
-	private Ship playerShip;
+	private PlayerShip playerShip;
 	private float timeAccumulator;
 	private Crew selectedCrew;
+	private EnemyShip enemy;
 	
 	private InputMultiplexer input;
 
@@ -51,14 +56,40 @@ public class GameplayScreen implements EnumerableScreen{
 		highlight = new Texture(Gdx.files.internal("pixel.png"));
 	}
 	
+	/**
+	 * 
+	 */
 	private void initializeGame(){
-		playerShip = new Ship(Gdx.files.internal("ships/" + game.getSelectedShip() +".ship"), game, DTL.firstOpenId++);
-		playerShip.setOrigin(playerShip.getWidth()/2, playerShip.getHeight()/2);
+		playerShip = new PlayerShip(Gdx.files.internal("ships/" + game.getSelectedShip() +".ship"), true, game, DTL.firstOpenId++);
+		//playerShip.setOrigin(playerShip.getWidth()/2, playerShip.getHeight()/2);
 		gameObjects = new Stage(game.getViewport());
+		
 		gameObjects.addActor(tempBackground);
 		gameObjects.addActor(playerShip);
+		enemy = new EnemyShip(Gdx.files.internal("ships/enemyships/scout.ship") , game, DTL.firstOpenId++);
+		
+		
+		
+		ui = new Stage(game.getViewport());
+		
+		Table uiT = new Table();
+		uiT.setFillParent(true);
+		uiT.add(new UITopBar(playerShip)).expandX().top();
+		uiT.row();
+		for(Crew c : playerShip.getCrew()){
+			uiT.add(new CrewPlate(c)).prefHeight(Crew.CREW_HEIGHT/Crew.SCALE).prefWidth(Crew.CREW_WIDTH/Crew.SCALE).left();
+			uiT.row();
+		}
+		
+		uiT.add().expand();
+		
+		
+		ui.addActor(uiT);
+		
+		ui.setDebugAll(DTL.GRAPHICALDEBUG);
 		
 		input = new InputMultiplexer();
+		input.addProcessor(ui);
 		input.addProcessor(gameObjects);
 		input.addProcessor(new InputProcessor() {
 			
@@ -146,12 +177,14 @@ public class GameplayScreen implements EnumerableScreen{
 	    timeAccumulator += delta;
 	    if(timeAccumulator > DTL.getFrameTime()){
 	    	playerShip.update();
+	    	ui.act();
 	    	gameObjects.act();
 	    	timeAccumulator -= DTL.getFrameTime();
 	    }
 	    
 	   ////Rendering goes here
 	    gameObjects.draw();
+	    ui.draw();
 	    
 
 	    
