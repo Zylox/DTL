@@ -10,6 +10,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 public enum Races {
 	HUMAN("human", 1f, .6f, 50, 75, 5, 100, 1.1f, 1f);
 	
+	
 	public static final String[] humanNames = {"Bob", "Jeb", "Steve"};
 	
 	public static float FRAME_TIME = .5f;
@@ -50,16 +51,30 @@ public enum Races {
 	}
 	
 	private void constructAnims(){
-		
+		String folder;
 		if(race.equals("human")){
-			String folder = "crew/HumanMale/";
-			
-			downAnim = conAnim(folder+"firstDraftHumanFrontStep1.png",folder+"firstDraftHumanFront.png", folder+"firstDraftHumanFrontStep2.png" );
+			folder = "crew/HumanMale/firstDraftHuman";
+			/*downAnim = conAnim(folder+"firstDraftHumanFrontStep1.png",folder+"firstDraftHumanFront.png", folder+"firstDraftHumanFrontStep2.png" );
 			upAnim = conAnim(folder+"firstDraftHumanBackStep1.png",folder+"firstDraftHumanBack.png", folder+"firstDraftHumanBackStep2.png" );
 			rightAnim = conAnim(folder+"firstDraftHumanFaceRightStep1.png",folder+"firstDraftHumanFaceRight.png", folder+"firstDraftHumanFaceRightStep2.png" );
-			leftAnim = conAnim(folder+"firstDraftHumanFaceLeftStep1.png",folder+"firstDraftHumanFaceLeft.png", folder+"firstDraftHumanFaceLeftStep2.png" );
+			leftAnim = conAnim(folder+"firstDraftHumanFaceLeftStep1.png",folder+"firstDraftHumanFaceLeft.png", folder+"firstDraftHumanFaceLeftStep2.png" );*/
+		} else if(race.equals("tekdrone")){
+			folder = "TekDrone/TekDrone";
+		} else if(race.equals("glacien")){
+			folder = "Glacien/glacien";
+		} else if(race.equals("scail")){
+			folder = "Scail/scail";
+		} else if(race.equals("mur")){
+			folder = "Mur/Mur";
+		} else if(race.equals("illumi")){
+			folder = "Illumi/illumi";
+		} else{
+			folder = "Gogor/gogor";
 		}
-		
+		downAnim = conAnim(folder+"FrontStep1.png",folder+"Front.png", folder+"FrontStep2.png" );
+		upAnim = conAnim(folder+"BackStep1.png",folder+"Back.png", folder+"BackStep2.png" );
+		rightAnim = conAnim(folder+"FaceRightStep1.png",folder+"FaceRight.png", folder+"FaceRightStep2.png" );
+		leftAnim = conAnim(folder+"FaceLeftStep1.png",folder+"FaceLeft.png", folder+"FaceLeftStep2.png" );
 	}
 	
 	public String getRandomName(){
