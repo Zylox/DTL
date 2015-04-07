@@ -3,12 +3,14 @@ package com.deeper.than;
 import java.util.Random;
 
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.Colors;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
-import com.badlogic.gdx.scenes.scene2d.InputListener;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.deeper.than.crew.Crew;
+import com.deeper.than.screens.GameplayScreen;
+import com.deeper.than.screens.Screens;
 
 /**
  * A ship's floortiles. Extends Actor
@@ -33,18 +35,34 @@ public class FloorTile extends Actor{
 		this(new Vector2(x,y), gridSquare);
 	}
 	
+
+	
 	/**
 	 * Generates a floortile contained by gridsquare at index pos.
 	 * @param pos Grid position within thips the floortile is at
 	 * @param gridSquare gridsquare that owns this tile.
 	 */
-	public FloorTile(Vector2 pos, GridSquare gridSquare){
+	public FloorTile(Vector2 pos, final GridSquare gridSquare){
 		this.pos = pos;
 		this.gridSquare = gridSquare;
 
-		addListener(new InputListener() {
+		addListener(new ClickListener() {
+			public void enter(InputEvent event, float x, float y, int pointer, Actor fromActor){
+				gridSquare.getRoom().setHoveredOver(true);
+			}
+			public void exit(InputEvent event, float x, float y, int pointer, Actor toActor){
+				gridSquare.getRoom().setHoveredOver(false);
+			}
+			
 			public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
 				printCoords();
+				
+				Crew crew = ((GameplayScreen)Screens.GAMEPLAY.getScreen()).getSelectedCrew();
+				if(crew != null){
+					crew.moveTo(gridSquare.getRoom().selectTileToWalkTo().getPos());
+					((GameplayScreen)Screens.GAMEPLAY.getScreen()).setSelectedCrew(null);
+				}
+			
 				return true;
 		    }
 		});
@@ -78,6 +96,7 @@ public class FloorTile extends Actor{
 		}
 		batch.draw(ship.getFloorTileImg(), getX(), getY(), getOriginX(), getOriginY(), getWidth(), getHeight(), getScaleX(), getScaleY(), getRotation());
 		batch.setColor(color);
+		
 		//DTL.font.draw(batch, Float.toString(gridSquare.getRoom().getWaterLevel()), getWidth()/2, getHeight()/2);
 	}
 	

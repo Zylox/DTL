@@ -8,11 +8,14 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Pool;
 import com.badlogic.gdx.utils.Pool.Poolable;
-import com.deeper.than.modules.*;
+import com.deeper.than.crew.Crew;
+import com.deeper.than.crew.Races;
 import com.deeper.than.modules.BridgeModule;
 import com.deeper.than.modules.ClimateControlModule;
+import com.deeper.than.modules.DockingModule;
 import com.deeper.than.modules.EngineModule;
 import com.deeper.than.modules.HatchControlModule;
+import com.deeper.than.modules.MedbayModule;
 import com.deeper.than.modules.Module;
 import com.deeper.than.modules.SensorsModule;
 
@@ -155,44 +158,32 @@ public class ScriptParser implements Poolable{
 				Room room;
 				FloorTile fl;
 				GridSquare gs;
+				Crew crew;
 				//internal layout proccesing loop
 				while(scanner.hasNext()){
 					line = getNextNonCommentLine(scanner);
 					if(line.startsWith("{")){
+						crew = null;
 						roomId++;
 						room = new Room(roomId, ship);
 						tokens = line.split(" , ");
-						if(tokens.length > 1){
-							if(tokens[1] != ""){
-								Module module = null;
-								int level = 1;
-								moduleId++;
-								if(tokens.length > 2){
-									level = Integer.parseInt(tokens[2]);
-								}
-								if(tokens[1].equals("ClimateControlModule")){
-									module = new ClimateControlModule(moduleId++, level, room, ship);
-								}else if(tokens[1].equals("EngineModule")){
-									module = new EngineModule(moduleId++, level, room, ship);
-								}else if(tokens[1].equals("BridgeModule")){
-									module = new BridgeModule(moduleId++, level, room, ship);
-								}else if(tokens[1].equals("SensorsModule")){
-									module = new SensorsModule(moduleId++, level, room, ship);
-								}else if(tokens[1].equals("HatchControlModule")){
-									module = new HatchControlModule(moduleId++, level, room, ship);
-								}else if(tokens[1].equals("MedbayModule")){
-									module = new MedbayModule(moduleId++, level, room, ship);
-								}else if(tokens[1].equals("DockingModule")){
-									module = new DockingModule(moduleId++, level, room, ship);
-								}
-								room.setModule(module);
-								ship.addModule(module);
-							}
+						if(tokens.length == 4){
+							loadModule(tokens[1], Integer.parseInt(tokens[2]), moduleId, room, ship);
+							crew = loadCrew(tokens[3], ship);
+						}else if(tokens.length == 3){
+							loadModule(tokens[1], Integer.parseInt(tokens[2]), moduleId, room, ship);
+						}else if(tokens.length == 2){
+							crew = loadCrew(tokens[1], ship);
 						}
 						poss = getRoomValues(tokens[0]);						
 						for(Vector2 v : poss){
 							gs = new GridSquare();
 							fl = new FloorTile(v, gs);
+							if(crew != null){
+								gs.setCrewMember(crew);
+								crew.initPosition(v);
+								crew = null;
+							}
 							gs.setFloorTile(fl);
 							gs.setRoom(room);
 							gs.setShip(ship);
@@ -235,6 +226,40 @@ public class ScriptParser implements Poolable{
 		return 0;
 		
 	}
+	
+
+	private Crew loadCrew(String race, Ship ship){
+		Races crewRace = Races.getRace(race);
+		Crew crew = new Crew(crewRace.getRandomName(), crewRace, ship);
+		ship.addCrewToList(crew);
+		return crew;
+	}
+	
+	private int loadModule(String type, int level, int moduleId, Room room, Ship ship){
+		Module module = null;
+		moduleId++;
+		
+		if(type.equals("ClimateControlModule")){
+			module = new ClimateControlModule(moduleId++, level, room, ship);
+		}else if(type.equals("EngineModule")){
+			module = new EngineModule(moduleId++, level, room, ship);
+		}else if(type.equals("BridgeModule")){
+			module = new BridgeModule(moduleId++, level, room, ship);
+		}else if(type.equals("SensorsModule")){
+			module = new SensorsModule(moduleId++, level, room, ship);
+		}else if(type.equals("HatchControlModule")){
+			module = new HatchControlModule(moduleId++, level, room, ship);
+		}else if(type.equals("MedbayModule")){
+			module = new MedbayModule(moduleId++, level, room, ship);
+		}else if(type.equals("DockingModule")){
+			module = new DockingModule(moduleId++, level, room, ship);
+		}
+		room.setModule(module);
+		ship.addModule(module);
+		return moduleId;
+	}
+	
+	
 	
 	private String getNextNonCommentLine(Scanner scanner){
 		String line = scanner.nextLine();

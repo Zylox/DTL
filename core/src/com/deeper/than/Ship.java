@@ -20,6 +20,8 @@ import com.deeper.than.modules.ClimateControlModule;
 import com.deeper.than.modules.HatchControlModule;
 import com.deeper.than.modules.Module;
 import com.deeper.than.modules.SensorsModule;
+import com.deeper.than.screens.GameplayScreen;
+import com.deeper.than.screens.Screens;
 
 /**
  * A ship in the game. Loads a ship from a shipScript. Contains all the logic to manage the ship.
@@ -212,7 +214,9 @@ public class Ship extends Group{
 				addActor(d);
 			}	
 				
-
+			for(Crew c : crew){
+				addActor(c);
+			}
 			
 			int x = FloorTile.TILESIZE*layout[0].length;
 			int y = FloorTile.TILESIZE*layout.length;
@@ -311,6 +315,10 @@ public class Ship extends Group{
 			//set it to that state
 			r.updateEnv();
 		}
+		
+		for(Crew c : crew){
+			c.update();
+		}
 	}
 
 	@Override
@@ -318,9 +326,17 @@ public class Ship extends Group{
 		//draw the other stuff the ship is supposed to draw, then the modules
 		if(isDrawable()){
 			super.draw(batch, parentAlpha);
+			
 			for(Module m : modules){
 				m.draw(batch);
 			}
+			for(Room r : rooms){
+				if(r.isHoveredOver() && ((GameplayScreen)Screens.GAMEPLAY.getScreen()).isCrewSelected()){
+					r.drawHover(batch);
+				}
+			}
+			
+
 		}
 	}
 	
@@ -477,6 +493,15 @@ public class Ship extends Group{
 	
 	public void setCrew(ArrayList<Crew> crew) {
 		this.crew = crew;
+	}
+	
+	public void addCrewToList(Crew crewMem){
+		crew.add(crewMem);
+	}
+	
+	public void addCrewAfterShipLoad(Crew crewMem){
+		crew.add(crewMem);
+		addActor(crewMem);
 	}
 	
 	/**

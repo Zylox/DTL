@@ -2,9 +2,13 @@ package com.deeper.than;
 
 import java.util.ArrayList;
 
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.math.Vector2;
 import com.deeper.than.modules.Module;
 import com.deeper.than.modules.SensorsModule;
+import com.deeper.than.screens.GameplayScreen;
 
 /**
  * A room is a collection of gridsquares in a ship that occupy the same "room".
@@ -51,9 +55,13 @@ public class Room {
 	 * Center location in global coordinates
 	 */
 	private Vector2 centerLoc;
-
+	private Vector2 bottomLeft;
+	private Vector2 bounds;
+	
 	/**All rooms linked to this one*/
 	private ArrayList<RoomLink> linkedRooms;
+	
+	private boolean isHoveredOver;
 	
 	public Room(int id, Ship ship){
 		this.id = id;
@@ -65,7 +73,20 @@ public class Room {
 		pressure = BASEPRESSURE;
 		waterLevel = BASEWATERLEVEL;
 		centerLoc = null;
+		bottomLeft = null;
+		bounds = null;
 		sensors = null;
+		
+		isHoveredOver = false;
+	}
+	
+	public GridSquare selectTileToWalkTo(){
+		for(GridSquare g : squares){
+			if(!g.hasCrewMember()){
+				return g;
+			}
+		}
+		return null;
 	}
 	
 	/**
@@ -74,7 +95,7 @@ public class Room {
 	 */
 	public Vector2 getCenterLoc(){
 		if(centerLoc == null){
-			centerLoc = calculateCenter();
+			calculateBounds();
 		}
 		return centerLoc;
 	}
@@ -83,8 +104,7 @@ public class Room {
 	 * Calculates the center in global coords.
 	 * @return Global coord center location.
 	 */
-	private Vector2 calculateCenter(){
-		Vector2 center = new Vector2();
+	private void calculateBounds(){
 		//"infinite"
 		float minX = 1000000;
 		float minY = 1000000;
@@ -99,9 +119,31 @@ public class Room {
 			maxY = Math.max(maxY, square.getY() + square.getHeight());
 		}
 
-		center.x = ship.getX() +  minX + (maxX-minX)/2;
-		center.y = ship.getY() + minY + (maxY-minY)/2;
-		return center;
+		centerLoc = new Vector2();
+		bottomLeft= new Vector2();
+		bounds = new Vector2();
+		centerLoc.x = ship.getX() +  minX + (maxX-minX)/2;
+		centerLoc.y = ship.getY() + minY + (maxY-minY)/2;
+		bottomLeft.x = ship.getX() + minX;
+		bottomLeft.y = ship.getY() + minY;
+		bounds.x = maxX-minX;
+		bounds.y = maxY-minY;
+	}
+	
+	public void drawHover(Batch batch){
+		if(bottomLeft == null){
+			calculateBounds();
+		}
+		Texture wall = GameplayScreen.highlight;
+		Color color = batch.getColor();
+		batch.setColor(Color.YELLOW);
+		//wall.setColor(Color.CYAN);
+		float offset = Wall.INTERIORWALLSHORTSIDE/2f;
+		batch.draw(wall, bottomLeft.x+offset, bottomLeft.y + offset, Wall.INTERIORWALLSHORTSIDE, bounds.y - offset * 2);
+		batch.draw(wall, bottomLeft.x + bounds.x-Wall.INTERIORWALLSHORTSIDE-offset, bottomLeft.y + offset, Wall.INTERIORWALLSHORTSIDE, bounds.y - offset * 2);
+		batch.draw(wall, bottomLeft.x+offset, bottomLeft.y+offset, bounds.x - offset * 2, Wall.INTERIORWALLSHORTSIDE);
+		batch.draw(wall, bottomLeft.x+offset, bottomLeft.y + bounds.y - Wall.INTERIORWALLSHORTSIDE-offset, bounds.x - offset * 2, Wall.INTERIORWALLSHORTSIDE);
+		batch.setColor(color);
 	}
 
 	/**
@@ -285,6 +327,14 @@ public class Room {
 	
 	public int getId(){
 		return id;
+	}
+
+	public boolean isHoveredOver() {
+		return isHoveredOver;
+	}
+
+	public void setHoveredOver(boolean isHoveredOver) {
+		this.isHoveredOver = isHoveredOver;
 	}
 
 	private class RoomLink{

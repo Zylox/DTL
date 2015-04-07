@@ -4,14 +4,14 @@ yDim= 8
 floortileimg= floortile.png
 doorimg= door.pack
 layout=
-{3,9 4,9} , BridgeModule
-{4,7 4,8} , HatchControlModule
+{3,9 4,9} , BridgeModule , 1
+{4,7 4,8} , HatchControlModule , 1
 {3,7 3,8} , SensorsModule
-{5,5 5,6 5,7 6,5 6,6 6,7} , MedbayModule
+{5,5 5,6 5,7 6,5 6,6 6,7} , MedbayModule , 1
 {1,5 1,6 1,7 2,5 2,6 2,7}
-{3,3 3,4 3,5 4,3 4,4 4,5} , EngineModule
-{5,1 5,2 5,3 5,4 6,1 6,2 6,3 6,4} , DockingModule
-{1,1 1,2 1,3 1,4 2,1 2,2 2,3 2,4} , ClimateControlModule
+{3,3 3,4 3,5 4,3 4,4 4,5} , EngineModule , 1
+{5,1 5,2 5,3 5,4 6,1 6,2 6,3 6,4} , DockingModule , 1
+{1,1 1,2 1,3 1,4 2,1 2,2 2,3 2,4} , ClimateControlModule , 1
 {0,4 0,5}
 {7,4 7,5}
 endlayout

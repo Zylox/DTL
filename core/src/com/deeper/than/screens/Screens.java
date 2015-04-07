@@ -8,8 +8,8 @@ public enum Screens{
 	OPTIONS(new OptionScreen()),
 	TUTORIAL(new TutorialScreen()),
 	NEWGAME(new NewGameScreen()),
-	GAMEPLAY(new GameplayScreen()),
-	SHIPBUILDER(new ShipBuilderScreen());
+	GAMEPLAY(new GameplayScreen());
+	//SHIPBUILDER(new ShipBuilderScreen());
 	
 	private final EnumerableScreen screen;
 	

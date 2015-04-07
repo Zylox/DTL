@@ -14,6 +14,7 @@ public class GridSquare extends Group{
 	private CellBorder[] borders;
 	private Crew crewMember;
 	private Vector2 pos;
+	private boolean isManningStation;
 	
 	private GridSquare pathPointer;
 	private float hValue;
@@ -37,7 +38,7 @@ public class GridSquare extends Group{
 		pathClosed = false;
 		onOpenList = false;
 		onClosedList = false;
-		
+		isManningStation = false;
 		setDebug(DTL.GRAPHICALDEBUG);
 	}
 	
@@ -165,6 +166,13 @@ public class GridSquare extends Group{
 		this.crewMember = crew;
 	}
 	
+	public boolean hasCrewMember(){
+		if(crewMember != null){
+			return true;
+		}
+		return false;
+	}
+	
 	public GridSquare getPathPointer(){
 		return pathPointer;
 	}
@@ -248,6 +256,14 @@ public class GridSquare extends Group{
 
 	public void setOnOpenList(boolean onOpenList) {
 		this.onOpenList = onOpenList;
+	}
+
+	public boolean isManningStation() {
+		return isManningStation;
+	}
+
+	public void setManningStation(boolean isManningStation) {
+		this.isManningStation = isManningStation;
 	}
 	
 	

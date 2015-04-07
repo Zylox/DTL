@@ -184,7 +184,7 @@ public class MainMenuScreen implements EnumerableScreen {
 	}
 	
 	public void goToShipBuilder(){
-		game.setScreen(Screens.SHIPBUILDER.getScreen());
+		//game.setScreen(Screens.SHIPBUILDER.getScreen());
 	}
 	
 	public void options(){

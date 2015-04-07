@@ -1,16 +1,20 @@
 package com.deeper.than.crew;
 
+import java.util.Random;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
 public enum Races {
-	HUMAN(1f, .6f, 50, 75, 5, 100, 1.1f, 1f);
+	HUMAN("human", 1f, .6f, 50, 75, 5, 100, 1.1f, 1f);
 	
+	public static final String[] humanNames = {"Bob", "Jeb", "Steve"};
 	
 	public static float FRAME_TIME = .5f;
 	
+	private String race;
 	private float walkRatio;
 	private float swimRatio;
 	private float maxOxygen;
@@ -24,7 +28,8 @@ public enum Races {
 	private Animation upAnim;
 	private Animation downAnim;
 	
-	private Races(float walkRatio, float swimRatio, float maxOxygen, float coldResist, float damage, float health, float expRatio, float repairRatio){
+	private Races(String race, float walkRatio, float swimRatio, float maxOxygen, float coldResist, float damage, float health, float expRatio, float repairRatio){
+		this.race = race;
 		this.walkRatio = walkRatio;
 		this.swimRatio = swimRatio;
 		this.maxOxygen = maxOxygen;
@@ -33,13 +38,21 @@ public enum Races {
 		this.health = health;
 		this.expRatio = expRatio;
 		this.repairRatio = repairRatio;
-		
+		leftAnim = null;
+		rightAnim = null;
+		upAnim = null;
+	}
+	
+	public static void loadAnims(){
+		for(Races r : values()){
+			r.constructAnims();
+		}
 	}
 	
 	private void constructAnims(){
 		
-		if(this == HUMAN){
-			String folder = "crew/HumanMale";
+		if(race.equals("human")){
+			String folder = "crew/HumanMale/";
 			
 			downAnim = conAnim(folder+"firstDraftHumanFrontStep1.png",folder+"firstDraftHumanFront.png", folder+"firstDraftHumanFrontStep2.png" );
 			upAnim = conAnim(folder+"firstDraftHumanBackStep1.png",folder+"firstDraftHumanBack.png", folder+"firstDraftHumanBackStep2.png" );
@@ -49,16 +62,36 @@ public enum Races {
 		
 	}
 	
+	public String getRandomName(){
+		Random ran = new Random();
+		if(race.equals("human")){
+			return humanNames[ran.nextInt(humanNames.length-1)];
+		}
+		return "messedUP";
+	}
+	
 	private Animation conAnim(String frameOne, String frameTwo, String frameThree){
-		TextureRegion[] images = new TextureRegion[3];
+		TextureRegion[] images = new TextureRegion[4];
+		TextureRegion middle;
 		images[0] = new TextureRegion(new Texture(Gdx.files.internal(frameOne)));
-		images[1] = new TextureRegion(new Texture(Gdx.files.internal(frameTwo)));
+		middle = new TextureRegion(new Texture(Gdx.files.internal(frameTwo)));
+		images[1] = middle;
 		images[2] = new TextureRegion(new Texture(Gdx.files.internal(frameThree)));
+		images[3] = middle;
 		return new Animation(FRAME_TIME, images);
 	}
 
+	public static Races getRace(String raceName){
+		if(raceName.equals("human")){
+			return HUMAN;
+		}
+		return null;
+	}
 	
-	
+	public String getRace() {
+		return race;
+	}
+
 	public Animation getLeftAnim() {
 		return leftAnim;
 	}

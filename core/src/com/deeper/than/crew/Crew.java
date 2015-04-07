@@ -10,7 +10,9 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Action;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.deeper.than.CellBorder;
 import com.deeper.than.DTL;
 import com.deeper.than.Door;
@@ -20,15 +22,17 @@ import com.deeper.than.Neighbors;
 import com.deeper.than.NoWall;
 import com.deeper.than.Room;
 import com.deeper.than.Ship;
+import com.deeper.than.screens.GameplayScreen;
+import com.deeper.than.screens.Screens;
 
-public abstract class Crew extends Actor{
+public class Crew extends Actor{
 	
 	private static final float LARGE_ENOUGH = 999999999;
 	private static final float DIAGONAL_MOVE = 14;
 	private static final float SQUARE_MOVE = 10;
-	
-	
-	private static final String crewImage = "firstDraftHuman.png";
+	public static final int CREW_HEIGHT = 64;
+	public static final int CREW_WIDTH = 64;
+	public static final float SCALE = 2f;
 
 	private Ship ownerShip;
 	private Ship occupiedShip;
@@ -40,6 +44,7 @@ public abstract class Crew extends Actor{
 	private Races race;
 	private ArrayList<Vector2> moves;
 	private boolean moving;
+	private Door doorToClose;
 	
 	private ArrayList<GridSquare> openList;
 	private ArrayList<GridSquare> closedList;
@@ -48,13 +53,31 @@ public abstract class Crew extends Actor{
 		this.ownerShip = ship;
 		this.occupiedShip = ship;
 		this.name = name;
+		this.race = race;
 		moving = false;
 		moves = new ArrayList<Vector2>();
 		direction = Neighbors.DOWN;
 		stateTime = 0;
+		doorToClose = null;
+		
+		addListener(new ClickListener() {
+			public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+				setAsSelected();
+				return true;
+		    }
+		});
 	}
 	
-
+	private void setAsSelected(){
+		((GameplayScreen)Screens.GAMEPLAY.getScreen()).setSelectedCrew(this);
+	}
+	
+	public void initPosition(Vector2 tilePos){
+		this.tilePos = tilePos;
+		float x = (tilePos.x* FloorTile.TILESIZE);
+		float y = (tilePos.y* FloorTile.TILESIZE);
+		this.setBounds(x+(FloorTile.TILESIZE/2f - CREW_WIDTH/SCALE/2), y+(FloorTile.TILESIZE/2f - CREW_HEIGHT/SCALE/2), (float)CREW_WIDTH/SCALE, (float)CREW_HEIGHT/SCALE);
+	}
 	
 	public void update(){
 		setNextMove();
@@ -63,7 +86,12 @@ public abstract class Crew extends Actor{
 	@Override
 	public void draw(Batch batch, float parentAlpha){
 		float delta = Gdx.graphics.getDeltaTime();
-		stateTime += delta;
+		this.setDebug(true);
+		if(moving){
+			stateTime += delta;
+		}else{
+			stateTime = Races.FRAME_TIME;
+		}
 		batch.draw(getFrame(stateTime, direction), getX(), getY(), getOriginX(), getOriginY(), getWidth(), getHeight(), getScaleX(), getScaleY(), getRotation());
 	}
 	
@@ -72,15 +100,16 @@ public abstract class Crew extends Actor{
 			return race.getUpAnim().getKeyFrame(stateTime, true);
 		}
 		if(direction == Neighbors.DOWN){
-			race.getDownAnim().getKeyFrame(stateTime, true);
+			Animation anim = race.getDownAnim();
+			return anim.getKeyFrame(stateTime, true);
 		}
 		
 		if(direction == Neighbors.LEFT){
-			race.getLeftAnim().getKeyFrame(stateTime, true);
+			return race.getLeftAnim().getKeyFrame(stateTime, true);
 		}
 		
 		if(direction == Neighbors.RIGHT){
-			race.getRightAnim().getKeyFrame(stateTime, true);
+			return race.getRightAnim().getKeyFrame(stateTime, true);
 		}
 		
 		return null;
@@ -95,14 +124,19 @@ public abstract class Crew extends Actor{
 		if(moves.isEmpty()) return;
 		Vector2 move = moves.remove(0);
 		if(isWalkable(tilePos, move)){
+			if(isWalkable(tilePos, move)){
+				System.out.println("walkable");
+			}else{
+				System.out.println("not walkable");
+			}
 			int xDiff = (int) (move.x - tilePos.x);
 			int yDiff = (int) (move.y - tilePos.y);
 			float moveFactor;
 			float speedRatio;
 			if(xDiff != 0 && yDiff != 0){
-				moveFactor = DIAGONAL_MOVE/10;
+				moveFactor = DIAGONAL_MOVE/15;
 			}else{
-				moveFactor = SQUARE_MOVE/10;
+				moveFactor = SQUARE_MOVE/15;
 			}
 			if(yDiff == -1){
 				direction = Neighbors.DOWN;
@@ -125,9 +159,14 @@ public abstract class Crew extends Actor{
 				speedRatio = race.getWalkRatio();
 			}
 			stateTime = 0;
-			this.addAction(Actions.sequence(Actions.moveTo(move.x*FloorTile.TILESIZE+FloorTile.TILESIZE/2, move.y*FloorTile.TILESIZE+FloorTile.TILESIZE/2, moveFactor * speedRatio), new SetTile(move)));
+			layout[(int)move.y][(int)move.x].setCrewMember(this);
+			layout[(int)tilePos.y][(int)tilePos.x].setCrewMember(null);
+			//TODO set crew on module if neccesary
+			this.addAction(Actions.sequence(Actions.moveTo(move.x*FloorTile.TILESIZE+(FloorTile.TILESIZE/2f - CREW_WIDTH/SCALE/2), move.y*FloorTile.TILESIZE+(FloorTile.TILESIZE/2f - CREW_HEIGHT/SCALE/2), moveFactor * speedRatio), new SetTile(move)));
+			//this.act(Gdx.graphics.getDeltaTime());
 			moving = true;
 		}else{
+			System.out.println(moves.toString());
 			move = moves.get(moves.size()-1);
 			moves.clear();
 			moves = aStarFindPath(tilePos, move);
@@ -173,6 +212,7 @@ public abstract class Crew extends Actor{
 			if(currSq.hasDoor(dir) && (currSq.getDoor(dir).isOpen() || currSq.getDoor(dir).isOpenableByCrewMem(this))){
 				if(!currSq.getDoor(dir).isOpen()){
 					currSq.getDoor(dir).changeOpen();
+					doorToClose = currSq.getDoor(dir);
 				}
 				return true;
 			}else if(currSq.getBorder(dir) instanceof NoWall){
@@ -241,6 +281,7 @@ public abstract class Crew extends Actor{
 		}
 		moves.add(currSq.getPos());
 		Collections.reverse(moves);
+		moves.remove(0);
 		return moves;
 	}
 	
@@ -535,10 +576,6 @@ public abstract class Crew extends Actor{
 		return ownerShip.getId();
 	}
 	
-	private String getRandomCrewImage(){
-		return crewImage;
-	}
-	
 	private class SetTile extends Action{
 
 		Vector2 tilePos;
@@ -551,6 +588,10 @@ public abstract class Crew extends Actor{
 		public boolean act(float delta) {
 			setTilePos(tilePos);
 			moving = false;
+			if(doorToClose != null){
+				doorToClose.changeOpen();
+				doorToClose = null;
+			}
 			return true;
 		}
 		
