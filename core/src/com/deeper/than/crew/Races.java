@@ -88,6 +88,7 @@ public enum Races {
 		return null;
 	}
 	
+	
 	public String getRace() {
 		return race;
 	}

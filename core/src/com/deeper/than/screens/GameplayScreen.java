@@ -3,6 +3,7 @@ package com.deeper.than.screens;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Input.Buttons;
+import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.GL20;
@@ -77,7 +78,7 @@ public class GameplayScreen implements EnumerableScreen{
 		uiT.add(new UITopBar(playerShip)).expandX().top();
 		uiT.row();
 		for(Crew c : playerShip.getCrew()){
-			uiT.add(new CrewPlate(c)).prefHeight(Crew.CREW_HEIGHT/Crew.SCALE).prefWidth(Crew.CREW_WIDTH/Crew.SCALE).left();
+			uiT.add(new CrewPlate(c)).prefWidth((Crew.CREW_HEIGHT/Crew.SCALE)+50+10).prefHeight(Crew.CREW_HEIGHT/Crew.SCALE+10).left().pad(1);
 			uiT.row();
 		}
 		
@@ -135,6 +136,11 @@ public class GameplayScreen implements EnumerableScreen{
 			@Override
 			public boolean keyTyped(char character) {
 				// TODO Auto-generated method stub
+				if(character == 'a'){
+					for(Crew c : playerShip.getCrew()){
+						c.setHealth(c.getHealth() - 10);
+					}
+				}
 				return false;
 			}
 			

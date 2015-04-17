@@ -71,6 +71,7 @@ public class Crew extends Actor{
 		});
 	}
 	
+	
 	private void setAsSelected(){
 		((GameplayScreen)Screens.GAMEPLAY.getScreen()).setSelectedCrew(this);
 	}
@@ -591,6 +592,16 @@ public class Crew extends Actor{
 		return ownerShip.getId();
 	}
 	
+	
+	public Races getRace() {
+		return race;
+	}
+	
+
+	public String getName() {
+		return name;
+	}
+
 	private class SetTile extends Action{
 
 		Vector2 tilePos;

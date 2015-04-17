@@ -1,28 +1,62 @@
 package com.deeper.than.ui;
 
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.scenes.scene2d.ui.Widget;
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.ui.WidgetGroup;
+import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
+import com.deeper.than.DTL;
 import com.deeper.than.crew.Crew;
 import com.deeper.than.screens.GameplayScreen;
 
-public class CrewPlate extends Widget {
+public class CrewPlate extends WidgetGroup {
 	private Crew crew;
+	private Image bar;
+	private Image crewImg;
+	Table table;
 	
 	public CrewPlate(Crew crew){
 		this.crew = crew;
+		table = new Table(DTL.skin);
+		table.background(new TextureRegionDrawable(new TextureRegion(GameplayScreen.highlight)));
+		table.setColor(Color.GRAY);
+		table.setFillParent(true);
+		bar = new Image(GameplayScreen.highlight);
+		
+		crewImg = new Image(crew.getIcon());
+		
+		
+		table.add(crewImg).prefWidth(Crew.CREW_HEIGHT/Crew.SCALE).prefHeight(Crew.CREW_HEIGHT/Crew.SCALE).left();
+		Table innerTable = new Table();
+		
+		innerTable.add(new Label(crew.getName(), DTL.skin)).fill().top().expandX().padBottom(5);
+		innerTable.row();
+		innerTable.add(bar).fill();
+		//table.add(new CrewHealthBar(crew)).left().expand();
+		//table.add().expand();
+		table.add(innerTable).expand().fill();
+		table.row();
+		this.addActor(table);
+		
 	}
 	
 	@Override
 	public void draw(Batch batch, float parentAlpha){
-		Texture back = GameplayScreen.highlight;
+////		Texture back = GameplayScreen.highlight;
 		Color color = batch.getColor().cpy();
-		batch.setColor(Color.DARK_GRAY);
-		TextureRegion icon = crew.getIcon();
-		//batch.draw(back, getX(), getY(), Crew.CREW_WIDTH/Crew.SCALE + 100, Crew.CREW_HEIGHT/Crew.SCALE *1.5f);
+
+////		//batch.draw(back, getX(), getY(), getWidth(), getHeight());
+		bar.setColor(Color.GREEN);
+		bar.setBounds(bar.getX(), bar.getY(),(getWidth()-crewImg.getWidth())*(crew.getHealth()/crew.getRace().getHealth()), 5);
+		
+		super.draw(batch, parentAlpha);
 		batch.setColor(color);
-		batch.draw(icon, getX(), getY(),getWidth(), getHeight());
+////		TextureRegion icon = crew.getIcon();
+////		batch.draw(icon, getX(), getY(),getWidth(), getHeight());
 	}
+	
+	
 }
