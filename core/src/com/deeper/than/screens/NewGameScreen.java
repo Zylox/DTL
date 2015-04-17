@@ -1,5 +1,7 @@
 package com.deeper.than.screens;
 
+import java.util.ArrayList;
+
 import com.badlogic.gdx.Application.ApplicationType;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
@@ -75,10 +77,15 @@ public class NewGameScreen implements EnumerableScreen {
 		}
 		
 		FileHandle[] fileHandles = dirHandle.list();
-		String[] names = new String[fileHandles.length-1];
+		
+		ArrayList<String> collectedNames = new ArrayList<String>();
+		int count = 0;
 		for(int i = 1; i<fileHandles.length; i++){
-			names[i-1] = fileHandles[i].nameWithoutExtension();  
+			if(!fileHandles[i].isDirectory()){
+				collectedNames.add(fileHandles[i].nameWithoutExtension());
+			}
 		}
+		String[] names = collectedNames.toArray(new String[collectedNames.size()]);
 		
 		return names;
 	}
