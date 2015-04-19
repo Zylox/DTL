@@ -31,16 +31,20 @@ public abstract class UIMainModuleReactorBar extends UIIconReactorBar implements
 				return true;
 		    }
 		}));
-	}
+	} 
 	
 	public void getPower(int amount){
 		mainPower.givePower(amount, this);
-		module.setPowerLevel(getPowered());
+		updateModulePowerLevel();
 	}
 	
 	public void losePower(int amount){
 		this.givePower(amount, mainPower);
-		module.setPowerLevel(getPowered());
+		updateModulePowerLevel();
+	}
+	
+	public void updateModulePowerLevel() {
+		module.setPowerLevel(getPowered());		
 	}
 	
 

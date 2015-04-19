@@ -9,6 +9,8 @@ import com.deeper.than.crew.Crew;
 public abstract class Module {
 	
 	private final String name = "baseModule";
+
+	public static final float IONIC_COOLDOWN_PER_SEC = 50;
 	
 	private int id;
 	private Ship ship;
@@ -16,6 +18,8 @@ public abstract class Module {
 	private int minRoomSize;
 	private int level;
 	private int maxLevel;
+	private int ionicCharges;
+	private Cooldown cooldown;
 	private boolean manned;
 	private Crew manning;
 	
@@ -29,14 +33,34 @@ public abstract class Module {
 		this.level = level;
 		this.room = room;
 		this.ship = ship;
+		ionicCharges = 0;
+		cooldown = new Cooldown();
 		manned = false;
 		manning = null;
 	}
 	
+	public void update(){
+		if(cooldown.isOnCooldown()){
+			cooldown.advanceCooldown(IONIC_COOLDOWN_PER_SEC);
+			if(!cooldown.isOnCooldown()){
+				ionicCharges = 0;
+			}
+		}
+		
+	}
 
 	public void draw(Batch batch){
 		Sprite icon = Modules.getIcon(this.getClass().getCanonicalName()); 
 		batch.draw(icon, room.getCenterLoc().x-icon.getWidth()/2, room.getCenterLoc().y-icon.getHeight()/2);
+	}
+	
+	public void receiveIonicCharge(){
+		receiveIonicCharge(1);
+	}
+	
+	public void receiveIonicCharge(int amt){
+		ionicCharges++;
+		cooldown.startCooldown();
 	}
 	
 	public boolean isManned() {
@@ -92,5 +116,10 @@ public abstract class Module {
 
 	public int getMaxLevel() {
 		return maxLevel;
-	}	
+	}
+
+	public int getIonicCharges() {
+		return ionicCharges;
+	}
+	
 }

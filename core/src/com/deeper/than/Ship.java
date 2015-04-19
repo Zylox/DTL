@@ -351,9 +351,10 @@ public class Ship extends Group{
 			c.update();
 		}
 		
-		if(sheilds != null){
-			sheilds.update();
+		for(Module m : modules){
+			m.update();
 		}
+		
 	}
 
 	@Override

@@ -70,17 +70,23 @@ public class NewGameScreen implements EnumerableScreen {
 		
 		FileHandle dirHandle;
 		if (Gdx.app.getType() == ApplicationType.Desktop) {
-		   dirHandle = Gdx.files.internal("./bin/" + baseDir);
+			String base = baseDir + "/";
+			System.out.println(base);
+		   dirHandle = Gdx.files.internal(base);
 		}else  {
 			//(Gdx.app.getType() == ApplicationType.Android)
 			dirHandle = Gdx.files.internal(baseDir);
 		}
 		
-		FileHandle[] fileHandles = dirHandle.list();
+		int numberOfShips = 3;
+		FileHandle[] fileHandles = new FileHandle[numberOfShips];
+		//fileHandles[0] = Gdx.files.internal(baseDir + "/");
+		fileHandles[0] = Gdx.files.internal(baseDir + "/kes.ship");
+		fileHandles[1] = Gdx.files.internal(baseDir + "/tres.ship");
+		fileHandles[2] = Gdx.files.internal(baseDir + "/wigwam.ship");
 		
 		ArrayList<String> collectedNames = new ArrayList<String>();
-		int count = 0;
-		for(int i = 1; i<fileHandles.length; i++){
+		for(int i = 0; i<fileHandles.length; i++){
 			if(!fileHandles[i].isDirectory()){
 				collectedNames.add(fileHandles[i].nameWithoutExtension());
 			}

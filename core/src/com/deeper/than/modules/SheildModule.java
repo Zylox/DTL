@@ -52,7 +52,9 @@ public class SheildModule extends MainModule {
 		coolD.startCooldown();
 	}
 	
+	@Override
 	public void update(){
+		super.update();
 		if(activeCount > getSheildLayerCount()-1){
 			activeCount= getSheildLayerCount();
 			coolD.endCooldown();

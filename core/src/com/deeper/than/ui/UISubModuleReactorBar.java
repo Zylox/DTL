@@ -18,6 +18,5 @@ public class UISubModuleReactorBar extends UIIconReactorBar implements UIModuleS
 		}
 	}
 	
-	
 
 }
