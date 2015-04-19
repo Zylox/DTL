@@ -1,16 +1,20 @@
 package com.deeper.than.screens;
 
+import java.util.ArrayList;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Input.Buttons;
-import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.InputProcessor;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.deeper.than.DTL;
 import com.deeper.than.EnemyShip;
@@ -19,7 +23,11 @@ import com.deeper.than.Wall;
 import com.deeper.than.crew.Crew;
 import com.deeper.than.crew.Races;
 import com.deeper.than.modules.Modules;
+import com.deeper.than.modules.SheildModule;
 import com.deeper.than.ui.CrewPlate;
+import com.deeper.than.ui.ReactorBar;
+import com.deeper.than.ui.UIModuleReactorBar;
+import com.deeper.than.ui.UISheildReacBar;
 import com.deeper.than.ui.UITopBar;
 
 public class GameplayScreen implements EnumerableScreen{
@@ -29,6 +37,11 @@ public class GameplayScreen implements EnumerableScreen{
 	
 	private DTL game;
 	private Stage ui;
+	
+	private ReactorBar reactorBar;
+	
+	private ArrayList<UIModuleReactorBar> moduleReactorBars;
+	
 	private Stage gameObjects;
 	private PlayerShip playerShip;
 	private float timeAccumulator;
@@ -57,6 +70,8 @@ public class GameplayScreen implements EnumerableScreen{
 		highlight = new Texture(Gdx.files.internal("pixel.png"));
 	}
 	
+	
+
 	/**
 	 * 
 	 */
@@ -75,14 +90,26 @@ public class GameplayScreen implements EnumerableScreen{
 		
 		Table uiT = new Table();
 		uiT.setFillParent(true);
-		uiT.add(new UITopBar(playerShip)).expandX().top();
+		uiT.add(new UITopBar(playerShip)).expandX().top().colspan(10);
 		uiT.row();
 		for(Crew c : playerShip.getCrew()){
-			uiT.add(new CrewPlate(c)).prefWidth((Crew.CREW_HEIGHT/Crew.SCALE)+50+10).prefHeight(Crew.CREW_HEIGHT/Crew.SCALE+10).left().pad(1);
+			uiT.add(new CrewPlate(c)).prefWidth((Crew.CREW_HEIGHT/Crew.SCALE)+50+10).prefHeight(Crew.CREW_HEIGHT/Crew.SCALE+10).left().pad(1f).colspan(10);
 			uiT.row();
 		}
 		
-		uiT.add().expand();
+		uiT.add().expand().colspan(3);
+		uiT.row();
+		reactorBar = new ReactorBar(playerShip); 
+		uiT.add(reactorBar).padLeft(5).bottom().left().prefHeight(game.getViewport().getWorldHeight()/2).prefWidth(ReactorBar.PREF_WIDTH).minWidth(ReactorBar.PREF_WIDTH);
+		
+		moduleReactorBars = new ArrayList<UIModuleReactorBar>();
+		UISheildReacBar uis =new UISheildReacBar(2, reactorBar, (SheildModule)playerShip.getModule(SheildModule.class));
+		moduleReactorBars.add(uis);
+		uiT.add(uis).padLeft(10).bottom().left().minWidth(ReactorBar.PREF_WIDTH).prefHeight(uis.getPrefHeight()).fillY();
+		
+		uiT.add().prefWidth(10000000);
+		uiT.row();
+		uiT.add(new Label("tacos", DTL.skin)).bottom().left().colspan(10);
 		
 		
 		ui.addActor(uiT);
@@ -140,6 +167,9 @@ public class GameplayScreen implements EnumerableScreen{
 					for(Crew c : playerShip.getCrew()){
 						c.setHealth(c.getHealth() - 10);
 					}
+					//playerShip.damageSheilds();
+					SheildModule s = (SheildModule)playerShip.getModule(SheildModule.class);
+					s.setLevel(s.getLevel()+1);
 				}
 				return false;
 			}
@@ -171,7 +201,6 @@ public class GameplayScreen implements EnumerableScreen{
 		// TODO Auto-generated method stub
 	    Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
-	    
 	    ////Key inputs here
 	    if(Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)){
 	    	mainMenu();
@@ -182,6 +211,9 @@ public class GameplayScreen implements EnumerableScreen{
 	    
 	    timeAccumulator += delta;
 	    if(timeAccumulator > DTL.getFrameTime()){
+	    	for(UIModuleReactorBar mrb : moduleReactorBars){
+	    		mrb.checkforSectionsChange();
+	    	}
 	    	playerShip.update();
 	    	ui.act();
 	    	gameObjects.act();
@@ -197,6 +229,9 @@ public class GameplayScreen implements EnumerableScreen{
 	}
 
 	public void setSelectedCrew(Crew crew){
+		if(getSelectedCrew() != null){
+			getSelectedCrew().setSelected(false);
+		}
 		this.selectedCrew = crew;
 	}
 	
@@ -246,6 +281,32 @@ public class GameplayScreen implements EnumerableScreen{
 		// TODO Auto-generated method stub
 		playerShip.dispose();
 		gameObjects.dispose();
+	}
+	
+	/**
+	 * Draws an empty rectangle within the area designated.
+	 * Passing null for color uses already loaded color.
+	 * @param x
+	 * @param y
+	 * @param width
+	 * @param height
+	 * @param lineThickness
+	 * @param color
+	 * @param batch
+	 */
+	public static void drawEmptyRectable(float x, float y, float width, float height, float lineThickness, Color color, Batch batch){
+		Color returnColor = null;
+		if(color != null){
+			returnColor = batch.getColor().cpy();
+			batch.setColor(color);
+		}
+		batch.draw(highlight, x, y, width, lineThickness);
+		batch.draw(highlight, x, y, lineThickness, height);
+		batch.draw(highlight, x+width-lineThickness, y, lineThickness, height);
+		batch.draw(highlight, x, y+height-lineThickness, width, lineThickness);
+		if(color != null){
+			batch.setColor(returnColor);
+		}
 	}
 
 }

@@ -7,13 +7,13 @@ public class CloakingModule extends MainModule {
 
 	private boolean isCloaked;
 	
-	public CloakingModule(int id, Room room, Ship ship) {
-		super(id, room, ship);
+	public CloakingModule(int id, int maxLevel, Room room, Ship ship) {
+		super(id, maxLevel, room, ship);
 		isCloaked = false;
 	}
 
-	public CloakingModule(int id, int level, Room room, Ship ship) {
-		super(id, level, room, ship);
+	public CloakingModule(int id, int level, int maxLevel, Room room, Ship ship) {
+		super(id, level, maxLevel, room, ship);
 		isCloaked = false;
 	}
 	
@@ -23,6 +23,12 @@ public class CloakingModule extends MainModule {
 	
 	public void setCloaked(boolean isCloaked){
 		this.isCloaked = isCloaked;
+	}
+
+	@Override
+	public void powerChanged() {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

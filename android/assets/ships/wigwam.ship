@@ -1,6 +1,7 @@
 name= wigwam
 xDim= 10
 yDim= 8
+power= 15
 floortileimg= floortile.png
 doorimg= door.pack
 layout=

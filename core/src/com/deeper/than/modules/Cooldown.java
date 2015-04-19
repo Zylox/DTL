@@ -59,6 +59,11 @@ public class Cooldown {
 		setState(true);
 	}
 	
+	public void endCooldown(){
+		setState(false);
+		cooldownProgress = cooldownLimit;
+	}
+	
 	public float getCooldownProgress(){
 		return cooldownProgress;
 	}
@@ -76,6 +81,7 @@ public class Cooldown {
 			cooldownProgress += DTL.getRatePerTimeStep(coolDownRatePerSecond);
 		
 		if(cooldownProgress >= cooldownLimit){
+			cooldownProgress = cooldownLimit;
 			setState(false);
 		}
 		return isOnCooldown();

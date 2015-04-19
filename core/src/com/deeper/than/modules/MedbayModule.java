@@ -22,8 +22,8 @@ public class MedbayModule extends MainModule {
 	 * @param room room containing the module. Set to null if no room contains it
 	 * @param ship ship containing the module. Set to null if no ship owns the module
 	 */
-	public MedbayModule(int id, Room room, Ship ship) {
-		super(id, 1, room, ship);
+	public MedbayModule(int id, int maxLevel, Room room, Ship ship) {
+		super(id, maxLevel, room, ship);
 	}
 
 	/**
@@ -33,8 +33,8 @@ public class MedbayModule extends MainModule {
 	 * @param room room containing the module. Set to null if no room contains it
 	 * @param ship ship containing the module. Set to null if no ship owns the module
 	 */
-	public MedbayModule(int id, int level, Room room, Ship ship) {
-		super(id, level, room, ship);
+	public MedbayModule(int id, int level, int maxLevel, Room room, Ship ship) {
+		super(id, level, maxLevel, room, ship);
 	}
 	
 	/**
@@ -47,6 +47,12 @@ public class MedbayModule extends MainModule {
 			healMulitplier = healBoost[getLevel()];
 		}
 		return DTL.getRatePerTimeStep(baseHeal*healMulitplier);
+	}
+
+	@Override
+	public void powerChanged() {
+		// TODO Auto-generated method stub
+		
 	}
 	
 }

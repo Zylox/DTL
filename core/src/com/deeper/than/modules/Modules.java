@@ -14,18 +14,20 @@ import com.deeper.than.Ship;
  *
  */
 public enum Modules {
-	ClimateControl(ClimateControlModule.class.getCanonicalName(), "ClimateControlModule", "climateControl.png"),
-	Engine(EngineModule.class.getCanonicalName(), "EngineModule", "engine.png"),
-	Bridge(BridgeModule.class.getCanonicalName(), "BridgeModule", "bridge.png"),
-	HatchControl(HatchControlModule.class.getCanonicalName(), "HatchControlModule", "hatchControl.png"),
-	Sensors(SensorsModule.class.getCanonicalName(), "SensorsModule", "sensors.png"),
-	Medbay(MedbayModule.class.getCanonicalName(), "MedbayModule", "medbay.png"),
-	Docking(DockingModule.class.getCanonicalName(), "DockingModule", null);
+	ClimateControl(ClimateControlModule.class.getCanonicalName(), "ClimateControlModule", "climateControl.png", 3),
+	Engine(EngineModule.class.getCanonicalName(), "EngineModule", "engine.png", 8),
+	Bridge(BridgeModule.class.getCanonicalName(), "BridgeModule", "bridge.png", 3),
+	HatchControl(HatchControlModule.class.getCanonicalName(), "HatchControlModule", "hatchControl.png", 3),
+	Sensors(SensorsModule.class.getCanonicalName(), "SensorsModule", "sensors.png", 3),
+	Medbay(MedbayModule.class.getCanonicalName(), "MedbayModule", "medbay.png", 3),
+	Sheild(SheildModule.class.getCanonicalName(), "SheildModule", "sheildModule.png", 8),
+	Docking(DockingModule.class.getCanonicalName(), "DockingModule", null, 3);
 	
 	private String name;
 	private String stringRep;
 	private String imagePath;
 	private Sprite icon;
+	private int maxLevel;
 	
 	
 	/**
@@ -33,10 +35,11 @@ public enum Modules {
 	 */
 	private static ObjectMap<String, Sprite> icons = new ObjectMap<String, Sprite>();
 	
-	private Modules(String name, String stringRep,String imagePath){
+	private Modules(String name, String stringRep,String imagePath, int maxLevel){
 		this.name = name;
 		this.stringRep = stringRep;
 		this.imagePath = imagePath;
+		this.maxLevel = maxLevel;
 		icon = null;
 	}
 
@@ -66,22 +69,28 @@ public enum Modules {
 	
 	public Module instantiateModule(int id, Room room, Ship ship){
 		if(this == ClimateControl){
-			return new ClimateControlModule(id, room, ship);
+			return new ClimateControlModule(id, maxLevel, room, ship);
 		}
 		if(this == Engine){
-			return new EngineModule(id, room, ship);
+			return new EngineModule(id, maxLevel, room, ship);
 		}
 		if(this == Bridge){
-			return new BridgeModule(id, room, ship);
+			return new BridgeModule(id, maxLevel, room, ship);
 		}
 		if(this == HatchControl){
-			return new HatchControlModule(id, room, ship);
+			return new HatchControlModule(id, maxLevel, room, ship);
 		}
 		if(this == Sensors){
-			return new SensorsModule(id, room, ship);
+			return new SensorsModule(id, maxLevel, room, ship);
 		}
 		if(this == Docking){
-			return new DockingModule(id, room, ship);
+			return new DockingModule(id, maxLevel, room, ship);
+		}
+		if(this == Medbay){
+			return new MedbayModule(id, maxLevel, room, ship);
+		}
+		if(this == Sheild){
+			return new SheildModule(id, maxLevel, room, ship);
 		}
 	
 		return null;

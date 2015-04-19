@@ -1,6 +1,7 @@
 name= tres
 xDim= 6
 yDim= 10
+power= 15
 floortileimg= floortile.png
 doorimg= door.pack
 layout=

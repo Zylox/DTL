@@ -15,15 +15,17 @@ public abstract class Module {
 	private Room room;
 	private int minRoomSize;
 	private int level;
+	private int maxLevel;
 	private boolean manned;
 	private Crew manning;
 	
-	public Module(int id, Room room, Ship ship){
-		this(id, 1, room, ship);
+	public Module(int id, int maxLevel,Room room, Ship ship){
+		this(id, 1, maxLevel, room, ship);
 	}
 	
-	public Module(int id, int level, Room room, Ship ship){
+	public Module(int id, int level, int maxLevel, Room room, Ship ship){
 		this.id = id;
+		this.maxLevel = maxLevel;
 		this.level = level;
 		this.room = room;
 		this.ship = ship;
@@ -82,7 +84,13 @@ public abstract class Module {
 	}
 
 	public void setLevel(int level) {
+		if(level > maxLevel){
+			level = maxLevel;
+		}
 		this.level = level;
 	}
-	
+
+	public int getMaxLevel() {
+		return maxLevel;
+	}	
 }

@@ -5,12 +5,12 @@ import com.deeper.than.Ship;
 
 public class HatchControlModule extends SubModule {
 
-	public HatchControlModule(int id, Room room, Ship ship) {
-		super(id, 1, room, ship);
+	public HatchControlModule(int id, int maxLevel, Room room, Ship ship) {
+		super(id, maxLevel, room, ship);
 	}
 	
-	public HatchControlModule(int id, int level, Room room, Ship ship) {
-		super(id, level, room, ship);
+	public HatchControlModule(int id, int level, int maxLevel, Room room, Ship ship) {
+		super(id, level, maxLevel, room, ship);
 	}
 
 	public boolean canControlDoors(){

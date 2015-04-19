@@ -1,6 +1,7 @@
 name= scout
 xDim= 4
 yDim= 5
+power= 15
 floortileimg= floortile.png
 doorimg= door.pack
 layout=

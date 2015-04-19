@@ -20,6 +20,7 @@ import com.deeper.than.modules.ClimateControlModule;
 import com.deeper.than.modules.HatchControlModule;
 import com.deeper.than.modules.Module;
 import com.deeper.than.modules.SensorsModule;
+import com.deeper.than.modules.SheildModule;
 import com.deeper.than.screens.GameplayScreen;
 import com.deeper.than.screens.Screens;
 
@@ -45,6 +46,7 @@ public class Ship extends Group{
 	/**Map of all the walls. It is a map to ensure uniqueness.*/
 	private OrderedMap<Integer, CellBorder> walls;
 	private ArrayList<Module> modules;
+	private SheildModule sheilds;
 	
 	/** Width in squares of the ship*/
 	protected int gridWidth;
@@ -60,6 +62,7 @@ public class Ship extends Group{
 	private boolean colorizeRooms = false;
 	private float health;
 	private boolean isPlayerShip;
+	private int power;
 	
 	/**
 	 * Creates a ship based on the shipScript added in.
@@ -175,7 +178,7 @@ public class Ship extends Group{
 			}
 			HatchControlModule hcm = null;
 			SensorsModule sensors = null;
-			
+			sheilds = null;
 			//Some modules require explicit reference, so we get them here.
 			//This implementation assumes only one of each module is in the list.
 			//Uniqueness isnt strictly implemented anywhere at this point.
@@ -184,6 +187,8 @@ public class Ship extends Group{
 					hcm = (HatchControlModule) m;
 				}else if(m instanceof SensorsModule){
 					sensors = (SensorsModule) m;
+				}else if(m instanceof SheildModule){
+					sheilds = (SheildModule) m;
 				}
 			}
 			
@@ -311,6 +316,23 @@ public class Ship extends Group{
 			}
 		}
 	}
+//	
+//	public void createModuleBars(Table uiT){
+//		for(Module m : modules){
+//			if(m instanceof SheildModule){
+//				
+//			}else if(m instanceof EngineModule){
+//				
+//			}else if(m instanceof MedbayModule){
+//				
+//			}else if(m instanceof ClimateControlModule){
+//				
+//			}else if(m instanceof CloakingModule){
+//				
+//			}
+//		}
+//	}
+	
 	
 	/**
 	 * Contains any non Action based update logic.
@@ -328,12 +350,22 @@ public class Ship extends Group{
 		for(Crew c : crew){
 			c.update();
 		}
+		
+		if(sheilds != null){
+			sheilds.update();
+		}
 	}
 
 	@Override
 	public void draw(Batch batch, float parentAlpha){
 		//draw the other stuff the ship is supposed to draw, then the modules
 		if(isDrawable()){
+		
+			if(sheilds != null && sheilds.getActiveSheildLayers() > 0){
+				Texture sheildTex = sheilds.getSheildImage();
+				batch.draw(sheildTex, getX()-getWidth()/6, getY()-getHeight()/6, getWidth()+(getWidth()/6 * 2), getHeight()+ (getHeight()/6 * 2));
+			}
+				
 			super.draw(batch, parentAlpha);
 			
 			for(Module m : modules){
@@ -629,8 +661,35 @@ public class Ship extends Group{
 	}
 	
 	public int getSheildSections(){
-		//TODO
-		return 5;
+		if(sheilds != null){
+			return sheilds.getSheildLayerCount();
+		}
+		return 0;
+	}
+	
+	public int getActiveSheildSections(){
+		if(sheilds != null){
+			return sheilds.getActiveSheildLayers();
+		}
+		return 0;
+	}
+	
+	public float getSheildCooldownAmt(){
+		return sheilds.getCooldownProgress();
+	}
+	
+	public void damageSheilds(){
+		sheilds.takeDamage();
+	}
+	
+	public Module getModule(Class<? extends Module> module){
+		for(Module m : modules){
+			if(module.isInstance(m)){
+				return m;
+			}
+		}
+		
+		return null;
 	}
 
 	public boolean isPlayerShip() {
@@ -639,6 +698,14 @@ public class Ship extends Group{
 
 	public void setPlayerShip(boolean isPlayerShip) {
 		this.isPlayerShip = isPlayerShip;
+	}
+
+	public int getPower() {
+		return power;
+	}
+
+	public void setPower(int power) {
+		this.power = power;
 	}
 
 	public int getId(){

@@ -10,7 +10,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 public enum Races {
 	HUMAN("human", 1f, .6f, 50, 75, 5, 100, 1.1f, 1f);
 	
-	public static final String[] humanNames = {"Bob", "Jeb", "Steve"};
+	public static final String[] humanNames = {"Bob", "Jeb", "Steve", "Jim", "Nick", "Zach", "Will", "Ben", "GIJoe", "Jimmy", "Jake", "Ian", "John", "Bill", "James", "Zebulon", "Horatio"};
 	
 	public static float FRAME_TIME = .5f;
 	

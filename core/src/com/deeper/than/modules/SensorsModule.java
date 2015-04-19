@@ -6,12 +6,12 @@ import com.deeper.than.Ship;
 
 public class SensorsModule extends SubModule {
 	
-	public SensorsModule(int id, Room room, Ship ship) {
-		super(id, room, ship);
+	public SensorsModule(int id, int maxLevel, Room room, Ship ship) {
+		super(id, maxLevel, room, ship);
 	}
 
-	public SensorsModule(int id, int level, Room room, Ship ship) {
-		super(id, level, room, ship);
+	public SensorsModule(int id, int level, int maxLevel, Room room, Ship ship) {
+		super(id, level, maxLevel, room, ship);
 	}
 	
 	public boolean canSeeOwnShip(){

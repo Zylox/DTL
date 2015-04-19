@@ -17,7 +17,9 @@ import com.deeper.than.modules.EngineModule;
 import com.deeper.than.modules.HatchControlModule;
 import com.deeper.than.modules.MedbayModule;
 import com.deeper.than.modules.Module;
+import com.deeper.than.modules.Modules;
 import com.deeper.than.modules.SensorsModule;
+import com.deeper.than.modules.SheildModule;
 
 
 public class ScriptParser implements Poolable{
@@ -67,7 +69,7 @@ public class ScriptParser implements Poolable{
 		//////////////////////////////////////////////////
 		int xDim = 0;
 		int yDim = 0;
-
+		int power = 0;
 		//gets line, checks if it exists, splits into tokens, and sets xDim and yDim if correct
 		line = getNextNonCommentLine(scanner);
 		if(line.equals(null)){
@@ -100,11 +102,28 @@ public class ScriptParser implements Poolable{
 			scanner.close();
 			return -1;
 		}
+		line = getNextNonCommentLine(scanner);
+		if(line.equals(null)){
+			scanner.close();
+			return -2;
+		}
+		
+		lineNum++;
+		tokens = line.split(" ");
+		if(tokens[0].equals("power=")){
+			power = Integer.parseInt(tokens[1]);	
+		}else{
+			System.out.println("power= XXX expected at line " + lineNum);
+			scanner.close();
+			return -1;
+		}
+		
 		//
 		//////////////////////////////////////////////////
 		//initializing the layout
 		ship.gridWidth = xDim;
 		ship.gridHeight = yDim;
+		ship.setPower(power);
 		ship.layout = new GridSquare[yDim][xDim];
 		for(int i = 0; i< yDim; i++){
 			for(int j = 0; j < xDim; j++){
@@ -240,20 +259,32 @@ public class ScriptParser implements Poolable{
 		moduleId++;
 		
 		if(type.equals("ClimateControlModule")){
-			module = new ClimateControlModule(moduleId++, level, room, ship);
+			module = Modules.ClimateControl.instantiateModule(moduleId++, room, ship);
+			module.setLevel(level);
 		}else if(type.equals("EngineModule")){
-			module = new EngineModule(moduleId++, level, room, ship);
+			module = Modules.Engine.instantiateModule(moduleId++, room, ship);
+			module.setLevel(level);
 		}else if(type.equals("BridgeModule")){
-			module = new BridgeModule(moduleId++, level, room, ship);
+			module = Modules.Bridge.instantiateModule(moduleId++, room, ship);
+			module.setLevel(level);
 		}else if(type.equals("SensorsModule")){
-			module = new SensorsModule(moduleId++, level, room, ship);
+			module = Modules.Sensors.instantiateModule(moduleId++, room, ship);
+			module.setLevel(level);
 		}else if(type.equals("HatchControlModule")){
-			module = new HatchControlModule(moduleId++, level, room, ship);
+			module = Modules.HatchControl.instantiateModule(moduleId++, room, ship);
+			module.setLevel(level);
 		}else if(type.equals("MedbayModule")){
-			module = new MedbayModule(moduleId++, level, room, ship);
+			module = Modules.Medbay.instantiateModule(moduleId++, room, ship);
+			
+			module.setLevel(level);
 		}else if(type.equals("DockingModule")){
-			module = new DockingModule(moduleId++, level, room, ship);
+			module = Modules.Docking.instantiateModule(moduleId++, room, ship);
+			module.setLevel(level);
+		}else if(type.equals("SheildModule")){
+			module = Modules.Sheild.instantiateModule(moduleId++, room, ship);
+			module.setLevel(level);
 		}
+		
 		room.setModule(module);
 		ship.addModule(module);
 		return moduleId;

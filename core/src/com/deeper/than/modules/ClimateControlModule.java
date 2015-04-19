@@ -7,12 +7,12 @@ public class ClimateControlModule extends MainModule {
 	
 	private static final String name = "ClimateControlModule";
 	
-	public ClimateControlModule(int id, Room room,Ship ship) {
-		super(id, room, ship);
+	public ClimateControlModule(int id, int maxLevel, Room room,Ship ship) {
+		super(id, maxLevel, room, ship);
 	}
 	
-	public ClimateControlModule(int id, int level, Room room,Ship ship) {
-		super(id, level, room, ship);
+	public ClimateControlModule(int id, int level, int maxLevel, Room room,Ship ship) {
+		super(id, level, maxLevel, room, ship);
 	}
 	
 	public float getWaterDrainRate(){
@@ -26,6 +26,12 @@ public class ClimateControlModule extends MainModule {
 			waterDrainRate = -.05f;
 		}
 		return waterDrainRate;
+	}
+
+	@Override
+	public void powerChanged() {
+		// TODO Auto-generated method stub
+		
 	}
 
 

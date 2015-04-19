@@ -47,6 +47,7 @@ public class Crew extends Actor{
 	private boolean moving;
 	private Door doorToClose;
 	private float health;
+	private boolean selected;
 	
 	private ArrayList<GridSquare> openList;
 	private ArrayList<GridSquare> closedList;
@@ -62,6 +63,7 @@ public class Crew extends Actor{
 		direction = Neighbors.DOWN;
 		stateTime = 0;
 		doorToClose = null;
+		selected = false;
 		
 		addListener(new ClickListener() {
 			public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
@@ -74,6 +76,7 @@ public class Crew extends Actor{
 	
 	private void setAsSelected(){
 		((GameplayScreen)Screens.GAMEPLAY.getScreen()).setSelectedCrew(this);
+		selected = true;
 	}
 	
 	public void initPosition(Vector2 tilePos){
@@ -601,6 +604,17 @@ public class Crew extends Actor{
 	public String getName() {
 		return name;
 	}
+	
+	public boolean isSelected() {
+		return selected;
+	}
+
+
+	public void setSelected(boolean selected) {
+		this.selected = selected;
+	}
+
+
 
 	private class SetTile extends Action{
 

@@ -7,7 +7,7 @@ import com.deeper.than.DTL;
 public class DesktopLauncher {
 	
 	
-	private static int fpsTarget = 100;
+	private static int fpsTarget = 60;
 	
 	public static void main (String[] arg) {
 		if(fpsTarget > 144){

@@ -24,8 +24,8 @@ public class DockingModule extends MainModule {
 	 * @param room room that contains the module. Set to null if it is not in a room
 	 * @param ship ship that owns this module. set to null if not owned by a ship
 	 */
-	public DockingModule(int id, Room room, Ship ship) {
-		super(id, room, ship);
+	public DockingModule(int id, int maxLevel, Room room, Ship ship) {
+		super(id, maxLevel, room, ship);
 		cooldown = new Cooldown(COOLDOWNLIMIT);
 	}
 
@@ -36,8 +36,8 @@ public class DockingModule extends MainModule {
 	 * @param room room that contains the module. Set to null if it is not in a room
 	 * @param ship ship that owns this module. set to null if not owned by a ship
 	 */
-	public DockingModule(int id, int level, Room room, Ship ship) {
-		super(id, level, room, ship);
+	public DockingModule(int id, int level, int maxLevel, Room room, Ship ship) {
+		super(id, level, maxLevel, room, ship);
 		cooldown = new Cooldown(COOLDOWNLIMIT);
 	}
 	
@@ -91,6 +91,12 @@ public class DockingModule extends MainModule {
 			cooldown.advanceCooldown(COOLDOWNLIMIT/getCooldownPeriod());
 		}
 		return isOnCooldown();
+	}
+
+	@Override
+	public void powerChanged() {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

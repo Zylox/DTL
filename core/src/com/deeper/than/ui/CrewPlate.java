@@ -52,6 +52,11 @@ public class CrewPlate extends WidgetGroup {
 		bar.setColor(Color.GREEN);
 		bar.setBounds(bar.getX(), bar.getY(),(getWidth()-crewImg.getWidth())*(crew.getHealth()/crew.getRace().getHealth()), 5);
 		
+		if(crew.isSelected()){
+			table.setColor(Color.DARK_GRAY);
+		}else{
+			table.setColor(Color.GRAY);
+		}
 		super.draw(batch, parentAlpha);
 		batch.setColor(color);
 ////		TextureRegion icon = crew.getIcon();
