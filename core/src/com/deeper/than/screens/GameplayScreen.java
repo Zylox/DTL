@@ -22,12 +22,25 @@ import com.deeper.than.PlayerShip;
 import com.deeper.than.Wall;
 import com.deeper.than.crew.Crew;
 import com.deeper.than.crew.Races;
+import com.deeper.than.modules.ClimateControlModule;
+import com.deeper.than.modules.CloakingModule;
+import com.deeper.than.modules.EngineModule;
+import com.deeper.than.modules.MedbayModule;
+import com.deeper.than.modules.Module;
 import com.deeper.than.modules.Modules;
+import com.deeper.than.modules.SensorsModule;
 import com.deeper.than.modules.SheildModule;
 import com.deeper.than.ui.CrewPlate;
 import com.deeper.than.ui.ReactorBar;
-import com.deeper.than.ui.UIModuleReactorBar;
+import com.deeper.than.ui.UIClimateControlReacBar;
+import com.deeper.than.ui.UICloakingReacBar;
+import com.deeper.than.ui.UIEngineReacBar;
+import com.deeper.than.ui.UIMainModuleReactorBar;
+import com.deeper.than.ui.UIMedbayReacBar;
+import com.deeper.than.ui.UIModuleSyncable;
+import com.deeper.than.ui.UIPowerBar;
 import com.deeper.than.ui.UISheildReacBar;
+import com.deeper.than.ui.UISubModuleReactorBar;
 import com.deeper.than.ui.UITopBar;
 
 public class GameplayScreen implements EnumerableScreen{
@@ -38,9 +51,10 @@ public class GameplayScreen implements EnumerableScreen{
 	private DTL game;
 	private Stage ui;
 	
+	private Table reactorBars;
 	private ReactorBar reactorBar;
 	
-	private ArrayList<UIModuleReactorBar> moduleReactorBars;
+	private ArrayList<UIModuleSyncable> moduleReactorBars;
 	
 	private Stage gameObjects;
 	private PlayerShip playerShip;
@@ -99,18 +113,11 @@ public class GameplayScreen implements EnumerableScreen{
 		
 		uiT.add().expand().colspan(3);
 		uiT.row();
-		reactorBar = new ReactorBar(playerShip); 
-		uiT.add(reactorBar).padLeft(5).bottom().left().prefHeight(game.getViewport().getWorldHeight()/2).prefWidth(ReactorBar.PREF_WIDTH).minWidth(ReactorBar.PREF_WIDTH);
 		
-		moduleReactorBars = new ArrayList<UIModuleReactorBar>();
-		UISheildReacBar uis =new UISheildReacBar(2, reactorBar, (SheildModule)playerShip.getModule(SheildModule.class));
-		moduleReactorBars.add(uis);
-		uiT.add(uis).padLeft(10).bottom().left().minWidth(ReactorBar.PREF_WIDTH).prefHeight(uis.getPrefHeight()).fillY();
-		
-		uiT.add().prefWidth(10000000);
+		constructMainReactorBars();
+		uiT.add(reactorBars);
 		uiT.row();
 		uiT.add(new Label("tacos", DTL.skin)).bottom().left().colspan(10);
-		
 		
 		ui.addActor(uiT);
 		
@@ -184,6 +191,47 @@ public class GameplayScreen implements EnumerableScreen{
 		selectedCrew = null;
 	}
 	
+	private void constructMainReactorBars(){
+		reactorBars = new Table();
+		reactorBar = new ReactorBar(playerShip); 
+		reactorBars.add(reactorBar).padLeft(5).bottom().left().prefHeight(game.getViewport().getWorldHeight()/2).prefWidth(ReactorBar.PREF_WIDTH).minWidth(ReactorBar.PREF_WIDTH);
+		
+		moduleReactorBars = new ArrayList<UIModuleSyncable>();
+
+		Module mod = playerShip.getModule(SheildModule.class);
+		if(mod != null){
+			UISheildReacBar uis =new UISheildReacBar(0, reactorBar, (SheildModule)playerShip.getModule(SheildModule.class));
+			moduleReactorBars.add(uis);
+			reactorBars.add(uis).padLeft(10).bottom().left().minWidth(ReactorBar.PREF_WIDTH).fillY();	
+		}
+		mod = playerShip.getModule(EngineModule.class);
+		if(mod != null){
+			UIEngineReacBar uie =new UIEngineReacBar(0, reactorBar, (EngineModule)playerShip.getModule(EngineModule.class));
+			moduleReactorBars.add(uie);
+			reactorBars.add(uie).padLeft(10).bottom().left().minWidth(ReactorBar.PREF_WIDTH).fillY();
+		}
+		mod = playerShip.getModule(MedbayModule.class);
+		if(mod != null){
+			UIMedbayReacBar uim =new UIMedbayReacBar(0, reactorBar, (EngineModule)playerShip.getModule(EngineModule.class));
+			moduleReactorBars.add(uim);
+			reactorBars.add(uim).padLeft(10).bottom().left().minWidth(ReactorBar.PREF_WIDTH).fillY();
+		}
+		mod = playerShip.getModule(ClimateControlModule.class);
+		if(mod != null){
+			UIClimateControlReacBar uicc =new UIClimateControlReacBar(0, reactorBar, (EngineModule)playerShip.getModule(EngineModule.class));
+			moduleReactorBars.add(uicc);
+			reactorBars.add(uicc).padLeft(10).bottom().left().minWidth(ReactorBar.PREF_WIDTH).fillY();
+		}
+		mod = playerShip.getModule(CloakingModule.class);
+		if(mod != null){
+			UICloakingReacBar uic =new UICloakingReacBar(0, reactorBar, (EngineModule)playerShip.getModule(EngineModule.class));
+			moduleReactorBars.add(uic);
+			reactorBars.add(uic).padLeft(10).bottom().left().minWidth(ReactorBar.PREF_WIDTH).fillY();
+		}
+		
+		reactorBars.add().prefWidth(10000000);
+	}
+	
 	@Override
 	public void show() {
 		// TODO Auto-generated method stub
@@ -211,7 +259,7 @@ public class GameplayScreen implements EnumerableScreen{
 	    
 	    timeAccumulator += delta;
 	    if(timeAccumulator > DTL.getFrameTime()){
-	    	for(UIModuleReactorBar mrb : moduleReactorBars){
+	    	for(UIModuleSyncable mrb : moduleReactorBars){
 	    		mrb.checkforSectionsChange();
 	    	}
 	    	playerShip.update();

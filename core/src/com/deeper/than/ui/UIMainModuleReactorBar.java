@@ -8,20 +8,18 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.deeper.than.modules.MainModule;
 import com.deeper.than.modules.Module;
 
-public abstract class UIModuleReactorBar extends UIPowerBar{
+public abstract class UIMainModuleReactorBar extends UIIconReactorBar implements UIModuleSyncable{
 
 	private MainModule module;
-	private Image icon;
-	private ReactorBar mainPower;
+	private UIPowerBar mainPower;
 	
-	public UIModuleReactorBar(int powered, Sprite icon, ReactorBar mainPower, MainModule module) {
-		super(module.getLevel(), 0);
+	public UIMainModuleReactorBar(int powered, Sprite icon, UIPowerBar mainPower, MainModule module) {
+		super(module.getLevel(), 0, icon);
 		mainPower.givePower(powered, this);
 		module.setPowerLevel(getPowered());
 		this.module = module;
 		this.mainPower = mainPower;
-		this.icon = new Image(icon.getTexture());
-		this.addOnNewRow(this.icon).minHeight(this.icon.getHeight()).minWidth(this.icon.getWidth()).prefWidth(10);
+
 		this.addListenerToChildren((new ClickListener() {
 			public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
 				if(button == Buttons.LEFT){
@@ -49,7 +47,7 @@ public abstract class UIModuleReactorBar extends UIPowerBar{
 	public void checkforSectionsChange(){
 		if(module.getLevel() != getSections()){
 			this.adjustSegments(module.getLevel(), this.getPowered());
-			this.addOnNewRow(this.icon).minHeight(this.icon.getHeight()).minWidth(this.icon.getWidth()).prefWidth(10);
+			addIconToTable();
 			this.addListenerToChildren((new ClickListener() {
 				public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
 					if(button == Buttons.LEFT){

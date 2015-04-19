@@ -12,8 +12,8 @@ import com.badlogic.gdx.scenes.scene2d.ui.Widget;
 import com.badlogic.gdx.scenes.scene2d.ui.WidgetGroup;
 import com.deeper.than.screens.GameplayScreen;
 
-public abstract class UIPowerBar extends WidgetGroup{
-
+public class UIPowerBar extends WidgetGroup{
+	public static final int UNLIMITED_POWER = -3;
 	public static final float PREF_WIDTH = PowerChunk.PREF_SIZE * 1.5f;
 	private int sections;
 	private int powered;
@@ -22,6 +22,9 @@ public abstract class UIPowerBar extends WidgetGroup{
 	
 	public UIPowerBar(int sections, int powered){
 		this.sections = sections;
+		if(powered > sections){
+			powered = sections;
+		}
 		this.powered = powered;
 		
 		fillTable();
@@ -80,6 +83,16 @@ public abstract class UIPowerBar extends WidgetGroup{
 		if(powerBar.sections == powerBar.powered){
 			return false;
 		}
+		if(powerBar.powered + numToExchange > powerBar.sections){
+			numToExchange = powerBar.sections - powerBar.powered;
+		}
+		
+		if(getPowered() == UNLIMITED_POWER){
+			powerBar.setPowered(powerBar.getPowered() + numToExchange);
+			powerBar.updatePowered();
+			return true;
+		}
+		
 		if(getPowered() < numToExchange){
 			fullExchange = false;
 			numToExchange = getPowered();
@@ -126,6 +139,8 @@ public abstract class UIPowerBar extends WidgetGroup{
 	}
 
 	public void setPowered(int powered) {
+		if(powered > getSections()){
+		}
 		this.powered = powered;
 	}
 	

@@ -675,11 +675,16 @@ public class Ship extends Group{
 	}
 	
 	public float getSheildCooldownAmt(){
+		if(sheilds == null){
+			return 0;
+		}
 		return sheilds.getCooldownProgress();
 	}
 	
 	public void damageSheilds(){
-		sheilds.takeDamage();
+		if(sheilds != null){
+			sheilds.takeDamage();
+		}
 	}
 	
 	public Module getModule(Class<? extends Module> module){
