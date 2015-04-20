@@ -10,11 +10,13 @@ public class EngineModule extends MainModule{
 	
 	public EngineModule(int id, int maxLevel, Room room, Ship ship) {
 		super(id, maxLevel, room, ship);
+		manable = true;
 	}
 	
 	
 	public EngineModule(int id, int level, int maxLevel, Room room, Ship ship) {
 		super(id, level, maxLevel, room, ship);
+		manable = true;
 	}	
 
 	public float getDodgeChance(){
@@ -42,9 +44,4 @@ public class EngineModule extends MainModule{
 	}
 
 
-	@Override
-	public void powerChanged() {
-		// TODO Auto-generated method stub
-		
-	}
 }

@@ -223,6 +223,7 @@ public class Ship extends Group{
 			}	
 				
 			for(Crew c : crew){
+				c.initRoom();
 				addActor(c);
 			}
 			
@@ -697,15 +698,7 @@ public class Ship extends Group{
 		
 		return null;
 	}
-
-	public boolean isPlayerShip() {
-		return isPlayerShip;
-	}
-
-	public void setPlayerShip(boolean isPlayerShip) {
-		this.isPlayerShip = isPlayerShip;
-	}
-
+	
 	public int getPower() {
 		return power;
 	}

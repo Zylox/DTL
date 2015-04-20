@@ -199,7 +199,7 @@ public class ScriptParser implements Poolable{
 							gs = new GridSquare();
 							fl = new FloorTile(v, gs);
 							if(crew != null){
-								gs.setCrewMember(crew);
+								gs.addCrewMember(crew);
 								crew.initPosition(v);
 								crew = null;
 							}

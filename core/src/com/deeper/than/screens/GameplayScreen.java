@@ -212,19 +212,19 @@ public class GameplayScreen implements EnumerableScreen{
 		}
 		mod = playerShip.getModule(MedbayModule.class);
 		if(mod != null){
-			UIMedbayReacBar uim =new UIMedbayReacBar(0, reactorBar, (EngineModule)playerShip.getModule(EngineModule.class));
+			UIMedbayReacBar uim =new UIMedbayReacBar(0, reactorBar, (MedbayModule)playerShip.getModule(MedbayModule.class));
 			moduleReactorBars.add(uim);
 			reactorBars.add(uim).padLeft(10).bottom().left().minWidth(ReactorBar.PREF_WIDTH).fillY();
 		}
 		mod = playerShip.getModule(ClimateControlModule.class);
 		if(mod != null){
-			UIClimateControlReacBar uicc =new UIClimateControlReacBar(0, reactorBar, (EngineModule)playerShip.getModule(EngineModule.class));
+			UIClimateControlReacBar uicc =new UIClimateControlReacBar(0, reactorBar, (ClimateControlModule)playerShip.getModule(ClimateControlModule.class));
 			moduleReactorBars.add(uicc);
 			reactorBars.add(uicc).padLeft(10).bottom().left().minWidth(ReactorBar.PREF_WIDTH).fillY();
 		}
 		mod = playerShip.getModule(CloakingModule.class);
 		if(mod != null){
-			UICloakingReacBar uic =new UICloakingReacBar(0, reactorBar, (EngineModule)playerShip.getModule(EngineModule.class));
+			UICloakingReacBar uic =new UICloakingReacBar(0, reactorBar, (CloakingModule)playerShip.getModule(CloakingModule.class));
 			moduleReactorBars.add(uic);
 			reactorBars.add(uic).padLeft(10).bottom().left().minWidth(ReactorBar.PREF_WIDTH).fillY();
 		}

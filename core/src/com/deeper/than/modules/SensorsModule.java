@@ -8,10 +8,12 @@ public class SensorsModule extends SubModule {
 	
 	public SensorsModule(int id, int maxLevel, Room room, Ship ship) {
 		super(id, maxLevel, room, ship);
+		manable = true;
 	}
 
 	public SensorsModule(int id, int level, int maxLevel, Room room, Ship ship) {
 		super(id, level, maxLevel, room, ship);
+		manable = true;
 	}
 	
 	public boolean canSeeOwnShip(){

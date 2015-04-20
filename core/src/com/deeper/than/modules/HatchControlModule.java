@@ -7,10 +7,12 @@ public class HatchControlModule extends SubModule {
 
 	public HatchControlModule(int id, int maxLevel, Room room, Ship ship) {
 		super(id, maxLevel, room, ship);
+		manable = true;
 	}
 	
 	public HatchControlModule(int id, int level, int maxLevel, Room room, Ship ship) {
 		super(id, level, maxLevel, room, ship);
+		manable = true;
 	}
 
 	public boolean canControlDoors(){

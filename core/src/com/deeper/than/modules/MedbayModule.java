@@ -49,10 +49,5 @@ public class MedbayModule extends MainModule {
 		return DTL.getRatePerTimeStep(baseHeal*healMulitplier);
 	}
 
-	@Override
-	public void powerChanged() {
-		// TODO Auto-generated method stub
-		
-	}
 	
 }

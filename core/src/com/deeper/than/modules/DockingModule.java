@@ -93,10 +93,4 @@ public class DockingModule extends MainModule {
 		return isOnCooldown();
 	}
 
-	@Override
-	public void powerChanged() {
-		// TODO Auto-generated method stub
-		
-	}
-
 }

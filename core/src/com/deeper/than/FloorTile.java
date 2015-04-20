@@ -59,7 +59,17 @@ public class FloorTile extends Actor{
 				
 				Crew crew = ((GameplayScreen)Screens.GAMEPLAY.getScreen()).getSelectedCrew();
 				if(crew != null){
-					crew.moveTo(gridSquare.getRoom().selectTileToWalkTo().getPos());
+					GridSquare gs = gridSquare.getRoom().selectTileToWalkTo();
+					Vector2 movePos;
+					if(gs!= null){
+						movePos = gs.getPos();
+					}else{
+						movePos = crew.findNearestOpenSpot(getPos());
+					}
+					
+					if(movePos != null){
+						crew.moveTo(movePos);
+					}
 					((GameplayScreen)Screens.GAMEPLAY.getScreen()).setSelectedCrew(null);
 				}
 			

@@ -18,5 +18,8 @@ public class UISubModuleReactorBar extends UIIconReactorBar implements UIModuleS
 		}
 	}
 	
-
+	@Override
+	public void updateModulePowerLevel() {
+		module.setPowerLevel(getPowered());		
+	}
 }

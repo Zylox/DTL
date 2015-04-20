@@ -25,6 +25,7 @@ public class SheildModule extends MainModule {
 		activeCount = getSheildLayerCount();
 		coolD = new Cooldown();
 		cooldownRate = 50;
+		manable = true;
 	}
 	
 	/**
@@ -38,6 +39,7 @@ public class SheildModule extends MainModule {
 		super(id, level, maxLevel, room, ship);
 		activeCount = getSheildLayerCount();
 		coolD = new Cooldown(COOLDOWN_MAX);
+		manable = true;
 	}
 	
 	public void takeDamage(){
@@ -103,11 +105,6 @@ public class SheildModule extends MainModule {
 		this.cooldownRate = cooldownRate;
 	}
 
-	@Override
-	public void powerChanged() {
-		// TODO Auto-generated method stub
-		
-	}
 	
 	
 }

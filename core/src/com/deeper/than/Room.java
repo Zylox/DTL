@@ -86,7 +86,7 @@ public class Room {
 				return g;
 			}
 		}
-		return null;
+		return squares.get(0);
 	}
 	
 	/**
@@ -215,6 +215,10 @@ public class Room {
 			
 		
 		
+	}
+	
+	public Vector2 getManningLocation(){
+		return squares.get(0).getPos();
 	}
 	
 	public boolean isWaterSwimHeight(){

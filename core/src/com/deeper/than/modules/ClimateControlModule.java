@@ -28,11 +28,6 @@ public class ClimateControlModule extends MainModule {
 		return waterDrainRate;
 	}
 
-	@Override
-	public void powerChanged() {
-		// TODO Auto-generated method stub
-		
-	}
 
 
 }

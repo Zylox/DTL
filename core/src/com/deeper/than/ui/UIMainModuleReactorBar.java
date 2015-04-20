@@ -1,12 +1,12 @@
 package com.deeper.than.ui;
 
 import com.badlogic.gdx.Input.Buttons;
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
-import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.deeper.than.modules.MainModule;
-import com.deeper.than.modules.Module;
 
 public abstract class UIMainModuleReactorBar extends UIIconReactorBar implements UIModuleSyncable{
 
@@ -33,6 +33,15 @@ public abstract class UIMainModuleReactorBar extends UIIconReactorBar implements
 		}));
 	} 
 	
+	@Override
+	public void draw(Batch batch, float parentAlpha){
+		icon.setColor(Color.WHITE);
+		if(module.isManable() && module.isManned()){
+			icon.setColor(Color.GREEN);
+		}
+		super.draw(batch, parentAlpha);
+	}
+	
 	public void getPower(int amount){
 		mainPower.givePower(amount, this);
 		updateModulePowerLevel();
@@ -43,6 +52,7 @@ public abstract class UIMainModuleReactorBar extends UIIconReactorBar implements
 		updateModulePowerLevel();
 	}
 	
+	@Override
 	public void updateModulePowerLevel() {
 		module.setPowerLevel(getPowered());		
 	}

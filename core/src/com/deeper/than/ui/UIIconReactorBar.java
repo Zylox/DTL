@@ -1,10 +1,11 @@
 package com.deeper.than.ui;
 
+import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 
 public class UIIconReactorBar extends UIPowerBar{
-	private Image icon;
+	protected Image icon;
 
 	
 	public UIIconReactorBar(int sections, int powered, Sprite icon) {
@@ -17,4 +18,5 @@ public class UIIconReactorBar extends UIPowerBar{
 	public void addIconToTable(){
 		this.addOnNewRow(this.icon).minHeight(this.icon.getHeight()).minWidth(this.icon.getWidth()).prefWidth(10);
 	}
+	
 }

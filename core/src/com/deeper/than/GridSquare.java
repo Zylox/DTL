@@ -1,5 +1,7 @@
 package com.deeper.than;
 
+import java.util.ArrayList;
+
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.math.Vector2;
@@ -7,12 +9,14 @@ import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.deeper.than.crew.Crew;
+import com.deeper.than.crew.Crew.CrewState;
 
 public class GridSquare extends Group{
 	
 	private FloorTile tile;
 	private CellBorder[] borders;
-	private Crew crewMember;
+	//private Crew crewMember;
+	private ArrayList<Crew> crewOnSquare;
 	private Vector2 pos;
 	private boolean isManningStation;
 	
@@ -28,7 +32,8 @@ public class GridSquare extends Group{
 	private Ship ship;
 	
 	public GridSquare(){
-		crewMember = null;
+		//crewMember = null;
+		crewOnSquare = new ArrayList<Crew>();
 		tile = null;
 		borders = new CellBorder[4];
 		room = null;
@@ -162,15 +167,41 @@ public class GridSquare extends Group{
 		}
 	}
 	
-	public void setCrewMember(Crew crew){
-		this.crewMember = crew;
+	public void addCrewMember(Crew crew){
+		crewOnSquare.add(crew);
+	}
+	
+	public void removeCrewMember(Crew crew){
+		if(crewOnSquare.contains(crew)){
+			crewOnSquare.remove(crew);
+		}
 	}
 	
 	public boolean hasCrewMember(){
-		if(crewMember != null){
-			return true;
+		if(crewOnSquare.isEmpty()){
+			return false;
 		}
-		return false;
+		return true;
+	}
+	
+	public int crewIdleCount(){
+		int count = 0;
+		for(Crew c : crewOnSquare){
+			if(c.getState() == CrewState.IDLE || c.getState() == CrewState.MANNING){
+				count++;
+			}
+		}
+		return count;
+	}
+	
+	public ArrayList<Crew> intrudingIdleCrew(){
+		ArrayList<Crew> iIC = new ArrayList<Crew>();
+		for(int i = 1; i<crewOnSquare.size(); i++){
+			if(crewOnSquare.get(i).getState() == CrewState.IDLE || crewOnSquare.get(i).getState() == CrewState.MANNING){
+				iIC.add(crewOnSquare.get(i));
+			}
+		}
+		return iIC;
 	}
 	
 	public GridSquare getPathPointer(){

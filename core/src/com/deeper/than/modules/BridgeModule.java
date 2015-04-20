@@ -9,10 +9,12 @@ public class BridgeModule extends SubModule {
 	
 	public BridgeModule(int id, int maxLevel, Room room, Ship ship) {
 		super(id, maxLevel, room, ship);
+		manable = true;
 	}
 
 	public BridgeModule(int id, int level, int maxLevel, Room room, Ship ship) {
 		super(id, level, maxLevel, room, ship);
+		manable = true;
 	}
 	
 	public float getEvasionRetention(){

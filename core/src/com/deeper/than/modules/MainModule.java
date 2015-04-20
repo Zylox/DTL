@@ -5,7 +5,6 @@ import com.deeper.than.Ship;
 
 public abstract class MainModule extends Module {
 
-	private int powerLevel;
 	
 	public MainModule(int id,int maxLevel, Room room, Ship ship) {
 		super(id, maxLevel, room, ship);
@@ -17,15 +16,6 @@ public abstract class MainModule extends Module {
 		// TODO Auto-generated constructor stub
 	}
 
-	public int getPowerLevel() {
-		return powerLevel;
-	}
-
-	public void setPowerLevel(int powerLevel) {
-		this.powerLevel = powerLevel;
-		powerChanged();
-	}
 	
-	public abstract void powerChanged();
 
 }

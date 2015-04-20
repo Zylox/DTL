@@ -25,10 +25,5 @@ public class CloakingModule extends MainModule {
 		this.isCloaked = isCloaked;
 	}
 
-	@Override
-	public void powerChanged() {
-		// TODO Auto-generated method stub
-		
-	}
 
 }

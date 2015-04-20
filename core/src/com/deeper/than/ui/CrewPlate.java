@@ -3,14 +3,17 @@ package com.deeper.than.ui;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.WidgetGroup;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.deeper.than.DTL;
 import com.deeper.than.crew.Crew;
 import com.deeper.than.screens.GameplayScreen;
+import com.deeper.than.screens.Screens;
 
 public class CrewPlate extends WidgetGroup {
 	private Crew crew;
@@ -41,6 +44,18 @@ public class CrewPlate extends WidgetGroup {
 		table.row();
 		this.addActor(table);
 		
+		addListener(new ClickListener() {
+			public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+				setAsSelected();
+				return true;
+		    }
+		});
+		
+	}
+	
+	private void setAsSelected(){
+		((GameplayScreen)Screens.GAMEPLAY.getScreen()).setSelectedCrew(crew);
+		crew.setSelected(true);
 	}
 	
 	@Override
