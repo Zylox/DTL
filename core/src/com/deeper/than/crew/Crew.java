@@ -59,6 +59,8 @@ public class Crew extends Actor{
 	private boolean selected;
 	private CrewState state;
 	
+	private boolean needNewPath;
+	
 	private ArrayList<GridSquare> openList;
 	private ArrayList<GridSquare> closedList;
 		
@@ -69,6 +71,7 @@ public class Crew extends Actor{
 		this.race = race;
 		health = race.getHealth();
 		moves = new ArrayList<Vector2>();
+		needNewPath = false;
 		direction = Neighbors.DOWN;
 		stateTime = 0;
 		doorToClose = null;
@@ -81,6 +84,7 @@ public class Crew extends Actor{
 				return true;
 		    }
 		});
+		
 	}
 	
 	
@@ -170,7 +174,9 @@ public class Crew extends Actor{
 	}
 	
 	public void moveTo(Vector2 tile){
-		moves = aStarFindPath(tilePos, tile);
+		//moves = aStarFindPath(tilePos, tile);
+		addAction(new NewSearch(tile));
+		needNewPath = true;
 	}
 	
 	private boolean stillMoving(){
@@ -347,7 +353,7 @@ public class Crew extends Actor{
 			GridSquare currSq = layout[(int)start.y][(int)start.x];
 			if(currSq.hasDoor(dir) && (currSq.getDoor(dir).isOpen() || currSq.getDoor(dir).isOpenableByCrewMem(this))){
 				if(!currSq.getDoor(dir).isOpen()){
-					currSq.getDoor(dir).changeOpen();
+					currSq.getDoor(dir).changeOpenOverrideHatch();;
 					doorToClose = currSq.getDoor(dir);
 				}
 				return true;
@@ -751,7 +757,7 @@ public class Crew extends Actor{
 
 	private class SetTile extends Action{
 
-		Vector2 tilePos;
+		private Vector2 tilePos;
 		
 		private SetTile(Vector2 tilePos){
 			this.tilePos = tilePos;
@@ -763,10 +769,29 @@ public class Crew extends Actor{
 			state = CrewState.IDLE;
 
 			if(doorToClose != null){
-				doorToClose.changeOpen();
+				doorToClose.changeOpenOverrideHatch();
 				doorToClose = null;
 			}
 			return true;
+		}
+		
+	}
+	
+	private class NewSearch extends Action{
+		private Vector2 tileToGoTo;
+		
+		private NewSearch(Vector2 tileToGoTo){
+			this.tileToGoTo = tileToGoTo;
+		}
+		
+		@Override
+		public boolean act(float delta) {
+			if(needNewPath && (state == CrewState.IDLE || state == CrewState.MANNING)){
+				moves = aStarFindPath(tilePos, tileToGoTo);
+				needNewPath = false;
+				return true;
+			}
+			return false;
 		}
 		
 	}

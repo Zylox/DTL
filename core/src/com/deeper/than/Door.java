@@ -119,6 +119,15 @@ public class Door extends CellBorder{
 		}
 	}
 	
+	public void changeOpenOverrideHatch(){
+		if(doorState == DoorState.Open || doorState == DoorState.Opening){
+			doorState = DoorState.Closing;
+		}else{
+			doorState = DoorState.Opening;
+		}
+		addAction(new DoorOpen());
+	}
+	
 	public void printDoorState(){
 		if(hatchControl != null){
 			if(!hatchControl.canControlDoors()){
@@ -179,8 +188,12 @@ public class Door extends CellBorder{
 				Wall.getExteriorWallImg().draw(batch, getX()+DOORSIZESHORT/2, getY()+FloorTile.TILESIZE-width, height, -width);
 			}
 		}
-		
+		Color color = batch.getColor().cpy();
+		if(hatchControl == null || !hatchControl.canControlDoors()){
+			batch.setColor(Color.PINK);
+		}
 		super.draw(batch, parentAlpha);
+		batch.setColor(color);
 		
 	}
 	
@@ -196,7 +209,8 @@ public class Door extends CellBorder{
 		if(crewMem.getOwnerShipId() != ship.getId()){
 			isEnemy = true;
 		}
-		if(!hatchControl.canControlDoors() || (isEnemy && !hatchControl.canEnemiesUseDoors())){
+		
+		if(hatchControl != null && (!hatchControl.canControlDoors() || (isEnemy && !hatchControl.canEnemiesUseDoors()))){
 			return false;
 		}
 		
@@ -243,6 +257,7 @@ public class Door extends CellBorder{
 		@Override
 		public void draw(Batch batch, float alpha){
 		
+
 			if(orientation == Neighbors.UP || orientation == Neighbors.DOWN){
 				if(left){
 					ship.getDoorImg().draw(batch, getX(), getY(), getWidth()-openAmount, getHeight());

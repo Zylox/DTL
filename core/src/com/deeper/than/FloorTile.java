@@ -2,6 +2,7 @@ package com.deeper.than;
 
 import java.util.Random;
 
+import com.badlogic.gdx.Input.Buttons;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.math.Vector2;
@@ -57,24 +58,28 @@ public class FloorTile extends Actor{
 			public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
 				printCoords();
 				
-				Crew crew = ((GameplayScreen)Screens.GAMEPLAY.getScreen()).getSelectedCrew();
-				if(crew != null){
-					GridSquare gs = gridSquare.getRoom().selectTileToWalkTo();
-					Vector2 movePos;
-					if(gs!= null){
-						movePos = gs.getPos();
-					}else{
-						movePos = crew.findNearestOpenSpot(getPos());
+				if(button == Buttons.RIGHT){
+					Crew crew = ((GameplayScreen)Screens.GAMEPLAY.getScreen()).getSelectedCrew();
+					if(crew != null){
+						GridSquare gs = gridSquare.getRoom().selectTileToWalkTo();
+						Vector2 movePos;
+						if(gs!= null){
+							movePos = gs.getPos();
+						}else{
+							movePos = crew.findNearestOpenSpot(getPos());
+						}
+						
+						if(movePos != null){
+							crew.moveTo(movePos);
+						}
 					}
-					
-					if(movePos != null){
-						crew.moveTo(movePos);
-					}
+				
+					return true;
+				}else{
 					((GameplayScreen)Screens.GAMEPLAY.getScreen()).setSelectedCrew(null);
+					return false;
 				}
-			
-				return true;
-		    }
+			}
 		});
 		
 		setOrigin(TILESIZE/2, TILESIZE/2);
