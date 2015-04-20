@@ -13,11 +13,18 @@ import com.badlogic.gdx.scenes.scene2d.ui.WidgetGroup;
 import com.deeper.than.screens.GameplayScreen;
 
 public class UIPowerBar extends WidgetGroup{
+	public enum PowerBarState{
+		POWERED,
+		UNPOWERED,
+		DAMAGED,
+		IONIZED;
+	}
+	
 	public static final int UNLIMITED_POWER = -3;
 	public static final float PREF_WIDTH = PowerChunk.PREF_SIZE * 1.5f;
 	private int sections;
 	private int powered;
-	private ArrayList<PowerChunk> powerChunks;
+	protected ArrayList<PowerChunk> powerChunks;
 	protected Table table;
 	
 	public UIPowerBar(int sections, int powered){
@@ -48,12 +55,15 @@ public class UIPowerBar extends WidgetGroup{
 			this.powerChunks = new ArrayList<PowerChunk>();
 		}
 		
-		int temp = powered;
 		for(int i = 0; i<sections; i++){
 			//as long as powered chunks remain set as powered and decrement temp
-			powerChunks.add(new PowerChunk(temp-->0?true:false));
+			if(i < getPowered()){
+				powerChunks.add(new PowerChunk(PowerBarState.POWERED));
+			}
+			else if(i >= getPowered()){
+				powerChunks.add(new PowerChunk(PowerBarState.UNPOWERED));
+			}
 		}
-		
 		table.setFillParent(true);
 		table.add().expand();
 		for(int i = powerChunks.size()-1; i >=0; i--){
@@ -76,12 +86,11 @@ public class UIPowerBar extends WidgetGroup{
 	 * gives power to another bar.
 	 * @param numToExchange how many sections to give power
 	 * @param powerBar bar to transfer to
-	 * @return false if there is not enough power, as much power as possible transfered
+	 * @return the amount transfered
 	 */
-	public boolean givePower(int numToExchange ,UIPowerBar powerBar){
-		boolean fullExchange;
+	public int givePower(int numToExchange ,UIPowerBar powerBar){
 		if(powerBar.sections == powerBar.powered){
-			return false;
+			return 0;
 		}
 		if(powerBar.powered + numToExchange > powerBar.sections){
 			numToExchange = powerBar.sections - powerBar.powered;
@@ -90,14 +99,12 @@ public class UIPowerBar extends WidgetGroup{
 		if(getPowered() == UNLIMITED_POWER){
 			powerBar.setPowered(powerBar.getPowered() + numToExchange);
 			powerBar.updatePowered();
-			return true;
+			return numToExchange;
 		}
 		
 		if(getPowered() < numToExchange){
-			fullExchange = false;
 			numToExchange = getPowered();
 		}else{
-			fullExchange = true;
 		}
 		
 		setPowered(getPowered() - numToExchange);
@@ -105,7 +112,7 @@ public class UIPowerBar extends WidgetGroup{
 		updatePowered();
 		powerBar.updatePowered();
 		
-		return fullExchange;
+		return numToExchange;
 	}
 	
 	public void addListenerToChildren(EventListener listen){
@@ -114,10 +121,14 @@ public class UIPowerBar extends WidgetGroup{
 		}
 	}
 	
-	private void updatePowered(){
-		int temp = powered;
+	protected void updatePowered(){
 		for(int i = 0; i < powerChunks.size(); i++){
-			powerChunks.get(i).setPowered(temp-->0?true:false);
+			if(i < getPowered()){
+				powerChunks.get(i).setState(PowerBarState.POWERED);
+			}
+			else if(i >= getPowered()){
+				powerChunks.get(i).setState(PowerBarState.UNPOWERED);
+			}
 		}
 	}
 	
@@ -144,30 +155,33 @@ public class UIPowerBar extends WidgetGroup{
 		this.powered = powered;
 	}
 	
-	private class PowerChunk extends Widget{
+	protected class PowerChunk extends Widget{
 		private static final float PREF_SIZE = 15;
-		boolean powered;
+		private PowerBarState state;
 		
-		public PowerChunk(boolean powered){
-			this.powered = powered;
+		private PowerChunk(PowerBarState state){
+			this.state = state;
 		}
 		
 		@Override
 		public void draw(Batch batch, float parentAlpha){
 			if(isPowered()){
 				batch.draw(GameplayScreen.highlight, getX(), getY(), getWidth(), getHeight());
-			}else{
-				//batch.draw(GameplayScreen.highlight, getX(), getY(), getWidth(), getHeight());
+			}else if(state == PowerBarState.UNPOWERED){
 				GameplayScreen.drawEmptyRectable(getX(), getY(), getWidth(), getHeight(), 3, null, batch);
+			}else if(state == PowerBarState.DAMAGED){
+				GameplayScreen.drawEmptyRectable(getX(), getY(), getWidth(), getHeight(), 3, Color.BLACK, batch);
+			}else if(state == PowerBarState.IONIZED){
+				GameplayScreen.drawEmptyRectable(getX(), getY(), getWidth(), getHeight(), 3, Color.YELLOW, batch);
 			}
 		}
 
 		public boolean isPowered() {
-			return powered;
+			return	state == PowerBarState.POWERED ? true : false;
 		}
 
-		public void setPowered(boolean powered) {
-			this.powered = powered;
+		public void setState(PowerBarState state){
+			this.state = state;
 		}
 		
 		

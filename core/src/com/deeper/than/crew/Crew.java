@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input.Buttons;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.g2d.Animation;
@@ -60,6 +61,7 @@ public class Crew extends Actor{
 	private CrewState state;
 	
 	private boolean needNewPath;
+	private Vector2 newEnd;
 	
 	private ArrayList<GridSquare> openList;
 	private ArrayList<GridSquare> closedList;
@@ -72,6 +74,7 @@ public class Crew extends Actor{
 		health = race.getHealth();
 		moves = new ArrayList<Vector2>();
 		needNewPath = false;
+		newEnd = new Vector2();
 		direction = Neighbors.DOWN;
 		stateTime = 0;
 		doorToClose = null;
@@ -80,8 +83,11 @@ public class Crew extends Actor{
 		
 		addListener(new ClickListener() {
 			public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
-				setAsSelected();
-				return true;
+				if(button == Buttons.LEFT){
+					setAsSelected();	
+					return true;
+				}
+				return false;
 		    }
 		});
 		
@@ -107,11 +113,11 @@ public class Crew extends Actor{
 	public void update(){
 		setNextMove();
 		if(room != null && room.getModule() != null){
-			if((state == CrewState.IDLE || state == CrewState.MANNING) && room.getModule().getDamage() > 0){
-				state = CrewState.REPAIRING;
-			}else if(state == CrewState.REPAIRING && room.getModule().getDamage() == 0){
-				setManningIfPossible();
-			}
+//			if((state == CrewState.IDLE || state == CrewState.MANNING) && room.getModule().getDamage() > 0){
+//				state = CrewState.REPAIRING;
+//			}else if(state == CrewState.REPAIRING && room.getModule().getDamage() == 0){
+//				setManningIfPossible();
+//			}
 		}
 	}
 	
@@ -119,6 +125,9 @@ public class Crew extends Actor{
 		Module mod = room.getModule();
 		
 		if(mod != null && !mod.isManned()){
+			if(mod.getDamage() > 0){
+				return;
+			}
 			if(mod.isManable()){
 				moveTo(room.getManningLocation());
 				return;
@@ -137,16 +146,15 @@ public class Crew extends Actor{
 		}
 		TextureRegion tex = getFrame(stateTime, direction);
 		tex.getTexture().setFilter(TextureFilter.Linear, TextureFilter.Linear);
-		Color color = batch.getColor();
+		Color color = batch.getColor().cpy();
 		if(isSelected())
 		{
-			color = batch.getColor().cpy();
 			batch.setColor(.0f, 1f, .0f, 1);
+		}else if(CrewState.REPAIRING == state){
+			batch.setColor(Color.RED);
 		}
 		batch.draw(tex, getX(), getY(), getOriginX(), getOriginY(), getWidth(), getHeight(), getScaleX(), getScaleY(), getRotation());
-		if(isSelected()){
-			batch.setColor(color);
-		}
+		batch.setColor(color);
 	}
 	
 	public TextureRegion getIcon(){
@@ -174,8 +182,9 @@ public class Crew extends Actor{
 	}
 	
 	public void moveTo(Vector2 tile){
-		//moves = aStarFindPath(tilePos, tile);
-		addAction(new NewSearch(tile));
+		
+		//addAction(new NewSearch(tile));
+		newEnd = tile;
 		needNewPath = true;
 	}
 	
@@ -188,14 +197,21 @@ public class Crew extends Actor{
 	
 	private void setNextMove(){
 		if(state == CrewState.WALKING) return;
+		if(needNewPath){
+			moves = aStarFindPath(tilePos, newEnd);
+			needNewPath = false;
+		}
 		if(moves.isEmpty()){
-			if(occupiedShip.getLayout()[(int)tilePos.y][(int)tilePos.x].crewIdleCount() > 1){
-				ArrayList<Crew> iIC= ownerShip.getLayout()[(int)tilePos.y][(int)tilePos.x].intrudingIdleCrew();
+			if(occupiedShip.getLayout()[(int)tilePos.y][(int)tilePos.x].crewStandingCount() > 1){
+				ArrayList<Crew> iIC= ownerShip.getLayout()[(int)tilePos.y][(int)tilePos.x].intrudingStandingCrew();
 				for(Crew c : iIC){
 					if(!c.stillMoving()){
 						c.moveTo(c.findNearestOpenSpot(tilePos));
 					}
 				}
+			}
+			if(CrewState.REPAIRING == state){
+				return;
 			}
 			if(ownerShip.getLayout()[(int)tilePos.y][(int)tilePos.x].getRoom().getManningLocation() == tilePos && ownerShip == occupiedShip){
 				Module mod = ownerShip.getLayout()[(int)tilePos.y][(int)tilePos.x].getRoom().getModule();
@@ -737,6 +753,9 @@ public class Crew extends Actor{
 		return race;
 	}
 	
+	public float getRepairRatio(){
+		return race.getRepairRatio();
+	}
 
 	public String getName() {
 		return name;
@@ -753,6 +772,21 @@ public class Crew extends Actor{
 
 	public CrewState getState() {
 		return state;
+	}
+	
+	public void setRepairing(boolean repairing){
+		if(repairing){
+			if(state == CrewState.MANNING){
+				Module mod = ownerShip.getLayout()[(int)tilePos.y][(int)tilePos.x].getRoom().getModule();
+				if(mod != null){
+					state = CrewState.IDLE;
+					mod.setManning(null);
+				}
+			}
+			state = CrewState.REPAIRING;
+		}else{
+			state = CrewState.IDLE;
+		}
 	}
 
 	private class SetTile extends Action{
@@ -773,25 +807,6 @@ public class Crew extends Actor{
 				doorToClose = null;
 			}
 			return true;
-		}
-		
-	}
-	
-	private class NewSearch extends Action{
-		private Vector2 tileToGoTo;
-		
-		private NewSearch(Vector2 tileToGoTo){
-			this.tileToGoTo = tileToGoTo;
-		}
-		
-		@Override
-		public boolean act(float delta) {
-			if(needNewPath && (state == CrewState.IDLE || state == CrewState.MANNING)){
-				moves = aStarFindPath(tilePos, tileToGoTo);
-				needNewPath = false;
-				return true;
-			}
-			return false;
 		}
 		
 	}

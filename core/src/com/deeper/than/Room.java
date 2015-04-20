@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.math.Vector2;
+import com.deeper.than.crew.Crew;
 import com.deeper.than.modules.Module;
 import com.deeper.than.modules.SensorsModule;
 import com.deeper.than.screens.GameplayScreen;
@@ -78,6 +79,14 @@ public class Room {
 		sensors = null;
 		
 		isHoveredOver = false;
+	}
+	
+	public ArrayList<Crew> getRepairCandidates(){
+		ArrayList<Crew> cands = new ArrayList<Crew>();
+		for(GridSquare gs : squares){
+			cands.addAll(gs.getCrewOnSquare());
+		}
+		return cands;
 	}
 	
 	public GridSquare selectTileToWalkTo(){

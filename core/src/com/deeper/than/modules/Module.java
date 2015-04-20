@@ -1,10 +1,14 @@
 package com.deeper.than.modules;
 
+import java.util.ArrayList;
+
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.deeper.than.DTL;
 import com.deeper.than.Room;
 import com.deeper.than.Ship;
 import com.deeper.than.crew.Crew;
+import com.deeper.than.crew.Crew.CrewState;
 
 public abstract class Module {
 	
@@ -26,6 +30,7 @@ public abstract class Module {
 	private int powerLevel;
 	private boolean manned;
 	private Crew manning;
+	private Crew repairing;
 	protected boolean manable;
 	
 	public Module(int id, int maxLevel,Room room, Ship ship){
@@ -46,6 +51,7 @@ public abstract class Module {
 		manned = false;
 		manning = null;
 		manable = false;
+		repairing = null;
 	}
 	
 	public void update(){
@@ -56,20 +62,51 @@ public abstract class Module {
 			}
 		}
 		if(repairCooldown.isOnCooldown()){
-			//repairCooldown.advanceCooldown(getRepairSpeed());
-			if(!ionicCooldown.isOnCooldown()){
-				ionicCharges = 0;
+			repairCooldown.advanceCooldown(getRepairSpeed());
+			if(!repairCooldown.isOnCooldown()){
+				damage--;
+				if(damage > 0){
+					repairCooldown.startCooldown();
+				}else{
+					repairing.setRepairing(false);
+					repairing = null;
+				}
 			}
 		}
 		
 		
 	}
 
-//	private float getRepairSpeed(){
-//		if(ship.isCrewInRoom(room)){
-//			
-//		}
-//	}
+	private float getRepairSpeed(){
+		if(repairing != null){
+			if(repairing.getState() == CrewState.REPAIRING){
+				return repairing.getRepairRatio() * BASE_REPAIR_PER_SEC;
+			}
+		}
+		
+		ArrayList<Crew> repairCands = room.getRepairCandidates();
+		if(repairCands.size() == 0){
+			return 0;
+		}
+		Crew repairer = null;
+		for(Crew c : repairCands){
+			if(c.getState() == CrewState.IDLE || c.getState() == CrewState.MANNING){
+				if(repairer == null){
+					repairer = c;
+				}else{
+					if(c.getRepairRatio() > repairer.getRepairRatio()){
+						repairer = c;
+					}
+				}
+			}
+		}
+		if(repairer == null){
+			return 0;
+		}
+		repairing = repairer;
+		repairing.setRepairing(true);
+		return repairer.getRepairRatio() * BASE_REPAIR_PER_SEC;
+	}
 	
 	public void draw(Batch batch){
 		Sprite icon = Modules.getIcon(this.getClass().getCanonicalName()); 
@@ -90,7 +127,14 @@ public abstract class Module {
 	}
 	
 	public void recieveDamage(int amt){
-		
+		if(amt < 1){
+			return;
+		}
+		damage += amt;
+		if(damage > getLevel()){
+			damage = getLevel();
+		}
+		repairCooldown.startCooldown();
 	}
 
 	public int getPowerLevel() {

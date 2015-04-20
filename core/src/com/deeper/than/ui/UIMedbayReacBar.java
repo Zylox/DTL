@@ -4,7 +4,7 @@ import com.deeper.than.modules.MainModule;
 import com.deeper.than.modules.MedbayModule;
 import com.deeper.than.modules.Modules;
 
-public class UIMedbayReacBar extends UIMainModuleReactorBar{
+public class UIMedbayReacBar extends UIModuleReactorBar{
 
 	public UIMedbayReacBar(int powered, ReactorBar mainPower, MainModule module) {
 		super(powered, Modules.getIcon(MedbayModule.class.getCanonicalName()), mainPower, module);

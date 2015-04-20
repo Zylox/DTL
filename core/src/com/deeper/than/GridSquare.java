@@ -184,7 +184,7 @@ public class GridSquare extends Group{
 		return true;
 	}
 	
-	public int crewIdleCount(){
+	public int crewStandingCount(){
 		int count = 0;
 		for(Crew c : crewOnSquare){
 			if(c.getState() == CrewState.IDLE || c.getState() == CrewState.MANNING){
@@ -194,19 +194,24 @@ public class GridSquare extends Group{
 		return count;
 	}
 	
-	public ArrayList<Crew> intrudingIdleCrew(){
+	public ArrayList<Crew> intrudingStandingCrew(){
 		ArrayList<Crew> iIC = new ArrayList<Crew>();
 		for(int i = 1; i<crewOnSquare.size(); i++){
-			if(crewOnSquare.get(i).getState() == CrewState.IDLE || crewOnSquare.get(i).getState() == CrewState.MANNING){
+			if(crewOnSquare.get(i).getState() != CrewState.WALKING){
 				iIC.add(crewOnSquare.get(i));
 			}
 		}
 		return iIC;
 	}
 	
+	public ArrayList<Crew> getCrewOnSquare(){
+		return crewOnSquare;
+	}
+	
 	public GridSquare getPathPointer(){
 		return pathPointer;
 	}
+	
 	
 	public void setPathPointer(GridSquare pathPointer){
 		this.pathPointer = pathPointer;

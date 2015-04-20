@@ -4,7 +4,7 @@ import com.deeper.than.modules.ClimateControlModule;
 import com.deeper.than.modules.MainModule;
 import com.deeper.than.modules.Modules;
 
-public class UIClimateControlReacBar extends UIMainModuleReactorBar {
+public class UIClimateControlReacBar extends UIModuleReactorBar {
 
 	public UIClimateControlReacBar(int powered,
 			ReactorBar mainPower, MainModule module) {

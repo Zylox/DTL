@@ -10,6 +10,7 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.deeper.than.crew.Crew;
+import com.deeper.than.modules.Module;
 import com.deeper.than.screens.GameplayScreen;
 import com.deeper.than.screens.Screens;
 
@@ -76,6 +77,14 @@ public class FloorTile extends Actor{
 				
 					return true;
 				}else{
+					if(!((GameplayScreen)Screens.GAMEPLAY.getScreen()).isCrewSelected()){
+						Module mod = gridSquare.getRoom().getModule();
+						if(mod != null){
+							System.out.println("damage pow");
+							mod.recieveDamage();
+							System.out.println(mod.getDamage());
+						}
+					}
 					((GameplayScreen)Screens.GAMEPLAY.getScreen()).setSelectedCrew(null);
 					return false;
 				}

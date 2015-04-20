@@ -28,19 +28,15 @@ import com.deeper.than.modules.EngineModule;
 import com.deeper.than.modules.MedbayModule;
 import com.deeper.than.modules.Module;
 import com.deeper.than.modules.Modules;
-import com.deeper.than.modules.SensorsModule;
 import com.deeper.than.modules.SheildModule;
 import com.deeper.than.ui.CrewPlate;
 import com.deeper.than.ui.ReactorBar;
 import com.deeper.than.ui.UIClimateControlReacBar;
 import com.deeper.than.ui.UICloakingReacBar;
 import com.deeper.than.ui.UIEngineReacBar;
-import com.deeper.than.ui.UIMainModuleReactorBar;
 import com.deeper.than.ui.UIMedbayReacBar;
 import com.deeper.than.ui.UIModuleSyncable;
-import com.deeper.than.ui.UIPowerBar;
 import com.deeper.than.ui.UISheildReacBar;
-import com.deeper.than.ui.UISubModuleReactorBar;
 import com.deeper.than.ui.UITopBar;
 
 public class GameplayScreen implements EnumerableScreen{
@@ -261,6 +257,7 @@ public class GameplayScreen implements EnumerableScreen{
 	    if(timeAccumulator > DTL.getFrameTime()){
 	    	for(UIModuleSyncable mrb : moduleReactorBars){
 	    		mrb.checkforSectionsChange();
+	    		mrb.updateModulePowerLevel();
 	    	}
 	    	playerShip.update();
 	    	ui.act();
