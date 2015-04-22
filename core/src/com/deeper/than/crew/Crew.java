@@ -739,6 +739,11 @@ public class Crew extends Actor{
 	}
 
 	public void setHealth(float health) {
+		if(health > getRace().getHealth()){
+			health = getRace().getHealth();
+		}else if(health < 0){
+			health = 0;
+		}
 		this.health = health;
 	}
 
@@ -754,6 +759,9 @@ public class Crew extends Actor{
 		return ownerShip.getId();
 	}
 	
+	public Ship getOwnerShip(){
+		return ownerShip;
+	}
 	
 	public Races getRace() {
 		return race;

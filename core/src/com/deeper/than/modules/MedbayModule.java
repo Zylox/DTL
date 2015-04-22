@@ -1,7 +1,10 @@
 package com.deeper.than.modules;
+import java.util.ArrayList;
+
 import com.deeper.than.DTL;
 import com.deeper.than.Room;
 import com.deeper.than.Ship;
+import com.deeper.than.crew.Crew;
 
 /**
  * Holds all values relevant to healing crew when in the medbay.
@@ -43,10 +46,19 @@ public class MedbayModule extends MainModule {
 	 */
 	public float getHealRatePerTimeStep(){
 		float healMulitplier = 0;
-		if(getLevel() <= healBoost.length+1 && getLevel() >= 0){
-			healMulitplier = healBoost[getLevel()];
+		if(getPowerLevel() <= healBoost.length+1 && getPowerLevel() >= 0){
+			healMulitplier = healBoost[getPowerLevel()];
 		}
 		return DTL.getRatePerTimeStep(baseHeal*healMulitplier);
+	}
+	
+	@Override
+	public void update(){
+		super.update();
+		ArrayList<Crew> crewInRoom = getRoom().getCrewInRoom();
+		for(Crew c : crewInRoom){
+			c.setHealth(c.getHealth() + getHealRatePerTimeStep());
+		}
 	}
 
 	

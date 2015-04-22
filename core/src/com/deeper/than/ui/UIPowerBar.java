@@ -21,7 +21,7 @@ public class UIPowerBar extends WidgetGroup{
 		IONIZED;
 	}
 	
-	public static final int UNLIMITED_POWER = -3;
+	public static final int UNLIMITED_POWER = -999;
 	public static final float PREF_WIDTH = PowerChunk.PREF_SIZE * 1.5f;
 	private int sections;
 	private int powered;
@@ -97,6 +97,13 @@ public class UIPowerBar extends WidgetGroup{
 		return table.getChildren().get(0).getY() + table.getChildren().get(0).getHeight();
 	}
 	
+	public boolean isEmpty(){
+		if(getPowered() == UNLIMITED_POWER){
+			return false;
+		}
+		return powered <= 0;
+	}
+	
 	/**
 	 * gives power to another bar.
 	 * @param numToExchange how many sections to give power
@@ -104,13 +111,19 @@ public class UIPowerBar extends WidgetGroup{
 	 * @return the amount transfered
 	 */
 	public int givePower(int numToExchange ,UIPowerBar powerBar){
+		if(powerBar.getPowered() == UNLIMITED_POWER){
+			setPowered(getPowered() - numToExchange);
+			updatePowered();
+			return numToExchange;
+		}
+		
 		if(powerBar.sections == powerBar.powered){
 			return 0;
 		}
+
 		if(powerBar.powered + numToExchange > powerBar.sections){
 			numToExchange = powerBar.sections - powerBar.powered;
 		}
-		
 		if(getPowered() == UNLIMITED_POWER){
 			powerBar.setPowered(powerBar.getPowered() + numToExchange);
 			powerBar.updatePowered();

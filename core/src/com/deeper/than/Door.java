@@ -210,7 +210,7 @@ public class Door extends CellBorder{
 			isEnemy = true;
 		}
 		
-		if(hatchControl != null && (!hatchControl.canControlDoors() || (isEnemy && !hatchControl.canEnemiesUseDoors()))){
+		if(hatchControl != null && ((isEnemy && !hatchControl.canEnemiesUseDoors()))){
 			return false;
 		}
 		

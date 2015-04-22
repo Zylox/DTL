@@ -57,7 +57,7 @@ public class FloorTile extends Actor{
 			}
 			
 			public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
-				printCoords();
+				//printCoords();
 				
 				if(button == Buttons.RIGHT){
 					Crew crew = ((GameplayScreen)Screens.GAMEPLAY.getScreen()).getSelectedCrew();

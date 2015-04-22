@@ -140,7 +140,6 @@ public abstract class Module {
 		if(manning != null){
 			manning = null;
 		}
-		System.out.println(ionicCharges);
 	}
 	
 	

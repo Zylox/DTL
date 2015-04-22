@@ -11,13 +11,24 @@ import com.deeper.than.modules.Module;
 import com.deeper.than.screens.GameplayScreen;
 import com.deeper.than.ui.UIPowerBar.PowerBarState;
 
-public abstract class UIModuleReactorBar extends UIIconReactorBar implements UIModuleSyncable{
+public class UIModuleReactorBar extends UIIconReactorBar implements UIModuleSyncable{
 
 	private UIPowerBar mainPower;
 	//private int powerWanted;
 	private int desiredPowerLevel;
 	private Module module;
 	private int preLockdownPowerLevel;
+	private ClickListener clicky = new ClickListener() {
+			public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+				if(button == Buttons.LEFT){
+					clickPowerUp();
+					
+				}else if(button == Buttons.RIGHT){
+					clickPowerDown();
+				}
+				return true;
+		    }
+		};
 	
 	public UIModuleReactorBar(int powered, Sprite icon, UIPowerBar mainPower, Module module) {
 		super(module.getLevel(), 0, icon);
@@ -28,17 +39,7 @@ public abstract class UIModuleReactorBar extends UIIconReactorBar implements UIM
 		desiredPowerLevel = getPowered();
 		
 		if(module instanceof MainModule){
-			this.addListenerToChildren((new ClickListener() {
-				public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
-					if(button == Buttons.LEFT){
-						clickPowerUp();
-						
-					}else if(button == Buttons.RIGHT){
-						clickPowerDown();
-					}
-					return true;
-			    }
-			}));
+			this.addListenerToChildren(clicky);
 		}
 	} 
 	
@@ -107,12 +108,15 @@ public abstract class UIModuleReactorBar extends UIIconReactorBar implements UIM
 				losePower(getPowered() - (preLockdownPowerLevel - module.getIonicCharges()));
 			}
 		}
-		
 		if(getSections() - module.getDamage() < getPowered()){
 			losePower(getPowered() - (getSections() - module.getDamage()));
 		}else if(getSections() - module.getDamage() > getPowered() && !this.isLockedDown){
 			if(desiredPowerLevel > getPowered()){
-				getPower(Math.min(desiredPowerLevel, getSections()-module.getDamage()) - getPowered());
+				if(mainPower.isEmpty()){
+					desiredPowerLevel = getPowered();
+				}else{
+					getPower(Math.min(desiredPowerLevel, getSections()-module.getDamage()) - getPowered());
+				}
 			}
 		}
 		if(desiredPowerLevel < getPowered() && !this.isLockedDown){
@@ -120,20 +124,6 @@ public abstract class UIModuleReactorBar extends UIIconReactorBar implements UIM
 		}
 
 		
-//		if(desiredPowerLevel > getPowered()){
-//			if(Math.max(module.getIonicCharges(), module.getDamage()) > desiredPowerLevel - getPowered()){
-//				
-//			}
-//		}
-//		
-//		if(getPowered() + module.getDamage() > getSections()){
-//			powerWanted += getPowered() + module.getDamage() - getSections();
-//			losePower(getPowered() + module.getDamage() - getSections());
-//		}
-//		else if(getPowered() + module.getDamage() < getSections() && powerWanted != 0){
-//			powerWanted -= mainPower.givePower(powerWanted, this);
-//		}
-		//System.out.println(powerWanted);
 		module.setPowerLevel(getPowered());
 		updatePowered();
 	}
@@ -161,17 +151,9 @@ public abstract class UIModuleReactorBar extends UIIconReactorBar implements UIM
 		if(module.getLevel() != getSections()){
 			this.adjustSegments(module.getLevel(), this.getPowered());
 			addIconToTable();
-			this.addListenerToChildren((new ClickListener() {
-				public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
-					if(button == Buttons.LEFT){
-						getPower(1);
-						
-					}else if(button == Buttons.RIGHT){
-						losePower(1);
-					}
-					return true;
-			    }
-			}));
+			if(module instanceof MainModule){
+				this.addListenerToChildren(clicky);
+			}
 		}
 	}
 }

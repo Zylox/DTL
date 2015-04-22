@@ -22,12 +22,15 @@ import com.deeper.than.PlayerShip;
 import com.deeper.than.Wall;
 import com.deeper.than.crew.Crew;
 import com.deeper.than.crew.Races;
+import com.deeper.than.modules.BridgeModule;
 import com.deeper.than.modules.ClimateControlModule;
 import com.deeper.than.modules.CloakingModule;
 import com.deeper.than.modules.EngineModule;
+import com.deeper.than.modules.HatchControlModule;
 import com.deeper.than.modules.MedbayModule;
 import com.deeper.than.modules.Module;
 import com.deeper.than.modules.Modules;
+import com.deeper.than.modules.SensorsModule;
 import com.deeper.than.modules.SheildModule;
 import com.deeper.than.ui.CrewPlate;
 import com.deeper.than.ui.ReactorBar;
@@ -35,7 +38,9 @@ import com.deeper.than.ui.UIClimateControlReacBar;
 import com.deeper.than.ui.UICloakingReacBar;
 import com.deeper.than.ui.UIEngineReacBar;
 import com.deeper.than.ui.UIMedbayReacBar;
+import com.deeper.than.ui.UIModuleReactorBar;
 import com.deeper.than.ui.UIModuleSyncable;
+import com.deeper.than.ui.UIPowerBar;
 import com.deeper.than.ui.UISheildReacBar;
 import com.deeper.than.ui.UITopBar;
 
@@ -47,7 +52,8 @@ public class GameplayScreen implements EnumerableScreen{
 	private DTL game;
 	private Stage ui;
 	
-	private Table reactorBars;
+	private Table mainReactorBars;
+	private Table subReactorBars;
 	private ReactorBar reactorBar;
 	
 	private ArrayList<UIModuleSyncable> moduleReactorBars;
@@ -111,7 +117,8 @@ public class GameplayScreen implements EnumerableScreen{
 		uiT.row();
 		
 		constructMainReactorBars();
-		uiT.add(reactorBars);
+		uiT.add(mainReactorBars);
+		uiT.add(subReactorBars);
 		uiT.row();
 		uiT.add(new Label("tacos", DTL.skin)).bottom().left().colspan(10);
 		
@@ -188,9 +195,10 @@ public class GameplayScreen implements EnumerableScreen{
 	}
 	
 	private void constructMainReactorBars(){
-		reactorBars = new Table();
+		mainReactorBars = new Table();
+		
 		reactorBar = new ReactorBar(playerShip); 
-		reactorBars.add(reactorBar).padLeft(5).bottom().left().prefHeight(game.getViewport().getWorldHeight()/2).prefWidth(ReactorBar.PREF_WIDTH).minWidth(ReactorBar.PREF_WIDTH);
+		mainReactorBars.add(reactorBar).padLeft(5).bottom().left().prefHeight(game.getViewport().getWorldHeight()/2).prefWidth(ReactorBar.PREF_WIDTH).minWidth(ReactorBar.PREF_WIDTH);
 		
 		moduleReactorBars = new ArrayList<UIModuleSyncable>();
 
@@ -198,34 +206,58 @@ public class GameplayScreen implements EnumerableScreen{
 		if(mod != null){
 			UISheildReacBar uis =new UISheildReacBar(0, reactorBar, (SheildModule)playerShip.getModule(SheildModule.class));
 			moduleReactorBars.add(uis);
-			reactorBars.add(uis).padLeft(10).bottom().left().minWidth(ReactorBar.PREF_WIDTH).fillY();	
+			mainReactorBars.add(uis).padLeft(10).bottom().left().minWidth(ReactorBar.PREF_WIDTH).fillY();	
 		}
 		mod = playerShip.getModule(EngineModule.class);
 		if(mod != null){
 			UIEngineReacBar uie =new UIEngineReacBar(0, reactorBar, (EngineModule)playerShip.getModule(EngineModule.class));
 			moduleReactorBars.add(uie);
-			reactorBars.add(uie).padLeft(10).bottom().left().minWidth(ReactorBar.PREF_WIDTH).fillY();
+			mainReactorBars.add(uie).padLeft(10).bottom().left().minWidth(ReactorBar.PREF_WIDTH).fillY();
 		}
 		mod = playerShip.getModule(MedbayModule.class);
 		if(mod != null){
 			UIMedbayReacBar uim =new UIMedbayReacBar(0, reactorBar, (MedbayModule)playerShip.getModule(MedbayModule.class));
 			moduleReactorBars.add(uim);
-			reactorBars.add(uim).padLeft(10).bottom().left().minWidth(ReactorBar.PREF_WIDTH).fillY();
+			mainReactorBars.add(uim).padLeft(10).bottom().left().minWidth(ReactorBar.PREF_WIDTH).fillY();
 		}
 		mod = playerShip.getModule(ClimateControlModule.class);
 		if(mod != null){
 			UIClimateControlReacBar uicc =new UIClimateControlReacBar(0, reactorBar, (ClimateControlModule)playerShip.getModule(ClimateControlModule.class));
 			moduleReactorBars.add(uicc);
-			reactorBars.add(uicc).padLeft(10).bottom().left().minWidth(ReactorBar.PREF_WIDTH).fillY();
+			mainReactorBars.add(uicc).padLeft(10).bottom().left().minWidth(ReactorBar.PREF_WIDTH).fillY();
 		}
 		mod = playerShip.getModule(CloakingModule.class);
 		if(mod != null){
 			UICloakingReacBar uic =new UICloakingReacBar(0, reactorBar, (CloakingModule)playerShip.getModule(CloakingModule.class));
 			moduleReactorBars.add(uic);
-			reactorBars.add(uic).padLeft(10).bottom().left().minWidth(ReactorBar.PREF_WIDTH).fillY();
+			mainReactorBars.add(uic).padLeft(10).bottom().left().minWidth(ReactorBar.PREF_WIDTH).fillY();
 		}
 		
-		reactorBars.add().prefWidth(10000000);
+		subReactorBars = new Table();
+		subReactorBars.add().bottom().left().prefHeight(game.getViewport().getWorldHeight()/2).prefWidth(ReactorBar.PREF_WIDTH).minWidth(ReactorBar.PREF_WIDTH);
+		//subReactorBars.add().prefWidth(1000000000);
+		UIPowerBar subBar = new UIPowerBar(1, UIPowerBar.UNLIMITED_POWER);
+		mod = playerShip.getModule(SensorsModule.class);
+		if(mod != null){
+			UIModuleReactorBar uiss =new UIModuleReactorBar(mod.getLevel(), Modules.getIcon(SensorsModule.class.getCanonicalName()), subBar, playerShip.getModule(SensorsModule.class));
+			moduleReactorBars.add(uiss);
+			subReactorBars.add(uiss).padLeft(10).bottom().left().minWidth(ReactorBar.PREF_WIDTH).fillY();
+		}
+		mod = playerShip.getModule(HatchControlModule.class);
+		if(mod != null){
+			UIModuleReactorBar uihc =new UIModuleReactorBar(mod.getLevel(), Modules.getIcon(HatchControlModule.class.getCanonicalName()), subBar, playerShip.getModule(HatchControlModule.class));
+			moduleReactorBars.add(uihc);
+			subReactorBars.add(uihc).padLeft(10).bottom().left().minWidth(ReactorBar.PREF_WIDTH).fillY();
+		}
+		mod = playerShip.getModule(BridgeModule.class);
+		if(mod != null){
+			UIModuleReactorBar uib =new UIModuleReactorBar(mod.getLevel(), Modules.getIcon(BridgeModule.class.getCanonicalName()), subBar, playerShip.getModule(BridgeModule.class));
+			moduleReactorBars.add(uib);
+			subReactorBars.add(uib).padLeft(10).bottom().left().minWidth(ReactorBar.PREF_WIDTH).fillY();
+		}
+		
+		mainReactorBars.add().prefWidth(10000000);
+		subReactorBars.padRight(5);
 	}
 	
 	@Override

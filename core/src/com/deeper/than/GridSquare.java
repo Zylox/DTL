@@ -89,8 +89,8 @@ public class GridSquare extends Group{
 		tile.setBounds(0, 0, getWidth(), getHeight());
 		addListener(new InputListener() {
 			public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
-				printWalls();
-				DTL.printDebug("WaterLevel: " + room.getWaterLevel());
+				//printWalls();
+				//DTL.printDebug("WaterLevel: " + room.getWaterLevel());
 				return false;
 		    }
 		});

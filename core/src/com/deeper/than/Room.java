@@ -98,6 +98,14 @@ public class Room {
 		return squares.get(0);
 	}
 	
+	public ArrayList<Crew> getCrewInRoom(){
+		ArrayList<Crew> crewInRoom = new ArrayList<Crew>();
+		for(GridSquare gs : squares){
+			crewInRoom.addAll(gs.getCrewOnSquare());
+		}
+		return crewInRoom;
+	}
+	
 	/**
 	 * Get the location in global coords
 	 * @return centerLoc
@@ -251,10 +259,26 @@ public class Room {
 	}
 	
 	public boolean isVisible(){
-		if(sensors == null){
-			return false;
+		if(ship instanceof EnemyShip){
+			if(sensors != null){
+				if(sensors.canSeeEnemyShip()){
+					return true;
+				}
+			}
 		}
-		return sensors.canSeeOwnShip() || ship.isCrewInRoom(this);
+		if(sensors == null){
+			return isPlayerCrewInRoom();
+		}
+		return sensors.canSeeOwnShip() || isPlayerCrewInRoom();
+	}
+	
+	public boolean isPlayerCrewInRoom(){
+		for(Crew c : getCrewInRoom()){
+			if(c.getOwnerShip() instanceof PlayerShip){
+				return true;
+			}
+		}
+		return false;
 	}
 	
 	public int getSize(){
