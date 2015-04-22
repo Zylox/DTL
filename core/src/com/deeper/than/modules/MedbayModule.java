@@ -55,7 +55,7 @@ public class MedbayModule extends MainModule {
 	@Override
 	public void update(){
 		super.update();
-		ArrayList<Crew> crewInRoom = getRoom().getCrewInRoom();
+		ArrayList<Crew> crewInRoom = getRoom().getThisShipsCrewInRoom();
 		for(Crew c : crewInRoom){
 			c.setHealth(c.getHealth() + getHealRatePerTimeStep());
 		}

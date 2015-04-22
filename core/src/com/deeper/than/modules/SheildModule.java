@@ -7,12 +7,12 @@ import com.deeper.than.Ship;
 
 public class SheildModule extends MainModule {
 	public static final float COOLDOWN_MAX = 100;
+	public static final float COOLDOWN_INC_BASE = 50;
 	public static Texture sheildTex = null;
 	public static final int MAX_SHEILD_SECTIONS = 4;
 	
 	private int activeCount;
 	private Cooldown coolD;
-	private float cooldownRate;
 	
 	/**
 	 * Creates a Sheild module at level 1
@@ -24,7 +24,6 @@ public class SheildModule extends MainModule {
 		super(id, maxLevel, room, ship);
 		activeCount = getSheildLayerCount();
 		coolD = new Cooldown();
-		cooldownRate = 50;
 		manable = true;
 	}
 	
@@ -64,7 +63,7 @@ public class SheildModule extends MainModule {
 			if(!coolD.isOnCooldown()){
 				coolD.startCooldown();
 			}else{
-				coolD.advanceCooldown(cooldownRate);
+				coolD.advanceCooldown(50);
 				if(!coolD.isOnCooldown()){
 					activeCount++;
 					if(activeCount != getSheildLayerCount()){
@@ -95,16 +94,6 @@ public class SheildModule extends MainModule {
 			sheildTex = new Texture(Gdx.files.internal("sheild.png"));
 		}
 		return sheildTex;
-	}
-
-	public float getCooldownRate() {
-		return cooldownRate;
-	}
-
-	public void setCooldownRate(float cooldownRate) {
-		this.cooldownRate = cooldownRate;
-	}
-
-	
+	}	
 	
 }

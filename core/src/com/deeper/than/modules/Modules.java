@@ -21,7 +21,8 @@ public enum Modules {
 	Sensors(SensorsModule.class.getCanonicalName(), "SensorsModule", "sensors.png", 3),
 	Medbay(MedbayModule.class.getCanonicalName(), "MedbayModule", "medbay.png", 3),
 	Sheild(SheildModule.class.getCanonicalName(), "SheildModule", "sheildModule.png", 8),
-	Docking(DockingModule.class.getCanonicalName(), "DockingModule", null, 3);
+	Docking(DockingModule.class.getCanonicalName(), "DockingModule", null, 3),
+	Weapons(WeaponsModule.class.getCanonicalName(), "WeaponsModule", "weaponsModule.png", 8);
 	
 	private String name;
 	private String stringRep;
@@ -92,6 +93,9 @@ public enum Modules {
 		if(this == Sheild){
 			return new SheildModule(id, maxLevel, room, ship);
 		}
+		if(this == Weapons){
+			return new WeaponsModule(id, maxLevel, room, ship);
+		}
 	
 		return null;
 	}
@@ -111,6 +115,8 @@ public enum Modules {
 			stringRep = Sensors.getStringRep();
 		}else if(module instanceof DockingModule){
 			stringRep = Docking.getStringRep();
+		}else if(module instanceof WeaponsModule){
+			stringRep = Weapons.getStringRep();
 		}
 		
 		return stringRep;
