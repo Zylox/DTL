@@ -124,7 +124,7 @@ public class Crew extends Actor{
 	private void setManningIfPossible(){
 		Module mod = room.getModule();
 		
-		if(mod != null && !mod.isManned()){
+		if(mod != null && !mod.isManned() && !mod.isOnLockdown()){
 			if(mod.getDamage() > 0){
 				return;
 			}
@@ -212,10 +212,16 @@ public class Crew extends Actor{
 			}
 			if(CrewState.REPAIRING == state){
 				return;
+			}else if(state == CrewState.MANNING){
+				Module mod = ownerShip.getLayout()[(int)tilePos.y][(int)tilePos.x].getRoom().getModule();
+				if(mod != null && !mod.isManned()){
+					state = CrewState.IDLE;
+				}
+				
 			}
 			if(ownerShip.getLayout()[(int)tilePos.y][(int)tilePos.x].getRoom().getManningLocation() == tilePos && ownerShip == occupiedShip){
 				Module mod = ownerShip.getLayout()[(int)tilePos.y][(int)tilePos.x].getRoom().getModule();
-				if(mod != null && !mod.isManned()){
+				if(mod != null && !mod.isManned() && !mod.isOnLockdown()){
 					state = CrewState.MANNING;
 					mod.setManning(this);
 					return;

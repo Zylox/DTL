@@ -10,6 +10,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Cell;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.Widget;
 import com.badlogic.gdx.scenes.scene2d.ui.WidgetGroup;
+import com.badlogic.gdx.utils.Array;
 import com.deeper.than.screens.GameplayScreen;
 
 public class UIPowerBar extends WidgetGroup{
@@ -26,6 +27,7 @@ public class UIPowerBar extends WidgetGroup{
 	private int powered;
 	protected ArrayList<PowerChunk> powerChunks;
 	protected Table table;
+	protected boolean isLockedDown;
 	
 	public UIPowerBar(int sections, int powered){
 		this.sections = sections;
@@ -33,7 +35,7 @@ public class UIPowerBar extends WidgetGroup{
 			powered = sections;
 		}
 		this.powered = powered;
-		
+		isLockedDown = false;
 		fillTable();
 	}
 	
@@ -78,8 +80,21 @@ public class UIPowerBar extends WidgetGroup{
 	public void draw(Batch batch, float parentAlpha){
 		Color color = batch.getColor().cpy();
 		batch.setColor(Color.TEAL);
+		if(isLockedDown){ 
+			drawLockdownSquare(batch);
+		}
 		super.draw(batch, parentAlpha);
 		batch.setColor(color);
+	}
+	
+	protected void drawLockdownSquare(Batch batch){
+		batch.setColor(Color.YELLOW);
+		float wOffset = getWidth()/4;
+		GameplayScreen.drawEmptyRectable(getX()-wOffset, getY(), getWidth()+2*wOffset, getTopOfBarY() - getY(), 3, null, batch);
+	}
+	
+	protected float getTopOfBarY(){
+		return table.getChildren().get(0).getY() + table.getChildren().get(0).getHeight();
 	}
 	
 	/**
@@ -155,6 +170,16 @@ public class UIPowerBar extends WidgetGroup{
 		this.powered = powered;
 	}
 	
+	
+	public boolean isLockedDown() {
+		return isLockedDown;
+	}
+
+	public void setLockedDown(boolean isLockedDown) {
+		this.isLockedDown = isLockedDown;
+	}
+
+
 	protected class PowerChunk extends Widget{
 		private static final float PREF_SIZE = 15;
 		private PowerBarState state;

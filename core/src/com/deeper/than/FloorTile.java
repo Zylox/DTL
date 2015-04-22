@@ -73,6 +73,9 @@ public class FloorTile extends Actor{
 						if(movePos != null){
 							crew.moveTo(movePos);
 						}
+					}else{
+						Module mod = gridSquare.getRoom().getModule();
+						if(mod != null) mod.receiveIonicCharge();
 					}
 				
 					return true;
@@ -80,9 +83,9 @@ public class FloorTile extends Actor{
 					if(!((GameplayScreen)Screens.GAMEPLAY.getScreen()).isCrewSelected()){
 						Module mod = gridSquare.getRoom().getModule();
 						if(mod != null){
-							System.out.println("damage pow");
-							mod.recieveDamage();
-							System.out.println(mod.getDamage());
+							if(button == Buttons.LEFT){
+								mod.recieveDamage();
+							}
 						}
 					}
 					((GameplayScreen)Screens.GAMEPLAY.getScreen()).setSelectedCrew(null);

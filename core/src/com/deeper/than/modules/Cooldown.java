@@ -103,4 +103,8 @@ public class Cooldown {
 		this.cooldownLimit = cooldownLimit;
 	}
 	
+	public float getCooldownLimit(){
+		return cooldownLimit;
+	}
+	
 }

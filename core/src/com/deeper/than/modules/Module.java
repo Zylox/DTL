@@ -2,6 +2,7 @@ package com.deeper.than.modules;
 
 import java.util.ArrayList;
 
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.deeper.than.DTL;
@@ -15,6 +16,7 @@ public abstract class Module {
 	private final String name = "baseModule";
 
 	public static final float IONIC_COOLDOWN_PER_SEC = 50;
+	public static final float IONIC_CHARGE_COOLDOWN_PER_CHARGE = 100;
 	public static final float BASE_REPAIR_PER_SEC = 50;
 	
 	private int id;
@@ -28,10 +30,10 @@ public abstract class Module {
 	private Cooldown ionicCooldown;
 	private Cooldown repairCooldown;
 	private int powerLevel;
-	private boolean manned;
 	private Crew manning;
 	private Crew repairing;
 	protected boolean manable;
+	protected boolean isOnLockdown;
 	
 	public Module(int id, int maxLevel,Room room, Ship ship){
 		this(id, 1, maxLevel, room, ship);
@@ -48,17 +50,19 @@ public abstract class Module {
 		ionicCooldown = new Cooldown();
 		repairCooldown = new Cooldown();
 		powerLevel = 0;
-		manned = false;
 		manning = null;
 		manable = false;
 		repairing = null;
+		isOnLockdown = false;
 	}
 	
 	public void update(){
+		ionicCooldown.setCooldownLimit(Math.max(1,ionicCharges) * IONIC_CHARGE_COOLDOWN_PER_CHARGE);
 		if(ionicCooldown.isOnCooldown()){
 			ionicCooldown.advanceCooldown(IONIC_COOLDOWN_PER_SEC);
 			if(!ionicCooldown.isOnCooldown()){
 				ionicCharges = 0;
+				isOnLockdown = false;
 			}
 		}
 		if(repairCooldown.isOnCooldown()){
@@ -110,7 +114,15 @@ public abstract class Module {
 	
 	public void draw(Batch batch){
 		Sprite icon = Modules.getIcon(this.getClass().getCanonicalName()); 
+		Color color = batch.getColor().cpy();
+		if(this.getDamage()>0){
+			batch.setColor(Color.RED);
+		}
+		if(this.getIonicCharges()>0){
+			batch.setColor(Color.YELLOW);
+		}
 		batch.draw(icon, room.getCenterLoc().x-icon.getWidth()/2, room.getCenterLoc().y-icon.getHeight()/2);
+		batch.setColor(color);
 	}
 	
 	public void receiveIonicCharge(){
@@ -118,10 +130,32 @@ public abstract class Module {
 	}
 	
 	public void receiveIonicCharge(int amt){
-		ionicCharges++;
+		
+		ionicCharges += amt;
+		if(ionicCharges > getLevel()){
+			ionicCharges = getLevel();
+		}
 		ionicCooldown.startCooldown();
+		isOnLockdown = true;
+		if(manning != null){
+			manning = null;
+		}
+		System.out.println(ionicCharges);
 	}
 	
+	
+	public float getIonicCooldownProg() {
+		return ionicCooldown.getCooldownProgress();
+	}
+	
+	public float getIonicCooldownMax(){
+		return ionicCooldown.getCooldownLimit();
+	}
+
+	public boolean isOnLockdown() {
+		return isOnLockdown;
+	}
+
 	public void recieveDamage(){
 		recieveDamage(1);
 	}
@@ -146,11 +180,7 @@ public abstract class Module {
 	}
 
 	public boolean isManned() {
-		return manned;
-	}
-
-	public void setManned(boolean manned) {
-		this.manned = manned;
+		return manning == null ? false : true;
 	}
 
 	public Crew getManning() {
@@ -159,11 +189,6 @@ public abstract class Module {
 
 	public void setManning(Crew manning) {
 		this.manning = manning;
-		if(manning != null){
-			manned = true;
-		}else{
-			manned = false;
-		}
 	}
 	
 	public boolean isManable(){
