@@ -72,7 +72,6 @@ public class CrewPlate extends WidgetGroup {
 	}
 	
 	private void setSkillsVisible(boolean visible){
-		System.out.println("SkillsPlate: " + visible);
 		skillsPlate.setVisible(visible);
 	}
 	

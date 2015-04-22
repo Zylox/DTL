@@ -29,17 +29,17 @@ public class UICrewSkillsPlate extends WidgetGroup {
 	public UICrewSkillsPlate(CrewSkills crewSkills){
 		Stack stack = new Stack();
 		stack.add(new Image(background.getDrawable()));
-		float padLeft = 30;
-		float padRight = 18;
+		float padLeft = 15;
+		float padRight = 15;
 		Table table = new Table();
 		table.padLeft(padLeft);
 		table.padRight(padRight);
-		table.padBottom(10);
-		table.padTop(10);
+		table.padBottom(5);
+		table.padTop(5);
 		table.add(new Image(bridge.getDrawable())).minSize(minIconSize);
 		table.add(new UICrewSkillsProgressBar(crewSkills, CrewSkillsTypes.BRIDGE)).minWidth(UICrewSkillsProgressBar.LENGTH_SUGGESTION).minHeight(UICrewSkillsProgressBar.MIN_HEIGHT_SUGGESTION);
 		table.row();
-		table.add(new Image(engines.getDrawable())).minSize(minIconSize);
+		table.add(new Image(engines.getDrawable())).minSize(minIconSize).padRight(2);
 		table.add(new UICrewSkillsProgressBar(crewSkills, CrewSkillsTypes.ENGINES)).minWidth(UICrewSkillsProgressBar.LENGTH_SUGGESTION).minHeight(UICrewSkillsProgressBar.MIN_HEIGHT_SUGGESTION);
 		table.row();
 		table.add(new Image(shields.getDrawable())).minSize(minIconSize);
@@ -56,12 +56,12 @@ public class UICrewSkillsPlate extends WidgetGroup {
 		table.row();
 		
 		stack.add(table);
-		stack.setBounds(getX(), getY(), padLeft+padRight+ UICrewSkillsProgressBar.LENGTH_SUGGESTION, minIconSize*6+20);
+		stack.setBounds(getX(), getY(), padLeft+padRight+ UICrewSkillsProgressBar.LENGTH_SUGGESTION, minIconSize*6+10);
 		this.addActor(stack);
 	}
 	
 	public static void loadAssets(){
-		background = new Image(new Texture(Gdx.files.internal("crewSkillsBackground.png")));
+		background = new Image(new Texture(Gdx.files.internal("crewSkillsBackground2.png")));
 		bridge = new Image(Modules.getIcon(BridgeModule.class.getCanonicalName()));
 		engines = new Image(Modules.getIcon(EngineModule.class.getCanonicalName()));
 		shields = new Image(Modules.getIcon(SheildModule.class.getCanonicalName()));
