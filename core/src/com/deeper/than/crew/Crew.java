@@ -59,6 +59,7 @@ public class Crew extends Actor{
 	private float health;
 	private boolean selected;
 	private CrewState state;
+	private CrewSkills skills;
 	
 	private boolean needNewPath;
 	private Vector2 newEnd;
@@ -80,6 +81,7 @@ public class Crew extends Actor{
 		doorToClose = null;
 		selected = false;
 		state = CrewState.IDLE;
+		skills = new CrewSkills();
 		
 		addListener(new ClickListener() {
 			public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
@@ -788,6 +790,11 @@ public class Crew extends Actor{
 		return state;
 	}
 	
+	public CrewSkills getSkills() {
+		return skills;
+	}
+
+
 	public void setRepairing(boolean repairing){
 		if(repairing){
 			if(state == CrewState.MANNING){

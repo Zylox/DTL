@@ -283,6 +283,9 @@ public class ScriptParser implements Poolable{
 		}else if(type.equals("SheildModule")){
 			module = Modules.Sheild.instantiateModule(moduleId++, room, ship);
 			module.setLevel(level);
+		}else if(type.equals("WeaponsModule")){
+			module = Modules.Weapons.instantiateModule(moduleId++, room, ship);
+			module.setLevel(level);
 		}
 		
 		room.setModule(module);

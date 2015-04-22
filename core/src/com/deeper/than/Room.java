@@ -106,6 +106,18 @@ public class Room {
 		return crewInRoom;
 	}
 	
+	public ArrayList<Crew> getThisShipsCrewInRoom(){
+		ArrayList<Crew> thisShipsCrewInRoom = new ArrayList<Crew>();
+		for(GridSquare gs : squares){
+			for(Crew c: gs.getCrewOnSquare()){
+				if(c.getOwnerShip() == this.ship){
+					thisShipsCrewInRoom.add(c);
+				}
+			}
+		}
+		return thisShipsCrewInRoom;
+	}
+	
 	/**
 	 * Get the location in global coords
 	 * @return centerLoc

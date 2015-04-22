@@ -32,10 +32,12 @@ import com.deeper.than.modules.Module;
 import com.deeper.than.modules.Modules;
 import com.deeper.than.modules.SensorsModule;
 import com.deeper.than.modules.SheildModule;
+import com.deeper.than.modules.WeaponsModule;
 import com.deeper.than.ui.CrewPlate;
 import com.deeper.than.ui.ReactorBar;
 import com.deeper.than.ui.UIClimateControlReacBar;
 import com.deeper.than.ui.UICloakingReacBar;
+import com.deeper.than.ui.UICrewSkillsPlate;
 import com.deeper.than.ui.UIEngineReacBar;
 import com.deeper.than.ui.UIMedbayReacBar;
 import com.deeper.than.ui.UIModuleReactorBar;
@@ -81,6 +83,7 @@ public class GameplayScreen implements EnumerableScreen{
 		tempBackground = new Image(new Texture("tempbackground.png"));
 		Wall.loadAssets();
 		Modules.loadAllModuleAssets();
+		UICrewSkillsPlate.loadAssets();
 		Races.loadAnims();
 		shapeRen = new ShapeRenderer();
 		highlight = new Texture(Gdx.files.internal("pixel.png"));
@@ -231,6 +234,12 @@ public class GameplayScreen implements EnumerableScreen{
 			UICloakingReacBar uic =new UICloakingReacBar(0, reactorBar, (CloakingModule)playerShip.getModule(CloakingModule.class));
 			moduleReactorBars.add(uic);
 			mainReactorBars.add(uic).padLeft(10).bottom().left().minWidth(ReactorBar.PREF_WIDTH).fillY();
+		}
+		mod = playerShip.getModule(WeaponsModule.class);
+		if(mod != null){
+			UIModuleReactorBar uiw =new UIModuleReactorBar(0, Modules.getIcon(WeaponsModule.class.getCanonicalName()), reactorBar, playerShip.getModule(WeaponsModule.class));
+			moduleReactorBars.add(uiw);
+			mainReactorBars.add(uiw).padLeft(10).bottom().left().minWidth(ReactorBar.PREF_WIDTH).fillY();
 		}
 		
 		subReactorBars = new Table();
