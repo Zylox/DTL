@@ -42,6 +42,7 @@ public class SheildModule extends MainModule {
 		manable = true;
 	}
 	
+
 	public void takeSheildDamage(){
 		takeSheildDamage(1);
 	}

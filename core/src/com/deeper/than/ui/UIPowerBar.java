@@ -108,6 +108,7 @@ public class UIPowerBar extends WidgetGroup{
 	 * gives power to another bar.
 	 * @param numToExchange how many sections to give power
 	 * @param powerBar bar to transfer to
+	 * @param minimumTransfer minimum amount that is able to be transfered. less available will result in no power transfered.
 	 * @return the amount transfered
 	 */
 	public int givePower(int numToExchange ,UIPowerBar powerBar){

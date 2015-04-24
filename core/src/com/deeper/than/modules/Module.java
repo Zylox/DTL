@@ -83,6 +83,7 @@ public abstract class Module {
 		
 	}
 
+	
 	private float getRepairSpeed(){
 		if(repairing != null){
 			if(repairing.getState() == CrewState.REPAIRING){

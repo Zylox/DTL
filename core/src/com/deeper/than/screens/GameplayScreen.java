@@ -148,6 +148,9 @@ public class GameplayScreen implements EnumerableScreen{
 				if(button == Buttons.RIGHT){
 					setSelectedCrew(null);
 				}
+				if(button == Buttons.LEFT){
+					setSelectedCrew(null);
+				}
 				return false;
 			}
 			
