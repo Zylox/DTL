@@ -136,20 +136,6 @@ public class Door extends CellBorder{
 		}else{
 			DTL.printDebug("No hatch control Module");
 		}
-		switch(doorState){
-		case Open : 
-			DTL.printDebug("Door open");
-			break;
-		case Closed :
-			DTL.printDebug("Door closed");
-			break;
-		case Opening : 
-			DTL.printDebug("Door opening");
-			break;
-		case Closing : 
-			DTL.printDebug("Door closing");
-			break;
-		}
 	}
 
 	

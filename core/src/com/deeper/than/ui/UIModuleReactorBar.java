@@ -8,8 +8,8 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.deeper.than.modules.MainModule;
 import com.deeper.than.modules.Module;
+import com.deeper.than.modules.SubModule;
 import com.deeper.than.screens.GameplayScreen;
-import com.deeper.than.ui.UIPowerBar.PowerBarState;
 
 public class UIModuleReactorBar extends UIIconReactorBar implements UIModuleSyncable{
 
@@ -22,7 +22,6 @@ public class UIModuleReactorBar extends UIIconReactorBar implements UIModuleSync
 			public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
 				if(button == Buttons.LEFT){
 					clickPowerUp();
-					
 				}else if(button == Buttons.RIGHT){
 					clickPowerDown();
 				}
@@ -62,7 +61,7 @@ public class UIModuleReactorBar extends UIIconReactorBar implements UIModuleSync
 	public void setDesiredPowerLevel(int desiredPowerLevel) {
 		this.desiredPowerLevel = desiredPowerLevel;
 		if(desiredPowerLevel > module.getLevel()){
-			desiredPowerLevel = module.getLevel();
+			this.desiredPowerLevel = module.getLevel();
 		}
 	}
 
@@ -149,7 +148,13 @@ public class UIModuleReactorBar extends UIIconReactorBar implements UIModuleSync
 
 	public void checkforSectionsChange(){
 		if(module.getLevel() != getSections()){
-			this.adjustSegments(module.getLevel(), this.getPowered());
+			if(module instanceof SubModule){
+				this.adjustSegments(module.getLevel(), module.getLevel());
+				setDesiredPowerLevel(getPowered());
+				preLockdownPowerLevel = getPowered();
+			}else{
+				this.adjustSegments(module.getLevel(), this.getPowered());
+			}
 			addIconToTable();
 			if(module instanceof MainModule){
 				this.addListenerToChildren(clicky);

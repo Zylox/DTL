@@ -15,19 +15,10 @@ public class UICrewSkillsProgressBar extends Widget {
 	public static final float LENGTH_SUGGESTION = 50;
 	
 	
-	public enum CrewSkillsTypes{
-		BRIDGE,
-		ENGINES,
-		SHIELDS,
-		WEAPONS,
-		REPAIR,
-		COMBAT;
-	}
-	
-	private CrewSkillsTypes skillToTrack;
+	private CrewSkills.CrewSkillsTypes skillToTrack;
 	private CrewSkills crewSkills;
 	
-	public UICrewSkillsProgressBar(CrewSkills crewSkills, CrewSkillsTypes skillToTrack){
+	public UICrewSkillsProgressBar(CrewSkills crewSkills, CrewSkills.CrewSkillsTypes skillToTrack){
 		this.skillToTrack = skillToTrack;
 		this.crewSkills = crewSkills;
 	}
@@ -43,14 +34,14 @@ public class UICrewSkillsProgressBar extends Widget {
 		batch.setColor(color);
 	}
 	
-	private Color getColorByLevel(){
+	public Color getColorByLevel(){
 		int level = getLevel();
-		if(level == 1){
+		if(level == 0){
 			return Color.WHITE;
-		}else if(level == 2){
+		}else if(level == 1){
 			return Color.GREEN;
-		}else if(level == 3){
-			return Color.PURPLE;
+		}else if(level == 2){
+			return Color.YELLOW;
 		}
 		
 		return Color.BLACK;
@@ -78,7 +69,7 @@ public class UICrewSkillsProgressBar extends Widget {
 	private int getLevel(){
 		switch(skillToTrack){
 		case BRIDGE:
-			return crewSkills.getBrigeLevel();
+			return crewSkills.getBridgeLevel();
 		case ENGINES:
 			return crewSkills.getEnginesLevel();
 		case SHIELDS:
@@ -93,18 +84,5 @@ public class UICrewSkillsProgressBar extends Widget {
 		return 0;
 	}
 	
-//	switch(skillToTrack){
-//	case BRIDGE:
-//		break;
-//	case ENGINES:
-//		break;
-//	case SHIELDS:
-//		break;
-//	case WEAPONS:
-//		break;
-//	case REPAIR:
-//		break;
-//	case COMBAT:
-//		break;
-//	}	
+	
 }

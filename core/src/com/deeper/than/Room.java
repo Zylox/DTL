@@ -236,7 +236,7 @@ public class Room {
 			}
 		}
 
-		if(roomClosed){
+		if(roomClosed && ship.getDrainRate() != 0){
 			waterLevelAcc = DTL.getRatePerTimeStep(ship.getDrainRate()*60);
 		}
 

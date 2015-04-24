@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.deeper.than.Room;
 import com.deeper.than.Ship;
+import com.deeper.than.crew.CrewSkills.CrewSkillsTypes;
 
 public class SheildModule extends MainModule {
 	public static final float COOLDOWN_MAX = 100;
@@ -41,16 +42,19 @@ public class SheildModule extends MainModule {
 		manable = true;
 	}
 	
-	public void takeDamage(){
-		takeDamage(1);
+	public void takeSheildDamage(){
+		takeSheildDamage(1);
 	}
 	
-	public void takeDamage(int dmgAmt){
+	public void takeSheildDamage(int dmgAmt){
 		activeCount -= dmgAmt;
 		if(activeCount <0){
 			activeCount = 0;
 		}
 		coolD.startCooldown();
+		if(this.isManned()){
+			getManning().gainExp(1, CrewSkillsTypes.SHIELDS);
+		}
 	}
 	
 	@Override
@@ -63,7 +67,7 @@ public class SheildModule extends MainModule {
 			if(!coolD.isOnCooldown()){
 				coolD.startCooldown();
 			}else{
-				coolD.advanceCooldown(50);
+				coolD.advanceCooldown(getSheildCooldownSpeed());
 				if(!coolD.isOnCooldown()){
 					activeCount++;
 					if(activeCount != getSheildLayerCount()){
@@ -72,6 +76,14 @@ public class SheildModule extends MainModule {
 				}
 			}
 		}
+	}
+	
+	private float getSheildCooldownSpeed(){
+		float rate = COOLDOWN_INC_BASE;
+		if(isManned()){
+			rate *= 1 + this.getManning().getSheildRechargeRatio();
+		}
+		return rate;
 	}
 	
 	public float getCooldownProgress(){

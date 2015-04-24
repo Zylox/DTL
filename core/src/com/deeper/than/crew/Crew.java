@@ -25,6 +25,7 @@ import com.deeper.than.Neighbors;
 import com.deeper.than.NoWall;
 import com.deeper.than.Room;
 import com.deeper.than.Ship;
+import com.deeper.than.crew.CrewSkills.CrewSkillsTypes;
 import com.deeper.than.modules.Module;
 import com.deeper.than.screens.GameplayScreen;
 import com.deeper.than.screens.Screens;
@@ -99,6 +100,10 @@ public class Crew extends Actor{
 	private void setAsSelected(){
 		((GameplayScreen)Screens.GAMEPLAY.getScreen()).setSelectedCrew(this);
 		selected = true;
+	}
+	
+	public void gainExp(int exp, CrewSkillsTypes skill){
+		skills.gainExp(exp, skill);
 	}
 	
 	public void initPosition(Vector2 tilePos){
@@ -770,7 +775,19 @@ public class Crew extends Actor{
 	}
 	
 	public float getRepairRatio(){
-		return race.getRepairRatio();
+		return race.getRepairRatio() + skills.getBonusRate(CrewSkillsTypes.REPAIR);
+	}
+	
+	public float getSheildRechargeRatio(){
+		return skills.getBonusRate(CrewSkillsTypes.SHIELDS);
+	}
+	
+	public float getBridgeEvadeRatio(){
+		return skills.getBonusRate(CrewSkillsTypes.BRIDGE);
+	}
+	
+	public float getEngineEvadeRatio(){
+		return skills.getBonusRate(CrewSkillsTypes.ENGINES);
 	}
 
 	public String getName() {

@@ -1,5 +1,6 @@
 package com.deeper.than.screens;
 
+import com.badlogic.gdx.Application.ApplicationType;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.GL20;
@@ -71,7 +72,11 @@ public class OptionScreen implements EnumerableScreen {
 			Gdx.graphics.setDisplayMode(DTL.VWIDTH, DTL.VHEIGHT, false);
 			System.out.println("get out of fullscreen");
 		}else{
-			Gdx.graphics.setDisplayMode(DTL.VWIDTH, DTL.VHEIGHT, true);	
+			if(Gdx.app.getType() == ApplicationType.Desktop){
+				Gdx.graphics.setDisplayMode(Gdx.graphics.getDesktopDisplayMode().width, Gdx.graphics.getDesktopDisplayMode().height, true);
+			}else{
+				Gdx.graphics.setDisplayMode(DTL.VWIDTH, DTL.VHEIGHT, true);
+			}
 			System.out.println("set to fullscreen");
 		}
 	}

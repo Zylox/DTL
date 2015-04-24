@@ -50,6 +50,7 @@ public class DTL extends Game {
 		
 		Gdx.graphics.setDisplayMode(VWIDTH, VHEIGHT, false);
 		
+		
 		viewport = new FitViewport(VWIDTH, VHEIGHT);
 		viewport.update(VWIDTH, VWIDTH, true);
 		skin = new Skin(Gdx.files.internal("uiskin.json"));

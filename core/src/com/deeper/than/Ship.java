@@ -16,7 +16,9 @@ import com.badlogic.gdx.utils.OrderedMap;
 import com.badlogic.gdx.utils.SnapshotArray;
 import com.deeper.than.Wall.WallType;
 import com.deeper.than.crew.Crew;
+import com.deeper.than.modules.BridgeModule;
 import com.deeper.than.modules.ClimateControlModule;
+import com.deeper.than.modules.EngineModule;
 import com.deeper.than.modules.HatchControlModule;
 import com.deeper.than.modules.Module;
 import com.deeper.than.modules.SensorsModule;
@@ -47,6 +49,8 @@ public class Ship extends Group{
 	private OrderedMap<Integer, CellBorder> walls;
 	private ArrayList<Module> modules;
 	private SheildModule sheilds;
+	private BridgeModule bridge;
+	private EngineModule engine;
 	
 	/** Width in squares of the ship*/
 	protected int gridWidth;
@@ -189,6 +193,10 @@ public class Ship extends Group{
 					sensors = (SensorsModule) m;
 				}else if(m instanceof SheildModule){
 					sheilds = (SheildModule) m;
+				}else if(m instanceof BridgeModule){
+					bridge = (BridgeModule) m;
+				}else if(m instanceof EngineModule){
+					engine = (EngineModule) m;
 				}
 			}
 			
@@ -685,8 +693,18 @@ public class Ship extends Group{
 	
 	public void damageSheilds(){
 		if(sheilds != null){
-			sheilds.takeDamage();
+			sheilds.takeSheildDamage();
 		}
+	}
+	
+	public float getEvade(){
+		float evade = 0;
+		if(!engine.enginesOn()){
+			return 0;
+		}
+		evade += bridge.getBaseEvasionRate() + engine.getEvasionChance();
+		evade *= bridge.getEvasionRetention();
+		return evade;
 	}
 	
 	public Module getModule(Class<? extends Module> module){
@@ -697,6 +715,10 @@ public class Ship extends Group{
 		}
 		
 		return null;
+	}
+	
+	public ArrayList<Module> getModules(){
+		return modules;
 	}
 	
 	public int getPower() {

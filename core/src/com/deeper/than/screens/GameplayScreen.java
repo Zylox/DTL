@@ -54,6 +54,7 @@ public class GameplayScreen implements EnumerableScreen{
 	private DTL game;
 	private Stage ui;
 	
+	private Label evadeValue;
 	private Table mainReactorBars;
 	private Table subReactorBars;
 	private ReactorBar reactorBar;
@@ -110,6 +111,13 @@ public class GameplayScreen implements EnumerableScreen{
 		Table uiT = new Table();
 		uiT.setFillParent(true);
 		uiT.add(new UITopBar(playerShip)).expandX().top().colspan(10);
+		uiT.row();
+		Table tab = new Table();
+		tab.add(new Label("Evade: ", DTL.skin)).left();
+		evadeValue = new Label(Float.toString(playerShip.getEvade()), DTL.skin);
+		tab.add(evadeValue).left();
+		tab.add().prefWidth(1000000);
+		uiT.add(tab).left().fillX();
 		uiT.row();
 		for(Crew c : playerShip.getCrew()){
 			uiT.add(new CrewPlate(c)).prefWidth((Crew.CREW_HEIGHT/Crew.SCALE)+50+10).prefHeight(Crew.CREW_HEIGHT/Crew.SCALE+10).left().pad(1f).colspan(10);
@@ -181,8 +189,12 @@ public class GameplayScreen implements EnumerableScreen{
 						c.setHealth(c.getHealth() - 10);
 					}
 					//playerShip.damageSheilds();
-					SheildModule s = (SheildModule)playerShip.getModule(SheildModule.class);
-					s.setLevel(s.getLevel()+1);
+//					SheildModule s = (SheildModule)playerShip.getModule(SheildModule.class);
+//					s.setLevel(s.getLevel()+1);
+					
+					for(Module m : playerShip.getModules()){
+						m.setLevel(m.getLevel()+1);
+					}
 				}
 				return false;
 			}
@@ -301,6 +313,7 @@ public class GameplayScreen implements EnumerableScreen{
 	    		mrb.updateModulePowerLevel();
 	    	}
 	    	playerShip.update();
+	    	evadeValue.setText(Integer.toString((int)(playerShip.getEvade()*100)) + "%");
 	    	ui.act();
 	    	gameObjects.act();
 	    	timeAccumulator -= DTL.getFrameTime();

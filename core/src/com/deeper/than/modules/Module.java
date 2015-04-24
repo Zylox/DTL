@@ -10,6 +10,7 @@ import com.deeper.than.Room;
 import com.deeper.than.Ship;
 import com.deeper.than.crew.Crew;
 import com.deeper.than.crew.Crew.CrewState;
+import com.deeper.than.crew.CrewSkills.CrewSkillsTypes;
 
 public abstract class Module {
 	
@@ -69,6 +70,7 @@ public abstract class Module {
 			repairCooldown.advanceCooldown(getRepairSpeed());
 			if(!repairCooldown.isOnCooldown()){
 				damage--;
+				repairing.gainExp(1, CrewSkillsTypes.REPAIR);
 				if(damage > 0){
 					repairCooldown.startCooldown();
 				}else{
