@@ -1,10 +1,9 @@
 package com.deeper.than;
 
-import java.io.Console;
-
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.utils.viewport.FitViewport;
@@ -54,6 +53,7 @@ public class DTL extends Game {
 		viewport = new FitViewport(VWIDTH, VHEIGHT);
 		viewport.update(VWIDTH, VWIDTH, true);
 		skin = new Skin(Gdx.files.internal("uiskin.json"));
+		DTL.skin.getFont("default-font").getRegion().getTexture().setFilter(TextureFilter.Linear, TextureFilter.Linear);
 		font = skin.getFont("default-font");
 		Screens[] screens = Screens.values();
 		

@@ -20,9 +20,9 @@ public class UITopBar extends Table {
 		sheildLabel = new Label("Sheilds:", DTL.skin);
 		sBar = new SheildBar(ship);
 		this.add(healthLabel).spaceRight(1);;
-		this.add(hBar).prefWidth(Gdx.graphics.getWidth()/2).prefHeight(25).padRight(5);//.expandX();
+		this.add(hBar).minWidth(Gdx.graphics.getWidth()/4).minHeight(25).padRight(5);//.expandX();
 		this.add(sheildLabel).spaceRight(1);
-		this.add(sBar).prefWidth(Gdx.graphics.getWidth()/4).prefHeight(25);
-		this.add().prefWidth(Gdx.graphics.getWidth());
+		this.add(sBar).minWidth(Gdx.graphics.getWidth()/8).minHeight(25);
+		//this.add().prefWidth(Gdx.graphics.getWidth());
 	}
 }

@@ -18,6 +18,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.deeper.than.DTL;
 import com.deeper.than.EnemyShip;
+import com.deeper.than.FastDrive;
 import com.deeper.than.PlayerShip;
 import com.deeper.than.Wall;
 import com.deeper.than.crew.Crew;
@@ -63,6 +64,7 @@ public class GameplayScreen implements EnumerableScreen{
 	
 	private Stage gameObjects;
 	private PlayerShip playerShip;
+	private FastDrive playerFastDrive;
 	private float timeAccumulator;
 	private Crew selectedCrew;
 	private EnemyShip enemy;
@@ -90,7 +92,6 @@ public class GameplayScreen implements EnumerableScreen{
 		highlight = new Texture(Gdx.files.internal("pixel.png"));
 	}
 	
-	
 
 	/**
 	 * 
@@ -110,7 +111,16 @@ public class GameplayScreen implements EnumerableScreen{
 		
 		Table uiT = new Table();
 		uiT.setFillParent(true);
-		uiT.add(new UITopBar(playerShip)).expandX().top().colspan(10);
+		Table topBar = new Table();
+		topBar.add(new UITopBar(playerShip)).top();
+		playerFastDrive = new FastDrive(playerShip);
+		int width = 80;
+		int height = 50;
+		playerFastDrive.setBounds(Gdx.graphics.getWidth()/2 - width/2, Gdx.graphics.getHeight()-height, width, height);
+		ui.addActor(playerFastDrive);
+		
+		topBar.add().prefWidth(1000000);
+		uiT.add(topBar);
 		uiT.row();
 		Table tab = new Table();
 		tab.add(new Label("Evade: ", DTL.skin)).left();
@@ -120,18 +130,24 @@ public class GameplayScreen implements EnumerableScreen{
 		uiT.add(tab).left().fillX();
 		uiT.row();
 		for(Crew c : playerShip.getCrew()){
-			uiT.add(new CrewPlate(c)).prefWidth((Crew.CREW_HEIGHT/Crew.SCALE)+50+10).prefHeight(Crew.CREW_HEIGHT/Crew.SCALE+10).left().pad(1f).colspan(10);
+			uiT.add(new CrewPlate(c)).prefWidth((Crew.CREW_HEIGHT/Crew.SCALE)+50+10).prefHeight(Crew.CREW_HEIGHT/Crew.SCALE+10).left().pad(1f);
 			uiT.row();
 		}
 		
-		uiT.add().expand().colspan(3);
+		uiT.add().expand();
 		uiT.row();
 		
 		constructMainReactorBars();
-		uiT.add(mainReactorBars);
-		uiT.add(subReactorBars);
+		Table reactorTable = new Table();
+		reactorTable.add(mainReactorBars);
+		reactorTable.add().prefWidth(100000000);
+		reactorTable.add(subReactorBars);
+		uiT.add(reactorTable);
 		uiT.row();
-		uiT.add(new Label("tacos", DTL.skin)).bottom().left().colspan(10);
+	
+		Label tacos = new Label("tacos", DTL.skin);
+		//tacos.setFontScale(.4f);
+		uiT.add(tacos).bottom().left();
 		
 		ui.addActor(uiT);
 		
@@ -280,7 +296,7 @@ public class GameplayScreen implements EnumerableScreen{
 			subReactorBars.add(uib).padLeft(10).bottom().left().minWidth(ReactorBar.PREF_WIDTH).fillY();
 		}
 		
-		mainReactorBars.add().prefWidth(10000000);
+		//mainReactorBars.add().prefWidth(10000000);
 		subReactorBars.padRight(5);
 	}
 	
@@ -316,6 +332,7 @@ public class GameplayScreen implements EnumerableScreen{
 	    		mrb.updateModulePowerLevel();
 	    	}
 	    	playerShip.update();
+	    	playerFastDrive.update(true);
 	    	evadeValue.setText(Integer.toString((int)(playerShip.getEvade()*100)) + "%");
 	    	ui.act();
 	    	gameObjects.act();
