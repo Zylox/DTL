@@ -4,7 +4,7 @@ text: "As you're approaching the distressed ship you are shot in the side by ano
 responses: [
 	{
 		inputText: "Attack (Begin Combat)",
-		triggersEvent: null
+		triggersEvent: "combat"
 	},
 	{
 		inputText:"Try to escape",

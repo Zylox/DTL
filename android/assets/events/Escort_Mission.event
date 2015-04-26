@@ -12,7 +12,7 @@ responses: [
 	},
 	{
 		inputText:"Attack (Begin combat)",
-		triggersEvent: null
+		triggersEvent: "combat"
 	}
 ]
 }

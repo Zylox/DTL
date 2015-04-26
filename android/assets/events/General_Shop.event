@@ -1,6 +1,6 @@
 {
 title: "General_Shop",
-text: "You approach the travelling merchant. The owner greets you politely and says, "Hello Captain, and welcome to my shop. Are you interested in looking at some of my wares?"",
+text: "You approach the travelling merchant. The owner greets you politely and says, \"Hello Captain, and welcome to my shop. Are you interested in looking at some of my wares?\"",
 responses: [
 	{
 		inputText: "Yes (Proceeds to open shop)",

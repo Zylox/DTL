@@ -4,7 +4,7 @@ text: "A volcano is errupting on the sea floor.  Tempuratures are rising fast, f
 responses: [
 	{
 		inputText: Okay...,
-		triggersEvent: null
+		triggersEvent: "combat"
 	}
 ]
 }

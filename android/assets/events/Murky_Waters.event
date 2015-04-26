@@ -4,7 +4,7 @@ text: "You have fallen upon some murky waters.  Your sensors will be disrupted h
 responses: [
 	{
 		inputText: Okay...,
-		triggersEvent: null
+		triggersEvent: "combat"
 	}
 ]
 }
