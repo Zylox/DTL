@@ -37,8 +37,9 @@ public class CrewPlate extends WidgetGroup {
 		
 		table.add(crewImg).prefWidth(Crew.CREW_HEIGHT/Crew.SCALE).prefHeight(Crew.CREW_HEIGHT/Crew.SCALE).left();
 		Table innerTable = new Table();
-		
-		innerTable.add(new Label(crew.getName(), DTL.skin)).fill().top().expandX().padBottom(5);
+		Label crewName = new Label(crew.getName(), DTL.skin);
+		crewName.setFontScale(.8f);
+		innerTable.add(crewName).fill().top().expandX().padBottom(5);
 		innerTable.row();
 		innerTable.add(bar).fill();
 		//table.add(new CrewHealthBar(crew)).left().expand();

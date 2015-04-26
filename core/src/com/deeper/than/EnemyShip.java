@@ -26,6 +26,10 @@ public class EnemyShip extends Ship{
 	public boolean canPlayerSeeMyTiles(){
 		return playerShip.canSeeEnemyShipInterior();
 	}
+	
+	public boolean canPlayerSeeMyPower(){
+		return playerShip.getSensors().canSeeEnemyPowerUse();
+	}
 
 	@Override
 	public void update(){
