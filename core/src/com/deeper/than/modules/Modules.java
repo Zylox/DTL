@@ -1,5 +1,7 @@
 package com.deeper.than.modules;
 
+import java.util.ArrayList;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
@@ -24,6 +26,22 @@ public enum Modules {
 	Docking(DockingModule.class.getCanonicalName(), "DockingModule", null, 3),
 	Weapons(WeaponsModule.class.getCanonicalName(), "WeaponsModule", "weaponsModule.png", 8);
 	
+	public static final ArrayList<Class<? extends Module>> moduleClasses = new ArrayList<Class<? extends Module>>();
+	
+	public static ArrayList<Class<? extends Module>> getModuleClasses(){
+		if(moduleClasses.isEmpty()){
+			moduleClasses.add(SheildModule.class);
+			moduleClasses.add(EngineModule.class);
+			moduleClasses.add(ClimateControlModule.class);
+			moduleClasses.add(MedbayModule.class);
+			moduleClasses.add(DockingModule.class);
+			moduleClasses.add(SensorsModule.class);
+			moduleClasses.add(HatchControlModule.class);
+			moduleClasses.add(BridgeModule.class);
+			moduleClasses.add(WeaponsModule.class);
+		}
+		return moduleClasses;
+	}
 	private String name;
 	private String stringRep;
 	private String imagePath;

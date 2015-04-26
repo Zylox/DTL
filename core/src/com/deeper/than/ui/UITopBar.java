@@ -6,29 +6,47 @@
 
 package com.deeper.than.ui;
 
+import sun.font.GlyphLayout;
+
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.deeper.than.DTL;
 import com.deeper.than.Ship;
 
 public class UITopBar extends Table {
-
-	Label healthLabel;
-	HealthBar hBar;
-	Label sheildLabel;
-	SheildBar sBar;
+	private static final float TOP_BAR_HEIGHT = 25;
 	
-	public UITopBar(Ship ship){
-		
+	private Label healthLabel;
+	private HealthBar hBar;
+	private Label sheildLabel;
+	private SheildBar sBar;
+	
+	public UITopBar(Ship ship, float width, boolean split){
+		this(ship, width, TOP_BAR_HEIGHT, split);
+	}
+	
+	public UITopBar(Ship ship, float width, float height, boolean split){
 		healthLabel = new Label("Health:", DTL.skin);
-		hBar = new HealthBar(ship);
 		sheildLabel = new Label("Sheilds:", DTL.skin);
+		float fontHeight = DTL.font.getBounds("Health:").height;
+		
+		if(fontHeight > height){
+			float newHeight = (fontHeight/height)-1;
+			healthLabel.setFontScale(newHeight);
+			sheildLabel.setFontScale(newHeight);
+			System.out.println(newHeight);
+		}
+		hBar = new HealthBar(ship);
 		sBar = new SheildBar(ship);
-		this.add(healthLabel).spaceRight(1);;
-		this.add(hBar).minWidth(DTL.VWIDTH/4).minHeight(25).padRight(5);//.expandX();
+		this.add(healthLabel).spaceRight(1);
+		this.add(hBar).minWidth(ship.getMaxHealth()*HealthBar.INCREMENT).minHeight(height).padRight(5);
+		if(split){
+			this.add().row();
+		}
 		this.add(sheildLabel).spaceRight(1);
-		this.add(sBar).minWidth(DTL.VWIDTH/8).minHeight(25);
+		this.add(sBar).minWidth(width/4).minHeight(height);
 		//this.add().prefWidth(Gdx.graphics.getWidth());
 	}
 }

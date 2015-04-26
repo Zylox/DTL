@@ -10,7 +10,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Cell;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.Widget;
 import com.badlogic.gdx.scenes.scene2d.ui.WidgetGroup;
-import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.SnapshotArray;
 import com.deeper.than.screens.GameplayScreen;
 
 public class UIPowerBar extends WidgetGroup{
@@ -23,6 +23,7 @@ public class UIPowerBar extends WidgetGroup{
 	
 	public static final int UNLIMITED_POWER = -999;
 	public static final float PREF_WIDTH = PowerChunk.PREF_SIZE * 1.5f;
+	public static final float BETWEEN_CHUNK_PADDING = 3;
 	private int sections;
 	private int powered;
 	protected ArrayList<PowerChunk> powerChunks;
@@ -70,7 +71,7 @@ public class UIPowerBar extends WidgetGroup{
 		table.add().expand();
 		for(int i = powerChunks.size()-1; i >=0; i--){
 			table.row();
-			table.add(powerChunks.get(i)).space(3).prefHeight(PowerChunk.PREF_SIZE).prefWidth(PREF_WIDTH).left();
+			table.add(powerChunks.get(i)).space(BETWEEN_CHUNK_PADDING).prefHeight(PowerChunk.PREF_SIZE).prefWidth(PREF_WIDTH).left();
 		}
 		
 		this.addActor(table);
@@ -159,6 +160,10 @@ public class UIPowerBar extends WidgetGroup{
 				powerChunks.get(i).setState(PowerBarState.UNPOWERED);
 			}
 		}
+	}
+	
+	protected SnapshotArray<Actor> getTableChildren(){
+		return table.getChildren();
 	}
 	
 	protected Cell<Widget> addOnNewRow(Widget widget){

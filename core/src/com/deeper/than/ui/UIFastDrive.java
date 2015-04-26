@@ -76,7 +76,7 @@ public class UIFastDrive extends WidgetGroup{
 		layOutTab = false;
 		
 		disCont = new Container<UIFastDrive.DisruptionTab>(disruptionTab);
-		int disWidth = 50;
+		int disWidth = 58;
 		int disHeight= 25;
 		disCont.setSize(disWidth, disHeight);
 		disCont.setX(this.getX());

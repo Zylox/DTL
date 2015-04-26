@@ -81,6 +81,22 @@ public class Room {
 		isHoveredOver = false;
 	}
 	
+	public boolean isDamaged(){
+		if(module != null && module.getDamage() > 0){
+			return true;
+		}
+		return false;
+	}
+	
+	public boolean isinRoom(Vector2 pos){
+		for(GridSquare gs : squares){
+			if(gs.getPos().equals(pos)){
+				return true;
+			}
+		}
+		return false;
+	}
+	
 	public ArrayList<Crew> getRepairCandidates(){
 		ArrayList<Crew> cands = new ArrayList<Crew>();
 		for(GridSquare gs : squares){
@@ -272,11 +288,7 @@ public class Room {
 	
 	public boolean isVisible(){
 		if(ship instanceof EnemyShip){
-			if(sensors != null){
-				if(sensors.canSeeEnemyShip()){
-					return true;
-				}
-			}
+			return ((EnemyShip)ship).canPlayerSeeMyTiles();
 		}
 		if(sensors == null){
 			return isPlayerCrewInRoom();

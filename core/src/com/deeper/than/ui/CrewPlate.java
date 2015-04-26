@@ -80,6 +80,11 @@ public class CrewPlate extends WidgetGroup {
 		crew.setSelected(true);
 	}
 	
+	
+	public Crew getCrew(){
+		return crew;
+	}
+	
 	@Override
 	public void draw(Batch batch, float parentAlpha){
 ////		Texture back = GameplayScreen.highlight;

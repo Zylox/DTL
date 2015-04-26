@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.deeper.than.EnemyShip;
 import com.deeper.than.modules.MainModule;
 import com.deeper.than.modules.Module;
 import com.deeper.than.modules.SubModule;
@@ -37,7 +38,7 @@ public class UIModuleReactorBar extends UIIconReactorBar implements UIModuleSync
 		this.mainPower = mainPower;
 		desiredPowerLevel = getPowered();
 		
-		if(module instanceof MainModule){
+		if(module instanceof MainModule && module.isPlayerModule()){
 			this.addListenerToChildren(clicky);
 		}
 	} 
@@ -68,7 +69,7 @@ public class UIModuleReactorBar extends UIIconReactorBar implements UIModuleSync
 	@Override
 	public void draw(Batch batch, float parentAlpha){
 		icon.setColor(Color.WHITE);
-		if(module.isManable() && module.isManned()){
+		if(module.isManable() && module.isManned() && (module.isPlayerModule() || ((EnemyShip)module.getShip()).canPlayerSeeMyTiles())){
 			icon.setColor(Color.GREEN);
 		}
 		super.draw(batch, parentAlpha);
@@ -156,7 +157,7 @@ public class UIModuleReactorBar extends UIIconReactorBar implements UIModuleSync
 				this.adjustSegments(module.getLevel(), this.getPowered());
 			}
 			addIconToTable();
-			if(module instanceof MainModule){
+			if(module instanceof MainModule && module.isPlayerModule()){
 				this.addListenerToChildren(clicky);
 			}
 		}

@@ -44,13 +44,15 @@ public class Door extends CellBorder{
 		doorState = DoorState.Closed;
 		openAmount=0;
 
-		addListener(new InputListener() {
-			public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
-				changeOpen();
-				printDoorState();
-				return true;
-		    }
-		});
+		if(getShip() instanceof PlayerShip){
+			addListener(new InputListener() {
+				public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+					changeOpen();
+					printDoorState();
+					return true;
+			    }
+			});
+		}
 		
 		reinit();
 	}

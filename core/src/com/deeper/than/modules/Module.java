@@ -12,10 +12,12 @@ import java.util.ArrayList;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.deeper.than.DTL;
+import com.deeper.than.EnemyShip;
+import com.deeper.than.PlayerShip;
 import com.deeper.than.Room;
 import com.deeper.than.Ship;
 import com.deeper.than.crew.Crew;
+import com.deeper.than.crew.CrewRepairTask;
 import com.deeper.than.crew.Crew.CrewState;
 import com.deeper.than.crew.CrewSkills.CrewSkillsTypes;
 
@@ -42,6 +44,7 @@ public abstract class Module {
 	private Crew repairing;
 	protected boolean manable;
 	protected boolean isOnLockdown;
+	private boolean repairTaskQueued;
 	
 	public Module(int id, int maxLevel,Room room, Ship ship){
 		this(id, 1, maxLevel, room, ship);
@@ -62,6 +65,7 @@ public abstract class Module {
 		manable = false;
 		repairing = null;
 		isOnLockdown = false;
+		repairTaskQueued = false;
 	}
 	
 	public void update(){
@@ -178,6 +182,12 @@ public abstract class Module {
 			damage = getLevel();
 		}
 		repairCooldown.startCooldown();
+		if(ship instanceof EnemyShip && !repairTaskQueued){
+			CrewRepairTask task = CrewRepairTask.obtain();
+			task.init(1, room);
+			((EnemyShip)ship).addToTaskQueue(task);
+			setRepairTaskQueued(true);
+		}
 	}
 
 	public int getPowerLevel() {
@@ -251,6 +261,16 @@ public abstract class Module {
 		return damage;
 	}
 	
+	public boolean isPlayerModule(){
+		return ship instanceof PlayerShip;
+	}
 	
+	public void setRepairTaskQueued(boolean isTaskQueued){
+		this.repairTaskQueued = isTaskQueued;
+	}
+
+	public Ship getShip() {
+		return ship;
+	}
 	
 }

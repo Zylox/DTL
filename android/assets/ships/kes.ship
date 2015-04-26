@@ -1,6 +1,7 @@
 name= kes
 xDim= 15
 yDim= 6
+health= 10
 power= 8
 floortileimg= floortile.png
 doorimg= door.pack

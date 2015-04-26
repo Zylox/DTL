@@ -31,13 +31,14 @@ public class SheildBar extends Widget {
 		img.setColor(Color.BLUE);
 
 		int activeSheilds = ship.getActiveSheildSections();
+		float lineWidth = 1;
 		for(int i = 0; i < SheildModule.MAX_SHEILD_SECTIONS; i++){
 			if(i < ship.getSheildSections() && i<activeSheilds){
 				img.draw(batch, getX()+i*INCREMENT, getY()+COOLDOWN_BAR_HEIGHT, INCREMENT, getHeight() - COOLDOWN_BAR_HEIGHT);
 			}else if (i < ship.getSheildSections()){
-				GameplayScreen.drawEmptyRectable(getX()+i*INCREMENT+1, getY() + COOLDOWN_BAR_HEIGHT, INCREMENT-1, getHeight() - COOLDOWN_BAR_HEIGHT, 5, Color.BLUE, batch);
+				GameplayScreen.drawEmptyRectable(getX()+i*INCREMENT+1, getY() + COOLDOWN_BAR_HEIGHT, INCREMENT-1, getHeight() - COOLDOWN_BAR_HEIGHT, lineWidth, Color.BLUE, batch);
 			}else{
-				GameplayScreen.drawEmptyRectable(getX()+i*INCREMENT+1, getY() + COOLDOWN_BAR_HEIGHT, INCREMENT-1, getHeight() - COOLDOWN_BAR_HEIGHT, 5, Color.GRAY, batch);
+				GameplayScreen.drawEmptyRectable(getX()+i*INCREMENT+1, getY() + COOLDOWN_BAR_HEIGHT, INCREMENT-1, getHeight() - COOLDOWN_BAR_HEIGHT, lineWidth, Color.GRAY, batch);
 			}
 		}
 		

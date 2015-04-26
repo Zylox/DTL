@@ -16,13 +16,16 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.utils.Pool.Poolable;
 import com.deeper.than.CellBorder;
 import com.deeper.than.DTL;
 import com.deeper.than.Door;
+import com.deeper.than.EnemyShip;
 import com.deeper.than.FloorTile;
 import com.deeper.than.GridSquare;
 import com.deeper.than.Neighbors;
 import com.deeper.than.NoWall;
+import com.deeper.than.PlayerShip;
 import com.deeper.than.Room;
 import com.deeper.than.Ship;
 import com.deeper.than.crew.CrewSkills.CrewSkillsTypes;
@@ -58,9 +61,11 @@ public class Crew extends Actor{
 	private ArrayList<Vector2> moves;
 	private Door doorToClose;
 	private float health;
+	private boolean isAlive;
 	private boolean selected;
 	private CrewState state;
 	private CrewSkills skills;
+	private CrewTask task;
 	
 	private boolean needNewPath;
 	private Vector2 newEnd;
@@ -74,6 +79,7 @@ public class Crew extends Actor{
 		this.name = name;
 		this.race = race;
 		health = race.getHealth();
+		isAlive = true;
 		moves = new ArrayList<Vector2>();
 		needNewPath = false;
 		newEnd = new Vector2();
@@ -83,16 +89,19 @@ public class Crew extends Actor{
 		selected = false;
 		state = CrewState.IDLE;
 		skills = new CrewSkills();
+		task = null;
 		
-		addListener(new ClickListener() {
-			public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
-				if(button == Buttons.LEFT){
-					setAsSelected();	
-					return true;
-				}
-				return false;
-		    }
-		});
+		if(ship instanceof PlayerShip){
+			addListener(new ClickListener() {
+				public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+					if(button == Buttons.LEFT){
+						setAsSelected();	
+						return true;
+					}
+					return false;
+			    }
+			});
+		}
 		
 	}
 	
@@ -126,6 +135,9 @@ public class Crew extends Actor{
 //				setManningIfPossible();
 //			}
 		}
+		if(task != null && task.performTask()){
+			task = null;
+		}
 	}
 	
 	private void setManningIfPossible(){
@@ -145,6 +157,17 @@ public class Crew extends Actor{
 	
 	@Override
 	public void draw(Batch batch, float parentAlpha){
+		if(ownerShip instanceof EnemyShip ){
+			if(ownerShip == occupiedShip){
+				if(!((EnemyShip)ownerShip).canPlayerSeeMyTiles()){
+					return;
+				}
+			}else{
+				if(!room.isVisible()){
+					return;
+				}
+			}
+		}
 		float delta = Gdx.graphics.getDeltaTime();
 		if(state == CrewState.WALKING){
 			stateTime += delta;
@@ -186,6 +209,12 @@ public class Crew extends Actor{
 		}
 		
 		return null;
+	}
+	
+	public float getMannhatDistanceFrom(Vector2 tile){
+		float dist = 0;
+		dist += Math.abs(tile.x - tilePos.x) + Math.abs(tile.y - tilePos.y);
+		return dist;
 	}
 	
 	public void moveTo(Vector2 tile){
@@ -735,6 +764,14 @@ public class Crew extends Actor{
 		return newSquare;
 	}
 	
+	/**
+	 * Returns a copy of the position
+	 * @return
+	 */
+	public Vector2 getTilePos(){
+		return tilePos.cpy();
+	}
+	
 	private void setTilePos(Vector2 tilePos){
 		this.tilePos = tilePos;
 		GridSquare gs = occupiedShip.getLayout()[(int)tilePos.y][(int)tilePos.x];
@@ -744,6 +781,10 @@ public class Crew extends Actor{
 	public float getHealth() {
 		return health;
 	}
+	
+	public boolean isAlive(){
+		return isAlive;
+	}
 
 	public void setHealth(float health) {
 		if(health > getRace().getHealth()){
@@ -752,6 +793,9 @@ public class Crew extends Actor{
 			health = 0;
 		}
 		this.health = health;
+		if(this.health == 0){
+			isAlive = false;
+		}
 	}
 
 	public Room getRoom(){
@@ -810,8 +854,37 @@ public class Crew extends Actor{
 	public CrewSkills getSkills() {
 		return skills;
 	}
+	
+	public CrewTask getTask() {
+		return task;
+	}
 
 
+	public void forceSetTask(CrewTask task) {
+		this.task = task;
+	}
+	
+	/**
+	 * Only sets task if one is not already assigned.
+	 * Returns false on failed assignment
+	 * @param task
+	 * @return
+	 */
+	public boolean assignTask(CrewTask task){
+		if(getTask() == null){
+			forceSetTask(task);
+			return true;
+		}
+		return false;
+	}
+	
+	public boolean isAssignedTask(){
+		if(getTask() != null){
+			return true;
+		}
+		return false;
+	}
+	
 	public void setRepairing(boolean repairing){
 		if(repairing){
 			if(state == CrewState.MANNING){
@@ -825,6 +898,26 @@ public class Crew extends Actor{
 		}else{
 			state = CrewState.IDLE;
 		}
+	}
+	
+	public class MoveToPointOfIntrest extends Action implements Poolable{
+		private Vector2 posToMoveTo;
+		
+		public void init(Vector2 posToMoveTo){
+			this.posToMoveTo = posToMoveTo;
+		}
+		
+		@Override
+		public boolean act(float delta) {
+			moveTo(posToMoveTo);
+			return false;
+		}
+		
+		@Override
+		public void reset(){
+			this.posToMoveTo = null;
+		}
+		
 	}
 
 	private class SetTile extends Action{

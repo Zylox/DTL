@@ -24,6 +24,9 @@ public class SensorsModule extends SubModule {
 	}
 	
 	public boolean canSeeEnemyShip(){
+		if(!this.isPlayerModule()){
+			return false;
+		}
 		if(getPowerLevel() >= 2 ){
 			return true;
 		}
