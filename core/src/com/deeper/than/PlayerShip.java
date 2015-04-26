@@ -4,21 +4,32 @@ import com.badlogic.gdx.files.FileHandle;
 
 public class PlayerShip extends Ship {
 
+	private int currency;
+	private int fuel;
+	
 	public PlayerShip(FileHandle filepath, boolean isPlayerShip, DTL game,
-			int id) {
+			int id) throws ShipLoadException {
 		super(filepath, isPlayerShip, game, id);
 		// TODO Auto-generated constructor stub
 	}
+	
+	
+	public int getCurrency() {
+		return currency;
+	}
 
-	
-	public int getCurrencyAmt(){
-		return 100;
+	public void setCurrency(int currency) {
+		this.currency = currency;
 	}
-	
-	public int getFuel(){
-		return 17;
+
+	public int getFuel() {
+		return fuel;
 	}
-	
+
+	public void setFuel(int fuel) {
+		this.fuel = fuel;
+	}
+
 	public boolean canSeeEnemyShipInterior(){
 		if(this.sensors != null){
 			return sensors.canSeeEnemyShip();

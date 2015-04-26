@@ -19,6 +19,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.deeper.than.DTL;
 import com.deeper.than.EnemyShip;
 import com.deeper.than.PlayerShip;
+import com.deeper.than.ShipLoadException;
 import com.deeper.than.Wall;
 import com.deeper.than.crew.Crew;
 import com.deeper.than.crew.CrewGoToRoomTask;
@@ -102,13 +103,21 @@ public class GameplayScreen implements EnumerableScreen{
 	 * 
 	 */
 	private void initializeGame(){
-		playerShip = new PlayerShip(Gdx.files.internal("ships/" + game.getSelectedShip() +".ship"), true, game, DTL.firstOpenId++);
-		//playerShip.setOrigin(playerShip.getWidth()/2, playerShip.getHeight()/2);
+		try {
+			playerShip = new PlayerShip(Gdx.files.internal("ships/" + game.getSelectedShip() +".ship"), true, game, DTL.firstOpenId++);
+		} catch (ShipLoadException e) {
+			e.printStackTrace();
+		}
 		gameObjects = new Stage(game.getViewport());
 		
 		gameObjects.addActor(tempBackground);
 		gameObjects.addActor(playerShip);
-		EnemyShip enemy = new EnemyShip(Gdx.files.internal("ships/enemyships/scout.ship") , game, DTL.firstOpenId++, playerShip);
+		EnemyShip enemy = null;
+		try {
+			enemy = new EnemyShip(Gdx.files.internal("ships/enemyships/scout.ship") , game, DTL.firstOpenId++, playerShip);
+		} catch (ShipLoadException e) {
+			e.printStackTrace();
+		}
 		
 		
 		ui = new Stage(game.getViewport());

@@ -13,7 +13,7 @@ public enum Races {
 	public static final String[] humanNames = {"Bob", "Jeb", "Steve", "Jim", "Nick", "Zach", "Will", "Ben", "GIJoe", "Jimmy", "Jake", "Ian", "John", "Bill", "James", "Zebulon", "Horatio",
 											   "John", "Michael", "Tim", "Shawn", "Wyatt", "Isaac", "Jan", "Shan", "Thomas", "Jonah", "Nathan", "Matt", "Dakota", "Kitchenset", "Joe",
 											   "Ivan", "Tyler", "Harlee", "Tom", "Andy", "Matsuda", "Lelouch", "Light", "Lawliet", "Tai", "Izzy", "Ash", "Bambi", "Rock", "Dwayne", "Meller",
-											   "Kamina", "Simon", "Kittan", "Aang", "Tenzin", "Meelo", "Varrick", "Bane", "Batman", "Joker", "Clark"};
+											   "Kamina", "Simon", "Kittan", "Aang", "Tenzin", "Meelo", "Sokka", "Varrick", "Bane", "Batman", "Joker", "Clark"};
 	
 	public static float FRAME_TIME = .5f;
 	
