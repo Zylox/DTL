@@ -1,0 +1,10 @@
+{
+title: Exit,
+text: "You have reached the end of this area... Dive when you're ready to advance!",
+responses: [
+	{
+		inputText: "Let's go!",
+		triggersEvent: null
+	}
+]
+}

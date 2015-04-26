@@ -30,6 +30,8 @@ public class MapGenerator {
 			//this should be mostly random, with the Welcome_to_DTL.event added to the very first node of the game
 			if(i==0 && level==1)
 				event="Welcome_to_DTL.event";
+			else if(i==size-1)
+				event="Exit.event";
 			else{
 				//TODO add logic to chose random events
 				event="template.event";
