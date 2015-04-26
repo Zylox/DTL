@@ -18,11 +18,11 @@ public class ClimateControlModule extends MainModule {
 	public float getWaterDrainRate(){
 		float waterDrainRate = 0;
 		
-		if(getLevel() == 1){
+		if(getPowerLevel() == 1){
 			waterDrainRate = -.01f;
-		}else if(getLevel() == 2){
+		}else if(getPowerLevel() == 2){
 			waterDrainRate = -.02f;
-		}else if(getLevel() == 3){
+		}else if(getPowerLevel() == 3){
 			waterDrainRate = -.05f;
 		}
 		return waterDrainRate;

@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.math.Vector2;
+import com.deeper.than.crew.Crew;
 import com.deeper.than.modules.Module;
 import com.deeper.than.modules.SensorsModule;
 import com.deeper.than.screens.GameplayScreen;
@@ -80,6 +81,30 @@ public class Room {
 		isHoveredOver = false;
 	}
 	
+	public boolean isDamaged(){
+		if(module != null && module.getDamage() > 0){
+			return true;
+		}
+		return false;
+	}
+	
+	public boolean isinRoom(Vector2 pos){
+		for(GridSquare gs : squares){
+			if(gs.getPos().equals(pos)){
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	public ArrayList<Crew> getRepairCandidates(){
+		ArrayList<Crew> cands = new ArrayList<Crew>();
+		for(GridSquare gs : squares){
+			cands.addAll(gs.getCrewOnSquare());
+		}
+		return cands;
+	}
+	
 	public GridSquare selectTileToWalkTo(){
 		for(GridSquare g : squares){
 			if(!g.hasCrewMember()){
@@ -87,6 +112,26 @@ public class Room {
 			}
 		}
 		return squares.get(0);
+	}
+	
+	public ArrayList<Crew> getCrewInRoom(){
+		ArrayList<Crew> crewInRoom = new ArrayList<Crew>();
+		for(GridSquare gs : squares){
+			crewInRoom.addAll(gs.getCrewOnSquare());
+		}
+		return crewInRoom;
+	}
+	
+	public ArrayList<Crew> getThisShipsCrewInRoom(){
+		ArrayList<Crew> thisShipsCrewInRoom = new ArrayList<Crew>();
+		for(GridSquare gs : squares){
+			for(Crew c: gs.getCrewOnSquare()){
+				if(c.getOwnerShip() == this.ship){
+					thisShipsCrewInRoom.add(c);
+				}
+			}
+		}
+		return thisShipsCrewInRoom;
 	}
 	
 	/**
@@ -207,7 +252,7 @@ public class Room {
 			}
 		}
 
-		if(roomClosed){
+		if(roomClosed && ship.getDrainRate() != 0){
 			waterLevelAcc = DTL.getRatePerTimeStep(ship.getDrainRate()*60);
 		}
 
@@ -242,10 +287,22 @@ public class Room {
 	}
 	
 	public boolean isVisible(){
-		if(sensors == null){
-			return false;
+		if(ship instanceof EnemyShip){
+			return ((EnemyShip)ship).canPlayerSeeMyTiles();
 		}
-		return sensors.canSeeOwnShip() || ship.isCrewInRoom(this);
+		if(sensors == null){
+			return isPlayerCrewInRoom();
+		}
+		return sensors.canSeeOwnShip() || isPlayerCrewInRoom();
+	}
+	
+	public boolean isPlayerCrewInRoom(){
+		for(Crew c : getCrewInRoom()){
+			if(c.getOwnerShip() instanceof PlayerShip){
+				return true;
+			}
+		}
+		return false;
 	}
 	
 	public int getSize(){

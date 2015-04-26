@@ -69,6 +69,7 @@ public class ScriptParser implements Poolable{
 		//////////////////////////////////////////////////
 		int xDim = 0;
 		int yDim = 0;
+		int health = 0;
 		int power = 0;
 		//gets line, checks if it exists, splits into tokens, and sets xDim and yDim if correct
 		line = getNextNonCommentLine(scanner);
@@ -102,6 +103,23 @@ public class ScriptParser implements Poolable{
 			scanner.close();
 			return -1;
 		}
+		
+		line = getNextNonCommentLine(scanner);
+		if(line.equals(null)){
+			scanner.close();
+			return -2;
+		}
+		
+		lineNum++;
+		tokens = line.split(" ");
+		if(tokens[0].equals("health=")){
+			health = Integer.parseInt(tokens[1]);	
+		}else{
+			System.out.println("power= XXX expected at line " + lineNum);
+			scanner.close();
+			return -1;
+		}
+		
 		line = getNextNonCommentLine(scanner);
 		if(line.equals(null)){
 			scanner.close();
@@ -124,6 +142,8 @@ public class ScriptParser implements Poolable{
 		ship.gridWidth = xDim;
 		ship.gridHeight = yDim;
 		ship.setPower(power);
+		ship.setHealth(health);
+		ship.setMaxHealth(health);
 		ship.layout = new GridSquare[yDim][xDim];
 		for(int i = 0; i< yDim; i++){
 			for(int j = 0; j < xDim; j++){
@@ -282,6 +302,9 @@ public class ScriptParser implements Poolable{
 			module.setLevel(level);
 		}else if(type.equals("SheildModule")){
 			module = Modules.Sheild.instantiateModule(moduleId++, room, ship);
+			module.setLevel(level);
+		}else if(type.equals("WeaponsModule")){
+			module = Modules.Weapons.instantiateModule(moduleId++, room, ship);
 			module.setLevel(level);
 		}
 		

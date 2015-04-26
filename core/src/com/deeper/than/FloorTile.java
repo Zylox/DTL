@@ -2,6 +2,7 @@ package com.deeper.than;
 
 import java.util.Random;
 
+import com.badlogic.gdx.Input.Buttons;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.math.Vector2;
@@ -9,6 +10,7 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.deeper.than.crew.Crew;
+import com.deeper.than.modules.Module;
 import com.deeper.than.screens.GameplayScreen;
 import com.deeper.than.screens.Screens;
 
@@ -55,26 +57,41 @@ public class FloorTile extends Actor{
 			}
 			
 			public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
-				printCoords();
+				//printCoords();
 				
-				Crew crew = ((GameplayScreen)Screens.GAMEPLAY.getScreen()).getSelectedCrew();
-				if(crew != null){
-					GridSquare gs = gridSquare.getRoom().selectTileToWalkTo();
-					Vector2 movePos;
-					if(gs!= null){
-						movePos = gs.getPos();
+				if(button == Buttons.RIGHT){
+					Crew crew = ((GameplayScreen)Screens.GAMEPLAY.getScreen()).getSelectedCrew();
+					if(crew != null){
+						GridSquare gs = gridSquare.getRoom().selectTileToWalkTo();
+						Vector2 movePos;
+						if(gs!= null){
+							movePos = gs.getPos();
+						}else{
+							movePos = crew.findNearestOpenSpot(getPos());
+						}
+						
+						if(movePos != null){
+							crew.moveTo(movePos);
+						}
 					}else{
-						movePos = crew.findNearestOpenSpot(getPos());
+						Module mod = gridSquare.getRoom().getModule();
+						if(mod != null) mod.receiveIonicCharge();
 					}
-					
-					if(movePos != null){
-						crew.moveTo(movePos);
+				
+					return true;
+				}else{
+					if(!((GameplayScreen)Screens.GAMEPLAY.getScreen()).isCrewSelected()){
+						Module mod = gridSquare.getRoom().getModule();
+						if(mod != null){
+							if(button == Buttons.LEFT){
+								mod.recieveDamage();
+							}
+						}
 					}
 					((GameplayScreen)Screens.GAMEPLAY.getScreen()).setSelectedCrew(null);
+					return false;
 				}
-			
-				return true;
-		    }
+			}
 		});
 		
 		setOrigin(TILESIZE/2, TILESIZE/2);

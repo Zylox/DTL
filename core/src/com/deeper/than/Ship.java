@@ -2,6 +2,7 @@ package com.deeper.than;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Iterator;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
@@ -16,7 +17,9 @@ import com.badlogic.gdx.utils.OrderedMap;
 import com.badlogic.gdx.utils.SnapshotArray;
 import com.deeper.than.Wall.WallType;
 import com.deeper.than.crew.Crew;
+import com.deeper.than.modules.BridgeModule;
 import com.deeper.than.modules.ClimateControlModule;
+import com.deeper.than.modules.EngineModule;
 import com.deeper.than.modules.HatchControlModule;
 import com.deeper.than.modules.Module;
 import com.deeper.than.modules.SensorsModule;
@@ -41,12 +44,15 @@ public class Ship extends Group{
 	private ArrayList<Crew> crew;
 	/**The actual floor layout of the ship.*/
 	protected GridSquare[][] layout;
-	private ArrayList<Room> rooms;
+	protected ArrayList<Room> rooms;
 	private ArrayList<Door>	doors;
 	/**Map of all the walls. It is a map to ensure uniqueness.*/
 	private OrderedMap<Integer, CellBorder> walls;
 	private ArrayList<Module> modules;
 	private SheildModule sheilds;
+	private BridgeModule bridge;
+	private EngineModule engine;
+	protected SensorsModule sensors;
 	
 	/** Width in squares of the ship*/
 	protected int gridWidth;
@@ -60,8 +66,8 @@ public class Ship extends Group{
 	private int wallIdCounter;
 	private int highestModuleId = -1;
 	private boolean colorizeRooms = false;
-	private float health;
-	private boolean isPlayerShip;
+	private int health;
+	private int maxHealth;
 	private int power;
 	
 	/**
@@ -77,7 +83,6 @@ public class Ship extends Group{
 		rooms = new ArrayList<Room>();
 		walls = new OrderedMap<Integer, CellBorder>();
 		modules = new ArrayList<Module>();
-		this.isPlayerShip = isPlayerShip;
 		
 		try {
 			//Pulls a parser from the parser pool and loads the script
@@ -177,7 +182,7 @@ public class Ship extends Group{
 				cb.init();
 			}
 			HatchControlModule hcm = null;
-			SensorsModule sensors = null;
+			sensors = null;
 			sheilds = null;
 			//Some modules require explicit reference, so we get them here.
 			//This implementation assumes only one of each module is in the list.
@@ -189,6 +194,10 @@ public class Ship extends Group{
 					sensors = (SensorsModule) m;
 				}else if(m instanceof SheildModule){
 					sheilds = (SheildModule) m;
+				}else if(m instanceof BridgeModule){
+					bridge = (BridgeModule) m;
+				}else if(m instanceof EngineModule){
+					engine = (EngineModule) m;
 				}
 			}
 			
@@ -230,11 +239,10 @@ public class Ship extends Group{
 			int x = FloorTile.TILESIZE*layout[0].length;
 			int y = FloorTile.TILESIZE*layout.length;
 			
-			if(isPlayerShip){
+			if(this instanceof PlayerShip){
 				setBounds(game.getViewport().getWorldWidth()/3 - x/2,game.getViewport().getWorldHeight()/2 - y/2, x, y);
 			}
 			
-			health = 100;
 			
 			loadAssets();
 	}
@@ -348,14 +356,20 @@ public class Ship extends Group{
 			r.updateEnv();
 		}
 		
-		for(Crew c : crew){
+		Iterator<Crew> iter = crew.iterator();
+		Crew c;
+		while(iter.hasNext()){
+			c = iter.next();
 			c.update();
+			if(!c.isAlive()){
+				iter.remove();
+				c.remove();
+			}
 		}
 		
 		for(Module m : modules){
 			m.update();
 		}
-		
 	}
 
 	@Override
@@ -365,7 +379,7 @@ public class Ship extends Group{
 		
 			if(sheilds != null && sheilds.getActiveSheildLayers() > 0){
 				Texture sheildTex = sheilds.getSheildImage();
-				batch.draw(sheildTex, getX()-getWidth()/6, getY()-getHeight()/6, getWidth()+(getWidth()/6 * 2), getHeight()+ (getHeight()/6 * 2));
+				batch.draw(sheildTex, getX()-getWidth()/4, getY()-getHeight()/4, getWidth()+(getWidth()/4 * 2), getHeight()+ (getHeight()/4 * 2));
 			}
 				
 			super.draw(batch, parentAlpha);
@@ -654,12 +668,20 @@ public class Ship extends Group{
 		return highestModuleId;
 	}
 	
-	public float getHealth() {
+	public int getHealth() {
 		return health;
 	}
 
-	public void setHealth(float health) {
+	public void setHealth(int health) {
 		this.health = health;
+	}
+	
+	public int getMaxHealth() {
+		return maxHealth;
+	}
+
+	public void setMaxHealth(int maxHealth) {
+		this.maxHealth = maxHealth;
 	}
 	
 	public int getSheildSections(){
@@ -685,8 +707,18 @@ public class Ship extends Group{
 	
 	public void damageSheilds(){
 		if(sheilds != null){
-			sheilds.takeDamage();
+			sheilds.takeSheildDamage();
 		}
+	}
+	
+	public float getEvade(){
+		float evade = 0;
+		if(!engine.enginesOn()){
+			return 0;
+		}
+		evade += bridge.getBaseEvasionRate() + engine.getEvasionChance();
+		evade *= bridge.getEvasionRetention();
+		return evade;
 	}
 	
 	public Module getModule(Class<? extends Module> module){
@@ -699,6 +731,10 @@ public class Ship extends Group{
 		return null;
 	}
 	
+	public ArrayList<Module> getModules(){
+		return modules;
+	}
+	
 	public int getPower() {
 		return power;
 	}
@@ -709,6 +745,10 @@ public class Ship extends Group{
 
 	public int getId(){
 		return id;
+	}
+	
+	public SensorsModule getSensors(){
+		return sensors;
 	}
 	
 	/**

@@ -3,6 +3,7 @@ package com.deeper.than.ui;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
@@ -19,10 +20,12 @@ public class CrewPlate extends WidgetGroup {
 	private Crew crew;
 	private Image bar;
 	private Image crewImg;
-	Table table;
+	private Table table;
+	private UICrewSkillsPlate skillsPlate;
 	
 	public CrewPlate(Crew crew){
 		this.crew = crew;
+		this.skillsPlate = new UICrewSkillsPlate(crew.getSkills());
 		table = new Table(DTL.skin);
 		table.background(new TextureRegionDrawable(new TextureRegion(GameplayScreen.highlight)));
 		table.setColor(Color.GRAY);
@@ -43,19 +46,43 @@ public class CrewPlate extends WidgetGroup {
 		table.add(innerTable).expand().fill();
 		table.row();
 		this.addActor(table);
-		
+		skillsPlate.setX(80);
+		skillsPlate.setY(getY()-UICrewSkillsPlate.minIconSize*6+20);
+		skillsPlate.setHeight(20);
+		skillsPlate.setVisible(false);
+		this.addActor(skillsPlate);
 		addListener(new ClickListener() {
 			public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
 				setAsSelected();
 				return true;
 		    }
+			
+			public void enter(InputEvent event, float x, float y, int pointer, Actor fromActor){
+				setSkillsVisible(true);
+			}
+			
+			public void exit(InputEvent event, float x, float y, int pointer, Actor fromActor){
+				setSkillsVisible(false);
+			}
+			
 		});
 		
+		
+		
+	}
+	
+	private void setSkillsVisible(boolean visible){
+		skillsPlate.setVisible(visible);
 	}
 	
 	private void setAsSelected(){
 		((GameplayScreen)Screens.GAMEPLAY.getScreen()).setSelectedCrew(crew);
 		crew.setSelected(true);
+	}
+	
+	
+	public Crew getCrew(){
+		return crew;
 	}
 	
 	@Override

@@ -1,5 +1,7 @@
 package com.deeper.than.modules;
 
+import java.util.ArrayList;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
@@ -21,8 +23,25 @@ public enum Modules {
 	Sensors(SensorsModule.class.getCanonicalName(), "SensorsModule", "sensors.png", 3),
 	Medbay(MedbayModule.class.getCanonicalName(), "MedbayModule", "medbay.png", 3),
 	Sheild(SheildModule.class.getCanonicalName(), "SheildModule", "sheildModule.png", 8),
-	Docking(DockingModule.class.getCanonicalName(), "DockingModule", null, 3);
+	Docking(DockingModule.class.getCanonicalName(), "DockingModule", null, 3),
+	Weapons(WeaponsModule.class.getCanonicalName(), "WeaponsModule", "weaponsModule.png", 8);
 	
+	public static final ArrayList<Class<? extends Module>> moduleClasses = new ArrayList<Class<? extends Module>>();
+	
+	public static ArrayList<Class<? extends Module>> getModuleClasses(){
+		if(moduleClasses.isEmpty()){
+			moduleClasses.add(SheildModule.class);
+			moduleClasses.add(EngineModule.class);
+			moduleClasses.add(ClimateControlModule.class);
+			moduleClasses.add(MedbayModule.class);
+			moduleClasses.add(DockingModule.class);
+			moduleClasses.add(SensorsModule.class);
+			moduleClasses.add(HatchControlModule.class);
+			moduleClasses.add(BridgeModule.class);
+			moduleClasses.add(WeaponsModule.class);
+		}
+		return moduleClasses;
+	}
 	private String name;
 	private String stringRep;
 	private String imagePath;
@@ -92,6 +111,9 @@ public enum Modules {
 		if(this == Sheild){
 			return new SheildModule(id, maxLevel, room, ship);
 		}
+		if(this == Weapons){
+			return new WeaponsModule(id, maxLevel, room, ship);
+		}
 	
 		return null;
 	}
@@ -111,6 +133,8 @@ public enum Modules {
 			stringRep = Sensors.getStringRep();
 		}else if(module instanceof DockingModule){
 			stringRep = Docking.getStringRep();
+		}else if(module instanceof WeaponsModule){
+			stringRep = Weapons.getStringRep();
 		}
 		
 		return stringRep;

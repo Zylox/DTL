@@ -1,3 +1,9 @@
+/**
+ * The engine module for the ship. Charges the jump drive and adds evade.
+ * Created by: Zach Higginbotham
+ * Implementations by: Zach Higginbotham
+ */
+
 package com.deeper.than.modules;
 
 import com.deeper.than.Room;
@@ -5,7 +11,7 @@ import com.deeper.than.Ship;
 
 public class EngineModule extends MainModule{
 	
-	private static final int dodgeChances[] = {0,5,10,15,20,25,28,31,35}; 
+	private static final float dodgeChances[] = {0,.05f,.1f,.15f,.20f,.25f,.28f,.31f,.35f}; 
 	private static final float driveChargeModifiers[] = {0,1,1.25f,1.5f,1.75f,2f,2.25f,2.5f,2.75f};
 	
 	public EngineModule(int id, int maxLevel, Room room, Ship ship) {
@@ -19,23 +25,30 @@ public class EngineModule extends MainModule{
 		manable = true;
 	}	
 
-	public float getDodgeChance(){
+	public float getEvasionChance(){
 		float dodge = 0;
-		if(getLevel() <= dodgeChances.length+1 && getLevel() >= 0){
-			dodge = dodgeChances[getLevel()];
+		if(getPowerLevel() <= dodgeChances.length+1 && getPowerLevel() >= 0){
+			dodge += dodgeChances[getPowerLevel()];
+		}
+		if(isManned()){
+			dodge += getManning().getEngineEvadeRatio();
 		}
 		return dodge;
 	}
 	
+	public boolean enginesOn(){
+		return getPowerLevel() > 0;
+	}
+	
 	public float getDriveChargeModifier(){
 		float driveChargeMod = 0;
-		if(getLevel() <= driveChargeModifiers.length+1 && getLevel() >= 0){
-			driveChargeMod = driveChargeModifiers[getLevel()];
+		if(getPowerLevel() <= driveChargeModifiers.length+1 && getPowerLevel() >= 0){
+			driveChargeMod = driveChargeModifiers[getPowerLevel()];
 		}
 		return driveChargeMod;
 	}
 	
-	public static int[] getDodgeChances(){
+	public static float[] getDodgeChances(){
 		return dodgeChances;
 	}
 	

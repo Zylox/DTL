@@ -19,5 +19,12 @@ public class PlayerShip extends Ship {
 		return 17;
 	}
 	
+	public boolean canSeeEnemyShipInterior(){
+		if(this.sensors != null){
+			return sensors.canSeeEnemyShip();
+		}
+		return false;
+	}
+	
 	
 }

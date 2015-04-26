@@ -1,16 +1,32 @@
+/**
+ * The basic subclass for all ship modules. Ship modules are the systems that provide utilities and fucntionality to the ship.
+ * Created by: Zach Higginbotham
+ * Implementations by: Zach Higginbotham
+ */
+
+
 package com.deeper.than.modules;
 
+import java.util.ArrayList;
+
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.deeper.than.EnemyShip;
+import com.deeper.than.PlayerShip;
 import com.deeper.than.Room;
 import com.deeper.than.Ship;
 import com.deeper.than.crew.Crew;
+import com.deeper.than.crew.CrewRepairTask;
+import com.deeper.than.crew.Crew.CrewState;
+import com.deeper.than.crew.CrewSkills.CrewSkillsTypes;
 
 public abstract class Module {
 	
 	private final String name = "baseModule";
 
 	public static final float IONIC_COOLDOWN_PER_SEC = 50;
+	public static final float IONIC_CHARGE_COOLDOWN_PER_CHARGE = 100;
 	public static final float BASE_REPAIR_PER_SEC = 50;
 	
 	private int id;
@@ -24,9 +40,11 @@ public abstract class Module {
 	private Cooldown ionicCooldown;
 	private Cooldown repairCooldown;
 	private int powerLevel;
-	private boolean manned;
 	private Crew manning;
+	private Crew repairing;
 	protected boolean manable;
+	protected boolean isOnLockdown;
+	private boolean repairTaskQueued;
 	
 	public Module(int id, int maxLevel,Room room, Ship ship){
 		this(id, 1, maxLevel, room, ship);
@@ -43,37 +61,82 @@ public abstract class Module {
 		ionicCooldown = new Cooldown();
 		repairCooldown = new Cooldown();
 		powerLevel = 0;
-		manned = false;
 		manning = null;
 		manable = false;
+		repairing = null;
+		isOnLockdown = false;
+		repairTaskQueued = false;
 	}
 	
 	public void update(){
+		ionicCooldown.setCooldownLimit(Math.max(1,ionicCharges) * IONIC_CHARGE_COOLDOWN_PER_CHARGE);
 		if(ionicCooldown.isOnCooldown()){
 			ionicCooldown.advanceCooldown(IONIC_COOLDOWN_PER_SEC);
 			if(!ionicCooldown.isOnCooldown()){
 				ionicCharges = 0;
+				isOnLockdown = false;
 			}
 		}
 		if(repairCooldown.isOnCooldown()){
-			//repairCooldown.advanceCooldown(getRepairSpeed());
-			if(!ionicCooldown.isOnCooldown()){
-				ionicCharges = 0;
+			repairCooldown.advanceCooldown(getRepairSpeed());
+			if(!repairCooldown.isOnCooldown()){
+				damage--;
+				repairing.gainExp(1, CrewSkillsTypes.REPAIR);
+				if(damage > 0){
+					repairCooldown.startCooldown();
+				}else{
+					repairing.setRepairing(false);
+					repairing = null;
+				}
 			}
 		}
 		
 		
 	}
 
-//	private float getRepairSpeed(){
-//		if(ship.isCrewInRoom(room)){
-//			
-//		}
-//	}
+	
+	private float getRepairSpeed(){
+		if(repairing != null){
+			if(repairing.getState() == CrewState.REPAIRING){
+				return repairing.getRepairRatio() * BASE_REPAIR_PER_SEC;
+			}
+		}
+		
+		ArrayList<Crew> repairCands = room.getRepairCandidates();
+		if(repairCands.size() == 0){
+			return 0;
+		}
+		Crew repairer = null;
+		for(Crew c : repairCands){
+			if(c.getState() == CrewState.IDLE || c.getState() == CrewState.MANNING){
+				if(repairer == null){
+					repairer = c;
+				}else{
+					if(c.getRepairRatio() > repairer.getRepairRatio()){
+						repairer = c;
+					}
+				}
+			}
+		}
+		if(repairer == null){
+			return 0;
+		}
+		repairing = repairer;
+		repairing.setRepairing(true);
+		return repairer.getRepairRatio() * BASE_REPAIR_PER_SEC;
+	}
 	
 	public void draw(Batch batch){
 		Sprite icon = Modules.getIcon(this.getClass().getCanonicalName()); 
+		Color color = batch.getColor().cpy();
+		if(this.getDamage()>0){
+			batch.setColor(Color.RED);
+		}
+		if(this.getIonicCharges()>0){
+			batch.setColor(Color.YELLOW);
+		}
 		batch.draw(icon, room.getCenterLoc().x-icon.getWidth()/2, room.getCenterLoc().y-icon.getHeight()/2);
+		batch.setColor(color);
 	}
 	
 	public void receiveIonicCharge(){
@@ -81,16 +144,50 @@ public abstract class Module {
 	}
 	
 	public void receiveIonicCharge(int amt){
-		ionicCharges++;
+		
+		ionicCharges += amt;
+		if(ionicCharges > getLevel()){
+			ionicCharges = getLevel();
+		}
 		ionicCooldown.startCooldown();
+		isOnLockdown = true;
+		if(manning != null){
+			manning = null;
+		}
 	}
 	
+	
+	public float getIonicCooldownProg() {
+		return ionicCooldown.getCooldownProgress();
+	}
+	
+	public float getIonicCooldownMax(){
+		return ionicCooldown.getCooldownLimit();
+	}
+
+	public boolean isOnLockdown() {
+		return isOnLockdown;
+	}
+
 	public void recieveDamage(){
 		recieveDamage(1);
 	}
 	
 	public void recieveDamage(int amt){
-		
+		if(amt < 1){
+			return;
+		}
+		damage += amt;
+		if(damage > getLevel()){
+			damage = getLevel();
+		}
+		repairCooldown.startCooldown();
+		if(ship instanceof EnemyShip && !repairTaskQueued){
+			CrewRepairTask task = CrewRepairTask.obtain();
+			task.init(1, room);
+			((EnemyShip)ship).addToTaskQueue(task);
+			setRepairTaskQueued(true);
+		}
 	}
 
 	public int getPowerLevel() {
@@ -102,11 +199,7 @@ public abstract class Module {
 	}
 
 	public boolean isManned() {
-		return manned;
-	}
-
-	public void setManned(boolean manned) {
-		this.manned = manned;
+		return manning == null ? false : true;
 	}
 
 	public Crew getManning() {
@@ -115,11 +208,6 @@ public abstract class Module {
 
 	public void setManning(Crew manning) {
 		this.manning = manning;
-		if(manning != null){
-			manned = true;
-		}else{
-			manned = false;
-		}
 	}
 	
 	public boolean isManable(){
@@ -173,6 +261,16 @@ public abstract class Module {
 		return damage;
 	}
 	
+	public boolean isPlayerModule(){
+		return ship instanceof PlayerShip;
+	}
 	
+	public void setRepairTaskQueued(boolean isTaskQueued){
+		this.repairTaskQueued = isTaskQueued;
+	}
+
+	public Ship getShip() {
+		return ship;
+	}
 	
 }

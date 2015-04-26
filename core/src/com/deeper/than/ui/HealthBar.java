@@ -10,8 +10,7 @@ import com.deeper.than.screens.GameplayScreen;
 
 public class HealthBar extends Widget {
 	
-	private static final int SECTIONS = 20;
-	private static final float INCREMENT = 100f/SECTIONS;
+	public static final float INCREMENT = 20;
 	
 	private Ship ship;
 	
@@ -30,14 +29,15 @@ public class HealthBar extends Widget {
 		batch.setColor(color);
 		
 		color = img.getColor().cpy();
-		if(ship.getHealth() < 25)      img.setColor(Color.RED);
-		else if(ship.getHealth() < 50) img.setColor(Color.YELLOW);
-		else if(ship.getHealth() < 75) img.setColor(Color.OLIVE);
-		else if(ship.getHealth() > 75) img.setColor(Color.GREEN);
+		img.setColor(Color.GREEN);
 		
-		float width = getWidth()/SECTIONS;
-		for(int i = 0; i < Math.ceil(ship.getHealth()/INCREMENT); i++){
-			img.draw(batch, getX()+i*width, getY(), width-padding, getHeight());
+		int i;
+		for(i = 0; i < ship.getHealth(); i++){
+			img.draw(batch, getX()+i*INCREMENT, getY(), INCREMENT-padding, getHeight());
+		}
+		img.setColor(Color.DARK_GRAY);
+		for( ; i < ship.getMaxHealth(); i++){
+			img.draw(batch, getX()+i*INCREMENT, getY(), INCREMENT-padding, getHeight());
 		}
 		
 		img.setColor(color);

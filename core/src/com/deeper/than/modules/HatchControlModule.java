@@ -16,14 +16,14 @@ public class HatchControlModule extends SubModule {
 	}
 
 	public boolean canControlDoors(){
-		if(getLevel() > 0){
+		if(getPowerLevel() > 0){
 			return true;
 		}
 		return false;
 	}
 	
 	public boolean canEnemiesUseDoors(){
-		if(getLevel() >= 3){
+		if(getPowerLevel() >= 3){
 			return true;
 		}
 		return false;

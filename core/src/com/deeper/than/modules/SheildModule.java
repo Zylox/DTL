@@ -4,15 +4,16 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.deeper.than.Room;
 import com.deeper.than.Ship;
+import com.deeper.than.crew.CrewSkills.CrewSkillsTypes;
 
 public class SheildModule extends MainModule {
 	public static final float COOLDOWN_MAX = 100;
+	public static final float COOLDOWN_INC_BASE = 50;
 	public static Texture sheildTex = null;
 	public static final int MAX_SHEILD_SECTIONS = 4;
 	
 	private int activeCount;
 	private Cooldown coolD;
-	private float cooldownRate;
 	
 	/**
 	 * Creates a Sheild module at level 1
@@ -24,7 +25,6 @@ public class SheildModule extends MainModule {
 		super(id, maxLevel, room, ship);
 		activeCount = getSheildLayerCount();
 		coolD = new Cooldown();
-		cooldownRate = 50;
 		manable = true;
 	}
 	
@@ -42,16 +42,20 @@ public class SheildModule extends MainModule {
 		manable = true;
 	}
 	
-	public void takeDamage(){
-		takeDamage(1);
+
+	public void takeSheildDamage(){
+		takeSheildDamage(1);
 	}
 	
-	public void takeDamage(int dmgAmt){
+	public void takeSheildDamage(int dmgAmt){
 		activeCount -= dmgAmt;
 		if(activeCount <0){
 			activeCount = 0;
 		}
 		coolD.startCooldown();
+		if(this.isManned()){
+			getManning().gainExp(1, CrewSkillsTypes.SHIELDS);
+		}
 	}
 	
 	@Override
@@ -64,7 +68,7 @@ public class SheildModule extends MainModule {
 			if(!coolD.isOnCooldown()){
 				coolD.startCooldown();
 			}else{
-				coolD.advanceCooldown(cooldownRate);
+				coolD.advanceCooldown(getSheildCooldownSpeed());
 				if(!coolD.isOnCooldown()){
 					activeCount++;
 					if(activeCount != getSheildLayerCount()){
@@ -73,6 +77,14 @@ public class SheildModule extends MainModule {
 				}
 			}
 		}
+	}
+	
+	private float getSheildCooldownSpeed(){
+		float rate = COOLDOWN_INC_BASE;
+		if(isManned()){
+			rate *= 1 + this.getManning().getSheildRechargeRatio();
+		}
+		return rate;
 	}
 	
 	public float getCooldownProgress(){
@@ -95,16 +107,6 @@ public class SheildModule extends MainModule {
 			sheildTex = new Texture(Gdx.files.internal("sheild.png"));
 		}
 		return sheildTex;
-	}
-
-	public float getCooldownRate() {
-		return cooldownRate;
-	}
-
-	public void setCooldownRate(float cooldownRate) {
-		this.cooldownRate = cooldownRate;
-	}
-
-	
+	}	
 	
 }

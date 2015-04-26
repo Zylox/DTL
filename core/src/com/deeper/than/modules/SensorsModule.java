@@ -17,28 +17,31 @@ public class SensorsModule extends SubModule {
 	}
 	
 	public boolean canSeeOwnShip(){
-		if(getLevel() > 0){
+		if(getPowerLevel() > 0){
 			return true;
 		}
 		return false;
 	}
 	
 	public boolean canSeeEnemyShip(){
-		if(getLevel() >= 2 ){
+		if(!this.isPlayerModule()){
+			return false;
+		}
+		if(getPowerLevel() >= 2 ){
 			return true;
 		}
 		return false;
 	}
 	
 	public boolean canSeeEnemyWeaponCharge(){
-		if(getLevel() >= 3){
+		if(getPowerLevel() >= 3){
 			return true;
 		}
 		return false;
 	}
 	
 	public boolean canSeeEnemyPowerUse(){
-		if(getLevel() >= 3 && isManned()){
+		if(getPowerLevel() >= 3 && isManned()){
 			return true;
 		}
 		return false;
