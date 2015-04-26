@@ -9,7 +9,7 @@ import com.deeper.than.EnemyShip;
 import com.deeper.than.FloorTile;
 
 public class UIEnemyWindow extends WidgetGroup{
-	private static NinePatch backgroundNinePatch;
+	public static NinePatch backgroundNinePatch;
 	
 	private static final int TOP_BAR_HEIGHT = 10;
 	private static final float BACKGROUND_PADDING = 3;
@@ -64,7 +64,7 @@ public class UIEnemyWindow extends WidgetGroup{
 	
 	
 	public static void loadAssets(){
-		backgroundNinePatch = new NinePatch(new Texture("enemyBackground.png"),10,2,22,2);
+		backgroundNinePatch = new NinePatch(new Texture("enemyBackground.png"),1,3,1,3);
 	}
 	
 }

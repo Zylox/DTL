@@ -15,7 +15,9 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.utils.NinePatchDrawable;
 import com.deeper.than.DTL;
 import com.deeper.than.EnemyShip;
 import com.deeper.than.PlayerShip;
@@ -136,11 +138,13 @@ public class GameplayScreen implements EnumerableScreen{
 		uiT.add(topBar);
 		uiT.row();
 		Table tab = new Table();
-		tab.add(new Label("Evade: ", DTL.skin)).left();
-		evadeValue = new Label(Float.toString(playerShip.getEvade()), DTL.skin);
-		tab.add(evadeValue).left();
+		LabelStyle backgroundedLabel = new LabelStyle(DTL.skin.getFont("default-font"), Color.WHITE);
+		backgroundedLabel.background = new NinePatchDrawable(UIEnemyWindow.backgroundNinePatch);
+		evadeValue = new Label("Evade: " + Float.toString(playerShip.getEvade()), backgroundedLabel);
+		evadeValue.setFontScale(.6f);
+		tab.add(evadeValue).left().maxHeight(backgroundedLabel.font.getBounds("Evade: 0%").height).expand().padLeft(2);
 		tab.add().prefWidth(1000000);
-		uiT.add(tab).left().fillX();
+		uiT.add(tab).left();
 		uiT.row();
 //		crewPlates = new ArrayList<CrewPlate>();
 //		CrewPlate crewPlate;
@@ -284,7 +288,7 @@ public class GameplayScreen implements EnumerableScreen{
 	    		enemyWindow.update();
 	    	}
 	    	playerFastDrive.update(true);
-	    	evadeValue.setText(Integer.toString((int)(playerShip.getEvade()*100)) + "%");
+	    	evadeValue.setText("Evade: " + Integer.toString((int)(playerShip.getEvade()*100)) + "%");
 	    	ui.act();
 	    	gameObjects.act();
 	    	crewPlateBar.update();

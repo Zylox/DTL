@@ -10,7 +10,6 @@ public class PlayerShip extends Ship {
 	public PlayerShip(FileHandle filepath, boolean isPlayerShip, DTL game,
 			int id) throws ShipLoadException {
 		super(filepath, isPlayerShip, game, id);
-		// TODO Auto-generated constructor stub
 	}
 	
 	
