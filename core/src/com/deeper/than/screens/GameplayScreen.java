@@ -18,7 +18,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.deeper.than.DTL;
 import com.deeper.than.EnemyShip;
-import com.deeper.than.FastDrive;
 import com.deeper.than.PlayerShip;
 import com.deeper.than.Wall;
 import com.deeper.than.crew.Crew;
@@ -40,6 +39,7 @@ import com.deeper.than.ui.UIClimateControlReacBar;
 import com.deeper.than.ui.UICloakingReacBar;
 import com.deeper.than.ui.UICrewSkillsPlate;
 import com.deeper.than.ui.UIEngineReacBar;
+import com.deeper.than.ui.UIFastDrive;
 import com.deeper.than.ui.UIMedbayReacBar;
 import com.deeper.than.ui.UIModuleReactorBar;
 import com.deeper.than.ui.UIModuleSyncable;
@@ -64,7 +64,7 @@ public class GameplayScreen implements EnumerableScreen{
 	
 	private Stage gameObjects;
 	private PlayerShip playerShip;
-	private FastDrive playerFastDrive;
+	private UIFastDrive playerFastDrive;
 	private float timeAccumulator;
 	private Crew selectedCrew;
 	private EnemyShip enemy;
@@ -84,12 +84,13 @@ public class GameplayScreen implements EnumerableScreen{
 	
 	public void loadAssets(){
 		tempBackground = new Image(new Texture("tempbackground.png"));
+		highlight = new Texture(Gdx.files.internal("pixel.png"));
 		Wall.loadAssets();
 		Modules.loadAllModuleAssets();
 		UICrewSkillsPlate.loadAssets();
+		UIFastDrive.loadAssets();
 		Races.loadAnims();
 		shapeRen = new ShapeRenderer();
-		highlight = new Texture(Gdx.files.internal("pixel.png"));
 	}
 	
 
@@ -113,10 +114,10 @@ public class GameplayScreen implements EnumerableScreen{
 		uiT.setFillParent(true);
 		Table topBar = new Table();
 		topBar.add(new UITopBar(playerShip)).top();
-		playerFastDrive = new FastDrive(playerShip);
+		playerFastDrive = new UIFastDrive(playerShip);
 		int width = 80;
 		int height = 50;
-		playerFastDrive.setBounds(Gdx.graphics.getWidth()/2 - width/2, Gdx.graphics.getHeight()-height, width, height);
+		playerFastDrive.setBounds(DTL.VWIDTH/2 - width/2, DTL.VHEIGHT-height, width, height);
 		ui.addActor(playerFastDrive);
 		
 		topBar.add().prefWidth(1000000);

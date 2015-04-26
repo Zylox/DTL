@@ -1,3 +1,10 @@
+/**
+ * The basic subclass for all ship modules. Ship modules are the systems that provide utilities and fucntionality to the ship.
+ * Created by: Zach Higginbotham
+ * Implementations by: Zach Higginbotham
+ */
+
+
 package com.deeper.than.modules;
 
 import java.util.ArrayList;

@@ -1,3 +1,9 @@
+/**
+ * The engine module for the ship. Charges the jump drive and adds evade.
+ * Created by: Zach Higginbotham
+ * Implementations by: Zach Higginbotham
+ */
+
 package com.deeper.than.modules;
 
 import com.deeper.than.Room;

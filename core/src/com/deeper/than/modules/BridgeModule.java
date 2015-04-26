@@ -1,3 +1,9 @@
+/**
+ * The module for the ships bridge. Adds evade and the ability to jump.
+ * Created by: Zach Higginbotham
+ * Implementations by: Zach Higginbotham
+ */
+
 package com.deeper.than.modules;
 
 import com.deeper.than.Room;
