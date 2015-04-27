@@ -10,11 +10,21 @@ import java.util.Random;
  *
  */
 public enum WeaponMakers {
-	BUY_N_LARGE,
-	THREE_TEK,
-	LUK_CO,
-	XYL,
-	BOOM_N_ZOOM;
+	BUY_N_LARGE("BNL"),
+	THREE_TEK("ThreeTek"),
+	LUK_CO("LukCo"),
+	XYL("Xyl"),
+	BOOM_N_ZOOM("Boom N Zoom");
+	
+	private String prefix;
+	
+	private WeaponMakers(String prefix){
+		this.prefix = prefix;
+	}
+	
+	public String getPrefix(){
+		return prefix;
+	}
 	
 	private static Random ran = new Random();
 	

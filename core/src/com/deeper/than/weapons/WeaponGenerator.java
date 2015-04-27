@@ -2,6 +2,8 @@ package com.deeper.than.weapons;
 
 import java.util.Random;
 
+import com.badlogic.gdx.graphics.Color;
+
 public class WeaponGenerator {
 
 	public enum WeaponTypes{
@@ -13,6 +15,8 @@ public class WeaponGenerator {
 		SUPERCOOLING_BEAM,
 		TORPEDO_LAUNCHER;
 	}
+	
+	private static Color beamColors[] = {Color.GREEN, Color.BLUE, Color.RED, Color.CYAN, Color.PURPLE, Color.PINK, Color.WHITE, Color.YELLOW};
 	
 	private Random ran;
 	private WeaponQualityDistribution dist;
@@ -68,34 +72,73 @@ public class WeaponGenerator {
 		return null;
 	}
 	
+	private String getPrefix(WeaponQualities quality, WeaponMakers maker){
+		return quality.getPrefix() + " " + maker.getPrefix();
+	}
+	
+	private Color getRandomColor(){
+		return beamColors[ran.nextInt(beamColors.length)];
+	}
+	
+	private float getTorpedoSpeed(){
+		float min = 1;
+		float max = 4;
+		return getValueInRange(min, max);
+	}
+	
 	public BeamWeapon generateBeamWeapon(){
-		
+		WeaponParams params = BeamWeapon.getBaseParams();
+		params.quality = dist.getRandomQualityByDist();
+		params.maker = WeaponMakers.getRandomMaker();
+		params.maker.modifyWeaponParams(params);
+		return new BeamWeapon(getPrefix(params.quality, params.maker) + " Beam", params, getRandomColor());
 	}
 	
 	public ConcussionBomb generateConcussionBomb(){
-		
+		WeaponParams params = ConcussionBomb.getBaseParams();
+		params.quality = dist.getRandomQualityByDist();
+		params.maker = WeaponMakers.getRandomMaker();
+		params.maker.modifyWeaponParams(params);
+		return new ConcussionBomb(getPrefix(params.quality, params.maker) + " Bomb", params);
 	}
 	
 	public EMPShot generateEmpShot(){
-		
+		WeaponParams params = EMPShot.getBaseParams();
+		params.quality = dist.getRandomQualityByDist();
+		params.maker = WeaponMakers.getRandomMaker();
+		params.maker.modifyWeaponParams(params);
+		return new EMPShot(getPrefix(params.quality, params.maker) + " EMP Shot", params);
 	}
 	
 	public Laser generateLaser(){
 		WeaponParams params = Laser.getBaseParams();
-		WeaponQualities quality = dist.getRandomQualityByDist();
-		WeaponMakers.getRandomMaker().modifyWeaponParams(params);
-		
+		params.quality = dist.getRandomQualityByDist();
+		params.maker = WeaponMakers.getRandomMaker();
+		params.maker.modifyWeaponParams(params);
+		return new Laser(getPrefix(params.quality, params.maker) + " Laser", params, getRandomColor());
 	}
 	
 	public RailGun generRailGun(){
-		
+		WeaponParams params = RailGun.getBaseParams();
+		params.quality = dist.getRandomQualityByDist();
+		params.maker = WeaponMakers.getRandomMaker();
+		params.maker.modifyWeaponParams(params);
+		return new RailGun(getPrefix(params.quality, params.maker) + " RailGun", params);
 	}
 	public SuperCoolingBeam generateSuperCoolingBeam(){
-		
+		WeaponParams params = SuperCoolingBeam.getBaseParams();
+		params.quality = dist.getRandomQualityByDist();
+		params.maker = WeaponMakers.getRandomMaker();
+		params.maker.modifyWeaponParams(params);
+		return new SuperCoolingBeam(getPrefix(params.quality, params.maker) + " SuperCooling Beam", params);
 	}
 	
 	public TorpedoLauncher generateTorpedoLauncher(){
-		
+		WeaponParams params = TorpedoLauncher.getBaseParams();
+		params.quality = dist.getRandomQualityByDist();
+		params.maker = WeaponMakers.getRandomMaker();
+		params.maker.modifyWeaponParams(params);
+		return new TorpedoLauncher(getPrefix(params.quality, params.maker) + " Beam", params, getTorpedoSpeed());
 	}
 	
 }

@@ -16,5 +16,7 @@ public class WeaponParams{
 	public float rechargeSpeed;
 	public float baseMonetaryCost;
 	public float powerCost;
+	public WeaponQualities quality;
+	public WeaponMakers maker;
 }
 
