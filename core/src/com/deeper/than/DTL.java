@@ -41,10 +41,6 @@ public class DTL extends Game {
 	
 	@Override
 	public void create () {
-		
-		
-		//Gdx.graphics.setDisplayMode(Gdx.graphics.getDesktopDisplayMode().width, Gdx.graphics.getDesktopDisplayMode().height, true);
-		
 		startTime = System.currentTimeMillis();
 		
 		Gdx.graphics.setDisplayMode(VWIDTH, VHEIGHT, false);

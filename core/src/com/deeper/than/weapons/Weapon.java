@@ -1,6 +1,6 @@
 package com.deeper.than.weapons;
 
-public class Weapon {
+public abstract class Weapon {
 
 
 	private String name;
@@ -54,6 +54,4 @@ public class Weapon {
 	public float getPowerCost() {
 		return powerCost;
 	}
-	
-	
 }
