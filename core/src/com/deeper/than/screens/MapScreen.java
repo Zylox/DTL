@@ -7,6 +7,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.deeper.than.DTL;
 import com.deeper.than.DTLMap;
 import com.deeper.than.DTLMapPoint;
@@ -28,13 +29,22 @@ public class MapScreen implements EnumerableScreen {
 	
 	private ArrayList<Rectangle> points;
 	
-	private Texture unvisitedPoint = new Texture(Gdx.files.internal("u_point.png"));
-	private Texture visitedPoint = new Texture(Gdx.files.internal("v_point.png"));
-	private Texture currentPoint = new Texture(Gdx.files.internal("c_point.png"));
+	private Texture unvisitedPoint;
+	private Texture visitedPoint;
+	private Texture currentPoint;
+	
+	private Stage ui;
 	
 	@Override
 	public void create(DTL game) {
 		this.game=game;
+		
+		unvisitedPoint = new Texture(Gdx.files.internal("u_point.png"));
+		visitedPoint = new Texture(Gdx.files.internal("v_point.png"));
+		currentPoint = new Texture(Gdx.files.internal("c_point.png"));
+		
+		ui = new Stage(game.getViewport());
+
 	}	
 	
 	@Override
