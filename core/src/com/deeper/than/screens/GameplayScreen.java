@@ -1,6 +1,8 @@
 package com.deeper.than.screens;
 
-import java.util.ArrayList;
+import java.io.ObjectInputStream.GetField;
+
+import javax.swing.GroupLayout.Alignment;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
@@ -11,12 +13,14 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.utils.Align;
 import com.badlogic.gdx.scenes.scene2d.utils.NinePatchDrawable;
 import com.deeper.than.DTL;
 import com.deeper.than.EnemyShip;
@@ -24,40 +28,23 @@ import com.deeper.than.PlayerShip;
 import com.deeper.than.ShipLoadException;
 import com.deeper.than.Wall;
 import com.deeper.than.crew.Crew;
-import com.deeper.than.crew.CrewGoToRoomTask;
 import com.deeper.than.crew.Races;
-import com.deeper.than.modules.BridgeModule;
-import com.deeper.than.modules.ClimateControlModule;
-import com.deeper.than.modules.CloakingModule;
-import com.deeper.than.modules.EngineModule;
-import com.deeper.than.modules.HatchControlModule;
-import com.deeper.than.modules.MedbayModule;
 import com.deeper.than.modules.Module;
 import com.deeper.than.modules.Modules;
-import com.deeper.than.modules.SensorsModule;
-import com.deeper.than.modules.SheildModule;
-import com.deeper.than.modules.WeaponsModule;
-import com.deeper.than.ui.CrewPlate;
-import com.deeper.than.ui.ReactorBar;
-import com.deeper.than.ui.UIClimateControlReacBar;
-import com.deeper.than.ui.UICloakingReacBar;
 import com.deeper.than.ui.UICrewPlateBar;
 import com.deeper.than.ui.UICrewSkillsPlate;
 import com.deeper.than.ui.UIEnemyWindow;
-import com.deeper.than.ui.UIEngineReacBar;
 import com.deeper.than.ui.UIFastDrive;
-import com.deeper.than.ui.UIMedbayReacBar;
-import com.deeper.than.ui.UIModuleReactorBar;
-import com.deeper.than.ui.UIModuleSyncable;
-import com.deeper.than.ui.UIPowerBar;
 import com.deeper.than.ui.UIReactorRow;
-import com.deeper.than.ui.UISheildReacBar;
+import com.deeper.than.ui.UIRewardLabel;
+import com.deeper.than.ui.UISecondaryTopBar;
 import com.deeper.than.ui.UITopBar;
 
 public class GameplayScreen implements EnumerableScreen{
 	
 	public static ShapeRenderer shapeRen;
 	public static Texture highlight;
+	
 	
 	private DTL game;
 	private Stage ui;
@@ -91,6 +78,7 @@ public class GameplayScreen implements EnumerableScreen{
 	public void loadAssets(){
 		tempBackground = new Image(new Texture("tempbackground.png"));
 		highlight = new Texture(Gdx.files.internal("pixel.png"));
+		UIRewardLabel.loadAssets();
 		Wall.loadAssets();
 		Modules.loadAllModuleAssets();
 		UICrewSkillsPlate.loadAssets();
@@ -137,11 +125,14 @@ public class GameplayScreen implements EnumerableScreen{
 		topBar.add().prefWidth(1000000);
 		uiT.add(topBar);
 		uiT.row();
+		uiT.add(new UISecondaryTopBar(playerShip, DTL.VWIDTH, 20));
+		uiT.row();
 		Table tab = new Table();
 		LabelStyle backgroundedLabel = new LabelStyle(DTL.skin.getFont("default-font"), Color.WHITE);
 		backgroundedLabel.background = new NinePatchDrawable(UIEnemyWindow.backgroundNinePatch);
 		evadeValue = new Label("Evade: " + Float.toString(playerShip.getEvade()), backgroundedLabel);
 		evadeValue.setFontScale(.6f);
+		evadeValue.setAlignment(Align.center);
 		tab.add(evadeValue).left().maxHeight(backgroundedLabel.font.getBounds("Evade: 0%").height).expand().padLeft(2);
 		tab.add().prefWidth(1000000);
 		uiT.add(tab).left();
@@ -234,6 +225,7 @@ public class GameplayScreen implements EnumerableScreen{
 					for(Crew c : playerShip.getCrew()){
 						c.setHealth(c.getHealth() - 10);
 					}
+					playerShip.setCurrency(playerShip.getCurrency()+100);
 					//playerShip.damageSheilds();
 //					SheildModule s = (SheildModule)playerShip.getModule(SheildModule.class);
 //					s.setLevel(s.getLevel()+1);
