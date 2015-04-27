@@ -1,6 +1,8 @@
 package com.deeper.than.modules;
 
 import com.deeper.than.DTL;
+import com.deeper.than.screens.GameplayScreen;
+import com.deeper.than.screens.Screens;
 
 /**
  * Contains everything needed to manage a cooldown on an object.
@@ -77,6 +79,9 @@ public class Cooldown {
 	 */
 	public boolean advanceCooldown(float coolDownRatePerSecond){
 		
+		if(((GameplayScreen)Screens.GAMEPLAY.getScreen()).isPaused()){
+			return isOnCooldown;
+		}
 		if(isOnCooldown())
 			cooldownProgress += DTL.getRatePerTimeStep(coolDownRatePerSecond);
 		

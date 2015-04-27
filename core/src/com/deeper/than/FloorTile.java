@@ -2,6 +2,7 @@ package com.deeper.than;
 
 import java.util.Random;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Buttons;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Batch;
@@ -38,6 +39,9 @@ public class FloorTile extends Actor{
 	}
 	
 
+	public void setHovered(boolean hovered){
+		this.gridSquare.getRoom().setHoveredOver(hovered);
+	}
 	
 	/**
 	 * Generates a floortile contained by gridsquare at index pos.
@@ -48,16 +52,16 @@ public class FloorTile extends Actor{
 		this.pos = pos;
 		this.gridSquare = gridSquare;
 
-		addListener(new ClickListener() {
+		ClickListener click = new ClickListener() {
 			public void enter(InputEvent event, float x, float y, int pointer, Actor fromActor){
-				gridSquare.getRoom().setHoveredOver(true);
+				setHovered(true);
 			}
 			public void exit(InputEvent event, float x, float y, int pointer, Actor toActor){
-				gridSquare.getRoom().setHoveredOver(false);
+				setHovered(false);
 			}
 			
 			public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
-				//printCoords();
+				printCoords();
 				
 				if(button == Buttons.RIGHT){
 					Crew crew = ((GameplayScreen)Screens.GAMEPLAY.getScreen()).getSelectedCrew();
@@ -92,7 +96,8 @@ public class FloorTile extends Actor{
 					return false;
 				}
 			}
-		});
+		};
+		addListener(click);
 		
 		setOrigin(TILESIZE/2, TILESIZE/2);
 		setDebug(DTL.GRAPHICALDEBUG);

@@ -1,9 +1,5 @@
 package com.deeper.than.screens;
 
-import java.io.ObjectInputStream.GetField;
-
-import javax.swing.GroupLayout.Alignment;
-
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Input.Buttons;
@@ -13,7 +9,6 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
-import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
@@ -22,6 +17,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.Align;
 import com.badlogic.gdx.scenes.scene2d.utils.NinePatchDrawable;
+import com.deeper.than.Background;
 import com.deeper.than.DTL;
 import com.deeper.than.EnemyShip;
 import com.deeper.than.PlayerShip;
@@ -35,6 +31,7 @@ import com.deeper.than.ui.UICrewPlateBar;
 import com.deeper.than.ui.UICrewSkillsPlate;
 import com.deeper.than.ui.UIEnemyWindow;
 import com.deeper.than.ui.UIFastDrive;
+import com.deeper.than.ui.UIPauseButton;
 import com.deeper.than.ui.UIReactorRow;
 import com.deeper.than.ui.UIRewardLabel;
 import com.deeper.than.ui.UISecondaryTopBar;
@@ -64,7 +61,9 @@ public class GameplayScreen implements EnumerableScreen{
 	
 	private InputMultiplexer input;
 
-	Image tempBackground;
+	private boolean isPaused;
+	
+	Background tempBackground;
 	
 	public void create(DTL game){
 		this.game = game;
@@ -76,8 +75,9 @@ public class GameplayScreen implements EnumerableScreen{
 	}
 	
 	public void loadAssets(){
-		tempBackground = new Image(new Texture("tempbackground.png"));
+		tempBackground = new Background(new Texture("tempbackground.png"));
 		highlight = new Texture(Gdx.files.internal("pixel.png"));
+		UIPauseButton.loadAssets();
 		UIRewardLabel.loadAssets();
 		Wall.loadAssets();
 		Modules.loadAllModuleAssets();
@@ -234,6 +234,10 @@ public class GameplayScreen implements EnumerableScreen{
 						m.setLevel(m.getLevel()+1);
 					}
 				}
+				
+				if(character == ' '){
+					setPaused(!isPaused());
+				}
 				return false;
 			}
 			
@@ -245,6 +249,7 @@ public class GameplayScreen implements EnumerableScreen{
 		});
 		timeAccumulator = 0;
 		selectedCrew = null;
+		isPaused = false;
 	}
 	
 	@Override
@@ -281,12 +286,12 @@ public class GameplayScreen implements EnumerableScreen{
 	    	}
 	    	playerFastDrive.update(true);
 	    	evadeValue.setText("Evade: " + Integer.toString((int)(playerShip.getEvade()*100)) + "%");
-	    	ui.act();
 	    	gameObjects.act();
+	    	ui.act();
 	    	crewPlateBar.update();
 	    	timeAccumulator -= DTL.getFrameTime();
 	    }
-	    
+
 	   ////Rendering goes here
 	    gameObjects.draw();
 	    ui.draw();
@@ -323,7 +328,15 @@ public class GameplayScreen implements EnumerableScreen{
 	@Override
 	public void pause() {
 		// TODO Auto-generated method stub
-		
+		setPaused(true);
+	}
+	
+	public boolean isPaused() {
+		return isPaused;
+	}
+
+	public void setPaused(boolean isPaused) {
+		this.isPaused = isPaused;
 	}
 
 	@Override
