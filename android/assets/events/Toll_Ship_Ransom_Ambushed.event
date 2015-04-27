@@ -8,7 +8,7 @@ responses: [
 	},
 	{
 		inputText:"No (Begin Combat)",
-		triggersEvent: null
+		triggersEvent: "combat"
 	}
 ]
 }

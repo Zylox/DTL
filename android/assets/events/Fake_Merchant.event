@@ -4,7 +4,7 @@ text: "As you move closer to the merchant ship it turns and fires at you!",
 responses: [
 	{
 		inputText: "Attack (Begin combat)",
-		triggersEvent: null
+		triggersEvent: "combat"
 	},
 	{
 		inputText:"Try to escape",

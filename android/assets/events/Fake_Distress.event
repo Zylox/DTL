@@ -4,15 +4,15 @@ text: ""Friendly ship in unfamiliar area, can someone please assist us with our 
 responses: [
 	{
 		inputText: "Offer to help (Get attacked and begin combat)",
-		triggersEvent: null
+		triggersEvent: "combat"
 	},
 	{
 		inputText:"Ignore them (Move to next node/Probably get attacked and begin combat)",
-		triggersEvent: null
+		triggersEvent: "combat"
 	},
 	{
 		inputText:"Attack (Begin Combat)",
-		triggersEvent: null
+		triggersEvent: "combat"
 	}
 ]
 }

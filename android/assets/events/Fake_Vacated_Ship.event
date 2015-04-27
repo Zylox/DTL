@@ -4,15 +4,15 @@ text: "The ship has its distress beacon on, but there's nothing on the radio.",
 responses: [
 	{
 		inputText: "Approach the ship (Attempt to loot it and get ambushed, Begin combat)",
-		triggersEvent: null
+		triggersEvent: "combat"
 	},
 	{
 		inputText:"Ignore it (Move to next node, possibly get ambushed anyways)",
-		triggersEvent: null
+		triggersEvent: "combat"
 	},
 	{
 		inputText:"Attack (Begin Combat/But ship is empty/Enemy ship still decides to attack you?)",
-		triggersEvent: null
+		triggersEvent: "combat"
 	}
 ]
 }

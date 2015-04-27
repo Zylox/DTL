@@ -12,7 +12,7 @@ responses: [
 	},
 	{
 		inputText:"Attack (Begin Combat/But ship is empty)",
-		triggersEvent: null
+		triggersEvent: "combat"
 	}
 ]
 }

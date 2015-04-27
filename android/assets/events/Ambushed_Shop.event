@@ -4,7 +4,7 @@ text: ""We're under attack, Captain if you will save us I'll give you a fine rew
 responses: [
 	{
 		inputText: "Yes (Begin combat)",
-		triggersEvent: null
+		triggersEvent: "combat"
 	},
 	{
 		inputText:"No (Leave them to die a horrible death)",

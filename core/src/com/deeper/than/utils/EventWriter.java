@@ -48,11 +48,14 @@ public class EventWriter {
 				if(temp.equals("-1")) break;
 				String nextEvent = null;
 				String yn=null;
-				System.out.print("Does this response trigger another event?(y/n): ");
+				System.out.print("Does this response trigger another event or combat?(e/c/n): ");
 				yn=br.readLine();
-				if(yn.toLowerCase().startsWith("y")){
+				if(yn.toLowerCase().startsWith("e")){
 					System.out.print("Enter the title of the event it triggers: ");
 					nextEvent = br.readLine();
+				}
+				if(yn.toLowerCase().startsWith("c")){
+					nextEvent = "combat";
 				}
 				if(!temp.equals("-1")) responses.add(new Response(temp, nextEvent));
 			} catch (IOException ioe){

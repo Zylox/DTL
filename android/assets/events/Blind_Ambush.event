@@ -4,7 +4,7 @@ text: "You are attacked completely out of nowhere, you were not prepared ;)",
 responses: [
 	{
 		inputText: "Attack (Begin combat)",
-		triggersEvent: null
+		triggersEvent: "combat"
 	},
 	{
 		inputText:"Try to escape",

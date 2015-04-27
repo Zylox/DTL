@@ -4,7 +4,7 @@ text: "You see what seems to be an enemy ship that hasn't noticed you yet, what 
 responses: [
 	{
 		inputText: "Attack (Begin combat)",
-		triggersEvent: null
+		triggersEvent: "combat"
 	},
 	{
 		inputText:"Let them pass by",
