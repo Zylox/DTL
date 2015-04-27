@@ -60,7 +60,7 @@ public class MapGenerator {
 			y = (int) ((Math.random()*(yMax-yMin))+yMin);
 			
 			//add the node to the map
-			map.addNode(new DTLMapPoint(x,y,event));
+			map.addNode(new DTLMapPoint(x,y,event,i));
 		}
 		//generates the connections between all the nodes
 		generateLattice();
