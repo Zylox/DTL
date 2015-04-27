@@ -94,7 +94,12 @@ public class UIModuleReactorBar extends UIIconReactorBar implements UIModuleSync
 	
 	@Override
 	public void updateModulePowerLevel() {
-		//int damageReduc = getSections() - module.getDamage();
+		if(!this.isPowerVisible && module.getShip() instanceof EnemyShip && ((EnemyShip)module.getShip()).canPlayerSeeMyPower()){
+			this.setPowerVisible(true);
+		}else if(this.isPowerVisible && module.getShip() instanceof EnemyShip && !((EnemyShip)module.getShip()).canPlayerSeeMyPower()){
+			this.setPowerVisible(false);
+		}
+		
 		if(module.isOnLockdown() && !this.isLockedDown){
 			this.setLockedDown(true);
 			preLockdownPowerLevel = getPowered();

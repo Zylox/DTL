@@ -127,16 +127,11 @@ public class Crew extends Actor{
 	}
 	
 	public void update(){
-		setNextMove();
-		if(room != null && room.getModule() != null){
-//			if((state == CrewState.IDLE || state == CrewState.MANNING) && room.getModule().getDamage() > 0){
-//				state = CrewState.REPAIRING;
-//			}else if(state == CrewState.REPAIRING && room.getModule().getDamage() == 0){
-//				setManningIfPossible();
-//			}
-		}
-		if(task != null && task.performTask()){
-			task = null;
+		if(!((GameplayScreen)Screens.GAMEPLAY.getScreen()).isPaused()){
+			setNextMove();
+			if(task != null && task.performTask()){
+				task = null;
+			}
 		}
 	}
 	
@@ -156,6 +151,13 @@ public class Crew extends Actor{
 	}
 	
 	@Override
+	public void act(float delta){
+		if(!((GameplayScreen)Screens.GAMEPLAY.getScreen()).isPaused()){
+			super.act(delta);
+		}
+	}
+	
+	@Override
 	public void draw(Batch batch, float parentAlpha){
 		if(ownerShip instanceof EnemyShip ){
 			if(ownerShip == occupiedShip){
@@ -168,7 +170,10 @@ public class Crew extends Actor{
 				}
 			}
 		}
-		float delta = Gdx.graphics.getDeltaTime();
+		float delta = 0;
+		if(!((GameplayScreen)Screens.GAMEPLAY.getScreen()).isPaused()){
+			 delta = Gdx.graphics.getDeltaTime();
+		}
 		if(state == CrewState.WALKING){
 			stateTime += delta;
 		}else{

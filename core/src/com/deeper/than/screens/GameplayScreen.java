@@ -1,7 +1,5 @@
 package com.deeper.than.screens;
 
-import java.util.ArrayList;
-
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Input.Buttons;
@@ -15,46 +13,35 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.utils.Align;
+import com.badlogic.gdx.scenes.scene2d.utils.NinePatchDrawable;
+import com.deeper.than.Background;
 import com.deeper.than.DTL;
 import com.deeper.than.EnemyShip;
 import com.deeper.than.PlayerShip;
+import com.deeper.than.ShipLoadException;
 import com.deeper.than.Wall;
 import com.deeper.than.crew.Crew;
-import com.deeper.than.crew.CrewGoToRoomTask;
 import com.deeper.than.crew.Races;
-import com.deeper.than.modules.BridgeModule;
-import com.deeper.than.modules.ClimateControlModule;
-import com.deeper.than.modules.CloakingModule;
-import com.deeper.than.modules.EngineModule;
-import com.deeper.than.modules.HatchControlModule;
-import com.deeper.than.modules.MedbayModule;
 import com.deeper.than.modules.Module;
 import com.deeper.than.modules.Modules;
-import com.deeper.than.modules.SensorsModule;
-import com.deeper.than.modules.SheildModule;
-import com.deeper.than.modules.WeaponsModule;
-import com.deeper.than.ui.CrewPlate;
-import com.deeper.than.ui.ReactorBar;
-import com.deeper.than.ui.UIClimateControlReacBar;
-import com.deeper.than.ui.UICloakingReacBar;
 import com.deeper.than.ui.UICrewPlateBar;
 import com.deeper.than.ui.UICrewSkillsPlate;
 import com.deeper.than.ui.UIEnemyWindow;
-import com.deeper.than.ui.UIEngineReacBar;
 import com.deeper.than.ui.UIFastDrive;
-import com.deeper.than.ui.UIMedbayReacBar;
-import com.deeper.than.ui.UIModuleReactorBar;
-import com.deeper.than.ui.UIModuleSyncable;
-import com.deeper.than.ui.UIPowerBar;
+import com.deeper.than.ui.UIPauseButton;
 import com.deeper.than.ui.UIReactorRow;
-import com.deeper.than.ui.UISheildReacBar;
+import com.deeper.than.ui.UIRewardLabel;
+import com.deeper.than.ui.UISecondaryTopBar;
 import com.deeper.than.ui.UITopBar;
 
 public class GameplayScreen implements EnumerableScreen{
 	
 	public static ShapeRenderer shapeRen;
 	public static Texture highlight;
+	
 	
 	private DTL game;
 	private Stage ui;
@@ -74,7 +61,9 @@ public class GameplayScreen implements EnumerableScreen{
 	
 	private InputMultiplexer input;
 
-	Image tempBackground;
+	private boolean isPaused;
+	
+	Background tempBackground;
 	
 	public void create(DTL game){
 		this.game = game;
@@ -86,8 +75,10 @@ public class GameplayScreen implements EnumerableScreen{
 	}
 	
 	public void loadAssets(){
-		tempBackground = new Image(new Texture("tempbackground.png"));
+		tempBackground = new Background(new Texture("tempbackground.png"));
 		highlight = new Texture(Gdx.files.internal("pixel.png"));
+		UIPauseButton.loadAssets();
+		UIRewardLabel.loadAssets();
 		Wall.loadAssets();
 		Modules.loadAllModuleAssets();
 		UICrewSkillsPlate.loadAssets();
@@ -102,13 +93,21 @@ public class GameplayScreen implements EnumerableScreen{
 	 * 
 	 */
 	private void initializeGame(){
-		playerShip = new PlayerShip(Gdx.files.internal("ships/" + game.getSelectedShip() +".ship"), true, game, DTL.firstOpenId++);
-		//playerShip.setOrigin(playerShip.getWidth()/2, playerShip.getHeight()/2);
+		try {
+			playerShip = new PlayerShip(Gdx.files.internal("ships/" + game.getSelectedShip() +".ship"), true, game, DTL.firstOpenId++);
+		} catch (ShipLoadException e) {
+			e.printStackTrace();
+		}
 		gameObjects = new Stage(game.getViewport());
 		
 		gameObjects.addActor(tempBackground);
 		gameObjects.addActor(playerShip);
-		EnemyShip enemy = new EnemyShip(Gdx.files.internal("ships/enemyships/scout.ship") , game, DTL.firstOpenId++, playerShip);
+		EnemyShip enemy = null;
+		try {
+			enemy = new EnemyShip(Gdx.files.internal("ships/enemyships/scout.ship") , game, DTL.firstOpenId++, playerShip);
+		} catch (ShipLoadException e) {
+			e.printStackTrace();
+		}
 		
 		
 		ui = new Stage(game.getViewport());
@@ -126,12 +125,17 @@ public class GameplayScreen implements EnumerableScreen{
 		topBar.add().prefWidth(1000000);
 		uiT.add(topBar);
 		uiT.row();
+		uiT.add(new UISecondaryTopBar(playerShip, DTL.VWIDTH, 20));
+		uiT.row();
 		Table tab = new Table();
-		tab.add(new Label("Evade: ", DTL.skin)).left();
-		evadeValue = new Label(Float.toString(playerShip.getEvade()), DTL.skin);
-		tab.add(evadeValue).left();
+		LabelStyle backgroundedLabel = new LabelStyle(DTL.skin.getFont("default-font"), Color.WHITE);
+		backgroundedLabel.background = new NinePatchDrawable(UIEnemyWindow.backgroundNinePatch);
+		evadeValue = new Label("Evade: " + Float.toString(playerShip.getEvade()), backgroundedLabel);
+		evadeValue.setFontScale(.6f);
+		evadeValue.setAlignment(Align.center);
+		tab.add(evadeValue).left().maxHeight(backgroundedLabel.font.getBounds("Evade: 0%").height).expand().padLeft(2);
 		tab.add().prefWidth(1000000);
-		uiT.add(tab).left().fillX();
+		uiT.add(tab).left();
 		uiT.row();
 //		crewPlates = new ArrayList<CrewPlate>();
 //		CrewPlate crewPlate;
@@ -221,6 +225,7 @@ public class GameplayScreen implements EnumerableScreen{
 					for(Crew c : playerShip.getCrew()){
 						c.setHealth(c.getHealth() - 10);
 					}
+					playerShip.setCurrency(playerShip.getCurrency()+100);
 					//playerShip.damageSheilds();
 //					SheildModule s = (SheildModule)playerShip.getModule(SheildModule.class);
 //					s.setLevel(s.getLevel()+1);
@@ -228,6 +233,10 @@ public class GameplayScreen implements EnumerableScreen{
 					for(Module m : playerShip.getModules()){
 						m.setLevel(m.getLevel()+1);
 					}
+				}
+				
+				if(character == ' '){
+					setPaused(!isPaused());
 				}
 				return false;
 			}
@@ -240,6 +249,7 @@ public class GameplayScreen implements EnumerableScreen{
 		});
 		timeAccumulator = 0;
 		selectedCrew = null;
+		isPaused = false;
 	}
 	
 	@Override
@@ -275,13 +285,13 @@ public class GameplayScreen implements EnumerableScreen{
 	    		enemyWindow.update();
 	    	}
 	    	playerFastDrive.update(true);
-	    	evadeValue.setText(Integer.toString((int)(playerShip.getEvade()*100)) + "%");
-	    	ui.act();
+	    	evadeValue.setText("Evade: " + Integer.toString((int)(playerShip.getEvade()*100)) + "%");
 	    	gameObjects.act();
+	    	ui.act();
 	    	crewPlateBar.update();
 	    	timeAccumulator -= DTL.getFrameTime();
 	    }
-	    
+
 	   ////Rendering goes here
 	    gameObjects.draw();
 	    ui.draw();
@@ -318,7 +328,15 @@ public class GameplayScreen implements EnumerableScreen{
 	@Override
 	public void pause() {
 		// TODO Auto-generated method stub
-		
+		setPaused(true);
+	}
+	
+	public boolean isPaused() {
+		return isPaused;
+	}
+
+	public void setPaused(boolean isPaused) {
+		this.isPaused = isPaused;
 	}
 
 	@Override

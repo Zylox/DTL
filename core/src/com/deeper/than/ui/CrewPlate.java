@@ -10,6 +10,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.WidgetGroup;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.scenes.scene2d.utils.NinePatchDrawable;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.deeper.than.DTL;
 import com.deeper.than.crew.Crew;
@@ -27,7 +28,8 @@ public class CrewPlate extends WidgetGroup {
 		this.crew = crew;
 		this.skillsPlate = new UICrewSkillsPlate(crew.getSkills());
 		table = new Table(DTL.skin);
-		table.background(new TextureRegionDrawable(new TextureRegion(GameplayScreen.highlight)));
+		//table.background(new TextureRegionDrawable(new TextureRegion(GameplayScreen.highlight)));
+		table.background(new NinePatchDrawable(UIEnemyWindow.backgroundNinePatch));
 		table.setColor(Color.GRAY);
 		table.setFillParent(true);
 		bar = new Image(GameplayScreen.highlight);
@@ -37,8 +39,9 @@ public class CrewPlate extends WidgetGroup {
 		
 		table.add(crewImg).prefWidth(Crew.CREW_HEIGHT/Crew.SCALE).prefHeight(Crew.CREW_HEIGHT/Crew.SCALE).left();
 		Table innerTable = new Table();
-		
-		innerTable.add(new Label(crew.getName(), DTL.skin)).fill().top().expandX().padBottom(5);
+		Label crewName = new Label(crew.getName(), DTL.skin);
+		crewName.setFontScale(.8f);
+		innerTable.add(crewName).fill().top().expandX().padBottom(5);
 		innerTable.row();
 		innerTable.add(bar).fill();
 		//table.add(new CrewHealthBar(crew)).left().expand();
@@ -92,12 +95,13 @@ public class CrewPlate extends WidgetGroup {
 
 ////		//batch.draw(back, getX(), getY(), getWidth(), getHeight());
 		bar.setColor(Color.GREEN);
-		bar.setBounds(bar.getX(), bar.getY(),(getWidth()-crewImg.getWidth())*(crew.getHealth()/crew.getRace().getHealth()), 5);
+		
+		bar.setBounds(bar.getX(), bar.getY(),(getWidth()-crewImg.getWidth())*(crew.getHealth()/crew.getRace().getHealth()) -2, 5);
 		
 		if(crew.isSelected()){
 			table.setColor(Color.DARK_GRAY);
 		}else{
-			table.setColor(Color.GRAY);
+			table.setColor(Color.WHITE);
 		}
 		super.draw(batch, parentAlpha);
 		batch.setColor(color);

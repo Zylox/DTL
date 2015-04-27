@@ -6,10 +6,6 @@
 
 package com.deeper.than.ui;
 
-import sun.font.GlyphLayout;
-
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.deeper.than.DTL;
@@ -36,7 +32,6 @@ public class UITopBar extends Table {
 			float newHeight = (fontHeight/height)-1;
 			healthLabel.setFontScale(newHeight);
 			sheildLabel.setFontScale(newHeight);
-			System.out.println(newHeight);
 		}
 		hBar = new HealthBar(ship);
 		sBar = new SheildBar(ship);

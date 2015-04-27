@@ -75,7 +75,7 @@ public class Ship extends Group{
 	 * @param filepath Internal path to the script. ex. "kes.ship".
 	 * @param game Reference to the game object
 	 */
-	public Ship(FileHandle filepath, boolean isPlayerShip, DTL game, int id){
+	public Ship(FileHandle filepath, boolean isPlayerShip, DTL game, int id) throws ShipLoadException{
 		
 		this.game = game;
 		crew = new ArrayList<Crew>();
@@ -96,7 +96,7 @@ public class Ship extends Group{
 		init();
 	}
 	
-	public Ship(String script, DTL game, int id){
+	public Ship(String script, DTL game, int id) throws ShipLoadException{
 		
 		this.game = game;
 		crew = new ArrayList<Crew>();
@@ -117,7 +117,7 @@ public class Ship extends Group{
 		init();
 	}
 	
-	public void reInit(FileHandle filepath){
+	public void reInit(FileHandle filepath) throws ShipLoadException{
 		clearCollections();
 		try {
 			//Pulls a parser from the parser pool and loads the script
@@ -130,7 +130,7 @@ public class Ship extends Group{
 		init();
 	}
 	
-	public void reInit(String script){
+	public void reInit(String script) throws ShipLoadException{
 		clearCollections();
 		try {
 			//Pulls a parser from the parser pool and loads the script

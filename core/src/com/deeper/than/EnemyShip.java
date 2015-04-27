@@ -17,7 +17,7 @@ public class EnemyShip extends Ship{
 	private ArrayList<CrewTask> taskQueue;
 	
 	
-	public EnemyShip(FileHandle filepath, DTL game, int id, PlayerShip playerShip) {
+	public EnemyShip(FileHandle filepath, DTL game, int id, PlayerShip playerShip)  throws ShipLoadException{
 		super(filepath, false, game, id);
 		this.playerShip = playerShip;
 		taskQueue = new ArrayList<CrewTask>();
@@ -25,6 +25,10 @@ public class EnemyShip extends Ship{
 	
 	public boolean canPlayerSeeMyTiles(){
 		return playerShip.canSeeEnemyShipInterior();
+	}
+	
+	public boolean canPlayerSeeMyPower(){
+		return playerShip.getSensors().canSeeEnemyPowerUse();
 	}
 
 	@Override

@@ -31,239 +31,259 @@ public class ScriptParser implements Poolable{
 		}
 	};
 	
+	private static final String DEFAULT_NAME = "NameYourDangShip";
+	private static final int XDIM_DEFAULT = 1;
+	private static final int YDIM_DEFAULT = 1;
+	private static final int HEALTH_DEFAULT = 5;
+	private static final int POWER_DEFAULT = 8;
+	private static final String FLOORTILEIMG_DEFAULT = "floortile.png";
+	private static final String DOORIMG_DEFAULT = "door.pack";
+	
+	private static final int FUEL_DEFAULT = 15;
+	private static final int CURRENCY_DEFAULT = 30;
+	
+	private boolean nameSet;
+	private boolean xDimSet;
+	private boolean yDimSet;
+	private boolean healthSet;
+	private boolean powerSet;
+	private boolean floortileImgSet;
+	private boolean doorSet;
+	
+	private boolean fuelSet;
+	private boolean currencySet;
+	
 	
 	private int lineNum=0;
+	private String[] tokens;
 	
-	public int loadShipScript(Ship ship, String str) throws IOException{
-		return loadShipScript(ship, new Scanner(str));
+	public void loadShipScript(Ship ship, String str) throws IOException, ShipLoadException{
+		loadShipScript(ship, new Scanner(str));
 	}
 	
-	public int loadShipScript(Ship ship, FileHandle filepath) throws IOException{
-		return loadShipScript(ship, new Scanner(filepath.read()));
+	public void loadShipScript(Ship ship, FileHandle filepath) throws IOException, ShipLoadException{
+		loadShipScript(ship, new Scanner(filepath.read()));
 	}
 
-	public int loadShipScript(Ship ship, Scanner scanner) throws IOException{
-		lineNum =0;
+	public void proccessNextLine(String line, Ship ship, Scanner scanner) throws ShipLoadException{
+		tokens = line.split(" ");
 		
-		//checks to see if there is anything other than comments
-		String line = getNextNonCommentLine(scanner);
-		if(line.equals(null)){
-			scanner.close();
-			return -2;
-		}
-		
-		lineNum++;
-		//sets name
-		String[] tokens = line.split(" ");
-		if(tokens.length > 1){
-			if(tokens[0].equals("name=")){
-				ship.name = tokens[1].replaceAll("\\s", "");
-			}else{
-				System.out.println("name= XXX expected at line " + lineNum);
-				scanner.close();
-				return -1;
+		switch(tokens[0]){
+		case "currency=":
+			if(ship instanceof PlayerShip){
+				if(tokens.length > 1){
+					((PlayerShip)ship).setCurrency(Integer.parseInt(tokens[1]));
+					currencySet = true;
+				}
 			}
+			break;
+		case "fuel=":
+			if(ship instanceof PlayerShip){
+				if(tokens.length > 1){
+					((PlayerShip)ship).setFuel(Integer.parseInt(tokens[1]));
+					fuelSet = true;
+				}
+			}
+			break;
+		case "name=":
+			if(tokens.length > 1){
+				ship.name = tokens[1].replaceAll("\\s", "");
+				nameSet = true;
+			}
+			break;
+		case "xDim=":
+			if(tokens.length > 1){
+				ship.gridWidth = Integer.parseInt(tokens[1]);
+				xDimSet = true;
+				if(yDimSet){
+					initializeShipLayout(ship);
+				}
+			}
+			break;
+		case "yDim=":
+			if(tokens.length > 1){
+				ship.gridHeight = Integer.parseInt(tokens[1]);
+				yDimSet = true;
+				if(xDimSet){
+					initializeShipLayout(ship);
+				}
+			}
+			break;
+		case "health=":
+			if(tokens.length > 1){
+				ship.setHealth(Integer.parseInt(tokens[1]));
+				ship.setMaxHealth(Integer.parseInt(tokens[1]));
+				healthSet = true;
+			}
+			break;
+		case "power=":
+			if(tokens.length > 1){
+				ship.setPower(Integer.parseInt(tokens[1]));
+				powerSet = true;
+			}
+			break;
+		case "floortileimg=":
+			if(tokens.length > 1){
+				ship.setFloorTileImgHandle(tokens[1]);
+				floortileImgSet = true;
+			}
+			break;
+		case "doorimg=":
+			if(tokens.length > 1){
+				ship.setDoorImgHandle(tokens[1]);
+				doorSet = true;
+			}
+			break;
+		case "layout=":
+			if(!xDimSet || !yDimSet){
+				return;
+			}
+			loadRooms(scanner, ship);
+			break;
+		case "doors=":
+			if(!xDimSet || !yDimSet){
+				return;
+			}
+			loadDoors(scanner, ship);
+			break;
 		}
-		
-		//Getting x and y dim for grid
-		//////////////////////////////////////////////////
-		int xDim = 0;
-		int yDim = 0;
-		int health = 0;
-		int power = 0;
-		//gets line, checks if it exists, splits into tokens, and sets xDim and yDim if correct
-		line = getNextNonCommentLine(scanner);
-		if(line.equals(null)){
-			scanner.close();
-			return -2;
-		}
-		lineNum++;
-		tokens = line.split(" ");
-		
-		if(tokens[0].equals("xDim=")){
-			xDim = Integer.parseInt(tokens[1]);	
-		}else{
-			System.out.println("xDim= XXX expected at line " + lineNum);
-			scanner.close();
-			return -1;
-		}
-
-		line = getNextNonCommentLine(scanner);
-		if(line.equals(null)){
-			scanner.close();
-			return -2;
-		}
-		lineNum++;
-		tokens = line.split(" ");
-		
-		if(tokens[0].equals("yDim=")){
-			yDim = Integer.parseInt(tokens[1]);	
-		}else{
-			System.out.println("yDim= XXX expected at line " + lineNum);
-			scanner.close();
-			return -1;
-		}
-		
-		line = getNextNonCommentLine(scanner);
-		if(line.equals(null)){
-			scanner.close();
-			return -2;
-		}
-		
-		lineNum++;
-		tokens = line.split(" ");
-		if(tokens[0].equals("health=")){
-			health = Integer.parseInt(tokens[1]);	
-		}else{
-			System.out.println("power= XXX expected at line " + lineNum);
-			scanner.close();
-			return -1;
-		}
-		
-		line = getNextNonCommentLine(scanner);
-		if(line.equals(null)){
-			scanner.close();
-			return -2;
-		}
-		
-		lineNum++;
-		tokens = line.split(" ");
-		if(tokens[0].equals("power=")){
-			power = Integer.parseInt(tokens[1]);	
-		}else{
-			System.out.println("power= XXX expected at line " + lineNum);
-			scanner.close();
-			return -1;
-		}
-		
-		//
-		//////////////////////////////////////////////////
-		//initializing the layout
-		ship.gridWidth = xDim;
-		ship.gridHeight = yDim;
-		ship.setPower(power);
-		ship.setHealth(health);
-		ship.setMaxHealth(health);
-		ship.layout = new GridSquare[yDim][xDim];
-		for(int i = 0; i< yDim; i++){
-			for(int j = 0; j < xDim; j++){
+	}
+	
+	private void initializeShipLayout(Ship ship){
+		ship.layout = new GridSquare[ship.gridHeight][ship.gridWidth];
+		for(int i = 0; i< ship.gridHeight; i++){
+			for(int j = 0; j < ship.gridWidth; j++){
 				ship.layout[i][j] = null;
 			}
 		}
-		
-		line = getNextNonCommentLine(scanner);
-		if(line.equals(null)){
-			scanner.close();
-			return -2;
-		}
-		lineNum++;
-		tokens = line.split(" ");
-		
-		if(tokens.length > 1){
-			if(tokens[0].equals("floortileimg=")){
-				ship.setFloorTileImgHandle(tokens[1]);	
-			}else{
-				System.out.println("floortileimg= XXX expected at line " + lineNum);
-				scanner.close();
-				return -1;
-			}
-		}
-		
-		line = getNextNonCommentLine(scanner);
-		if(line.equals(null)){
-			scanner.close();
-			return -2;
-		}
-		lineNum++;
-		tokens = line.split(" ");
-		
-		if(tokens.length > 1){
-			if(tokens[0].equals("doorimg=")){
-				ship.setDoorImgHandle(tokens[1]);	
-			}else{
-				System.out.println("doorimg= XXX expected at line " + lineNum);
-				scanner.close();
-				return -1;
-			}
-		}
+	}
+	
+	private void loadDoors(Scanner scanner, Ship ship) throws ShipLoadException{
+		Door door = null;
+		String line;
 		while(scanner.hasNext()){
-			lineNum++;
-			line = scanner.nextLine();
-			//floorlayout case
-			if(line.replaceAll("\\s", "").equals("layout=")){
-				Vector2 poss[] = null;
-				int roomId = -1;
-				int moduleId = -1;
-				Room room;
-				FloorTile fl;
-				GridSquare gs;
-				Crew crew;
-				//internal layout proccesing loop
-				while(scanner.hasNext()){
-					line = getNextNonCommentLine(scanner);
-					if(line.startsWith("{")){
-						crew = null;
-						roomId++;
-						room = new Room(roomId, ship);
-						tokens = line.split(" , ");
-						if(tokens.length == 4){
-							loadModule(tokens[1], Integer.parseInt(tokens[2]), moduleId, room, ship);
-							crew = loadCrew(tokens[3], ship);
-						}else if(tokens.length == 3){
-							loadModule(tokens[1], Integer.parseInt(tokens[2]), moduleId, room, ship);
-						}else if(tokens.length == 2){
-							crew = loadCrew(tokens[1], ship);
-						}
-						poss = getRoomValues(tokens[0]);						
-						for(Vector2 v : poss){
-							gs = new GridSquare();
-							fl = new FloorTile(v, gs);
-							if(crew != null){
-								gs.addCrewMember(crew);
-								crew.initPosition(v);
-								crew = null;
-							}
-							gs.setFloorTile(fl);
-							gs.setRoom(room);
-							gs.setShip(ship);
-							fl.setShip(ship);
-							ship.layout[(int)v.y][(int)v.x] = gs;
-							room.addSquare(gs);
-						}
-						ship.addRoom(room);
-					}else if(line.equals("endlayout")){
-						break;
-					}else{
-						System.out.println("improper layout on line " + lineNum);
-						scanner.close();
-						return -1;
-					}
-				}
-			}else if(line.replaceAll("\\s", "").equals("doors=")){
-				Door door = null;
-				while(scanner.hasNext()){
-					line = getNextNonCommentLine(scanner);
-					if(line.startsWith("{")){
-						line = stripCurly(line);
-						line.toLowerCase();
-						tokens = line.split(" ");
-						door = new Door(getCoordFromPair(tokens[0]), getDirection(tokens[1]), ship);
-						door.setGridSquare((ship.getLayout())[(int)door.getPos().y][(int)door.getPos().x]);
-						ship.addDoor(door);
-					}else if(line.equals("enddoors")){
-						break;
-					}else{
-						System.out.println("improper doors on line " + lineNum);
-						scanner.close();
-						return -1;
-					}
-				}				
+			line = getNextNonCommentLine(scanner);
+			if(line.startsWith("{")){
+				line = stripCurly(line);
+				line.toLowerCase();
+				tokens = line.split(" ");
+				door = new Door(getCoordFromPair(tokens[0]), getDirection(tokens[1]), ship);
+				door.setGridSquare((ship.getLayout())[(int)door.getPos().y][(int)door.getPos().x]);
+				ship.addDoor(door);
+			}else if(line.equals("enddoors")){
+				return;
 			}
 		}
 		
-		scanner.close();
-		return 0;
+		throw new ShipLoadException();
+	}
+	
+	private void loadRooms(Scanner scanner, Ship ship) throws ShipLoadException{
+		if(scanner == null || ship == null){
+			throw new ShipLoadException();
+		}
+		String line;
+		Vector2 poss[] = null;
+		int roomId = -1;
+		int moduleId = -1;
+		Room room;
+		FloorTile fl;
+		GridSquare gs;
+		Crew crew;
+		while(scanner.hasNext()){
+			line = getNextNonCommentLine(scanner);
+			if(line.startsWith("endlayout")){
+				return;
+			}
+			
+			if(line.startsWith("{")){
+				crew = null;
+				roomId++;
+				room = new Room(roomId, ship);
+				tokens = line.split(" , ");
+				if(tokens.length == 4){
+					loadModule(tokens[1], Integer.parseInt(tokens[2]), moduleId, room, ship);
+					crew = loadCrew(tokens[3], ship);
+				}else if(tokens.length == 3){
+					loadModule(tokens[1], Integer.parseInt(tokens[2]), moduleId, room, ship);
+				}else if(tokens.length == 2){
+					crew = loadCrew(tokens[1], ship);
+				}
+				poss = getRoomValues(tokens[0]);						
+				for(Vector2 v : poss){
+					gs = new GridSquare();
+					fl = new FloorTile(v, gs);
+					if(crew != null){
+						gs.addCrewMember(crew);
+						crew.initPosition(v);
+						crew = null;
+					}
+					gs.setFloorTile(fl);
+					gs.setRoom(room);
+					gs.setShip(ship);
+					fl.setShip(ship);
+					ship.layout[(int)v.y][(int)v.x] = gs;
+					room.addSquare(gs);
+				}
+				ship.addRoom(room);
+			}
+			
+		}
 		
+		throw new ShipLoadException();
+	}
+	
+	public void setUnsetsToDefault(Ship ship){
+		if(!nameSet){
+			ship.setName(DEFAULT_NAME);
+		}
+		if(!healthSet){
+			ship.setHealth(HEALTH_DEFAULT);
+			ship.setMaxHealth(HEALTH_DEFAULT);
+		}
+		if(!powerSet){
+			ship.setPower(POWER_DEFAULT);
+		}
+		if(!floortileImgSet){
+			ship.setFloorTileImgHandle(FLOORTILEIMG_DEFAULT);
+		}
+		if(!doorSet){
+			ship.setDoorImgHandle(DOORIMG_DEFAULT);
+		}
+		
+		if(ship instanceof PlayerShip){
+			PlayerShip pShip = ((PlayerShip)ship);
+			if(!fuelSet){
+				pShip.setFuel(FUEL_DEFAULT);
+			}
+			if(!currencySet){
+				pShip.setCurrency(CURRENCY_DEFAULT);
+			}
+		}
+	}
+	
+	public void loadShipScript(Ship ship, Scanner scanner) throws IOException, ShipLoadException{
+		nameSet = false;
+		xDimSet = false;
+		yDimSet = false;
+		healthSet = false;
+		powerSet = false;
+		floortileImgSet = false;
+		doorSet = false;
+		
+		fuelSet = false;
+		currencySet = false;
+		
+		lineNum =0;
+		
+		String line;
+		while(scanner.hasNext()){
+			line = getNextNonCommentLine(scanner);
+			proccessNextLine(line, ship, scanner);
+		}
+		
+		setUnsetsToDefault(ship);
+		scanner.close();
 	}
 	
 

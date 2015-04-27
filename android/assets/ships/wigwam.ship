@@ -3,8 +3,6 @@ xDim= 10
 yDim= 8
 health= 10
 power= 15
-floortileimg= floortile.png
-doorimg= door.pack
 layout=
 {3,9 4,9} , BridgeModule , 1
 {4,7 4,8} , HatchControlModule , 1
