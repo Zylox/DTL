@@ -32,6 +32,7 @@ import com.deeper.than.ui.UICrewPlateBar;
 import com.deeper.than.ui.UICrewSkillsPlate;
 import com.deeper.than.ui.UIEnemyWindow;
 import com.deeper.than.ui.UIFastDrive;
+import com.deeper.than.ui.UIMapScreen;
 import com.deeper.than.ui.UIPauseButton;
 import com.deeper.than.ui.UIReactorRow;
 import com.deeper.than.ui.UIRewardLabel;
@@ -54,6 +55,8 @@ public class GameplayScreen implements EnumerableScreen{
 	
 	
 	private Stage gameObjects;
+	private Stage mapStage;
+	private Table mapTable;
 	private PlayerShip playerShip;
 	private UIFastDrive playerFastDrive;
 	private float timeAccumulator;
@@ -65,6 +68,7 @@ public class GameplayScreen implements EnumerableScreen{
 	private InputMultiplexer input;
 
 	private boolean isPaused;
+	
 	
 	Background tempBackground;
 	
@@ -87,6 +91,8 @@ public class GameplayScreen implements EnumerableScreen{
 		shapeRen = new ShapeRenderer();
 		UIEnemyWindow.loadAssets();
 		mapGenerator = new MapGenerator();
+		UIMapScreen.loadAssets();
+		
 	}
 	
 
