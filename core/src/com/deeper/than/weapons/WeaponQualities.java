@@ -30,15 +30,4 @@ public enum WeaponQualities { //accuracy, damageModifier, critdamage, chance, re
 		this.power = power;
 	}
 	
-	public static WeaponQualities getCompltelyRandomQuality(){
-		return WeaponQualities.values()[ran.nextInt(WeaponQualities.values().length)];
-	}
-	
-	public static WeaponQualities getPsuedoRandomQuality(){
-		int rand = ran.nextInt(100);
-		
-		if()
-	}
-	
-	
 }

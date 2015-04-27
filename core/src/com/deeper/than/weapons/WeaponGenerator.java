@@ -15,13 +15,20 @@ public class WeaponGenerator {
 	}
 	
 	private Random ran;
+	private WeaponQualityDistribution dist;
 	
 	public WeaponGenerator(){
 		ran = new Random();
+		init();
 	}
 	
 	public WeaponGenerator(long seed){
 		ran = new Random(seed);
+		init();
+	}
+	
+	private void init(){
+		dist = new WeaponQualityDistribution();
 	}
 	
 	/**
@@ -75,6 +82,7 @@ public class WeaponGenerator {
 	
 	public Laser generateLaser(){
 		WeaponParams params = Laser.getBaseParams();
+		WeaponQualities quality = dist.getRandomQualityByDist();
 		WeaponMakers.getRandomMaker().modifyWeaponParams(params);
 		
 	}

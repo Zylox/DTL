@@ -19,4 +19,8 @@ public class Range {
 		this.max = max;
 		this.min = min;
 	}
+	
+	public float getRange(){
+		return max-min;
+	}
 }
