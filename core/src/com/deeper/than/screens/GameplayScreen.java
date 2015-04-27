@@ -11,7 +11,6 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
@@ -19,7 +18,9 @@ import com.badlogic.gdx.scenes.scene2d.utils.Align;
 import com.badlogic.gdx.scenes.scene2d.utils.NinePatchDrawable;
 import com.deeper.than.Background;
 import com.deeper.than.DTL;
+import com.deeper.than.DTLMap;
 import com.deeper.than.EnemyShip;
+import com.deeper.than.MapGenerator;
 import com.deeper.than.PlayerShip;
 import com.deeper.than.ShipLoadException;
 import com.deeper.than.Wall;
@@ -58,6 +59,8 @@ public class GameplayScreen implements EnumerableScreen{
 	private float timeAccumulator;
 	private Crew selectedCrew;
 	private UIEnemyWindow enemyWindow;
+	private DTLMap map;
+	private MapGenerator mapGenerator;
 	
 	private InputMultiplexer input;
 
@@ -69,9 +72,6 @@ public class GameplayScreen implements EnumerableScreen{
 		this.game = game;
 
 		loadAssets();
-		
-		
-		
 	}
 	
 	public void loadAssets(){
@@ -86,6 +86,7 @@ public class GameplayScreen implements EnumerableScreen{
 		Races.loadAnims();
 		shapeRen = new ShapeRenderer();
 		UIEnemyWindow.loadAssets();
+		mapGenerator = new MapGenerator();
 	}
 	
 
@@ -93,6 +94,9 @@ public class GameplayScreen implements EnumerableScreen{
 	 * 
 	 */
 	private void initializeGame(){
+		mapGenerator.generate();
+		map = mapGenerator.getMap();
+		
 		try {
 			playerShip = new PlayerShip(Gdx.files.internal("ships/" + game.getSelectedShip() +".ship"), true, game, DTL.firstOpenId++);
 		} catch (ShipLoadException e) {
