@@ -18,9 +18,9 @@ public class DTL extends Game {
 	
 	public static final boolean GLOBALDEBUG = false;
 	@SuppressWarnings("unused")
-	public static final boolean GRAPHICALDEBUG = false || GLOBALDEBUG;
+	public static final boolean GRAPHICALDEBUG = true || GLOBALDEBUG;
 	@SuppressWarnings("unused")
-	public static final boolean PATHDEBUG = true || GLOBALDEBUG;
+	public static final boolean PATHDEBUG = false || GLOBALDEBUG;
 	@SuppressWarnings("unused")
 	public static final boolean TEXTDEBUG = true || GLOBALDEBUG;
 	public static boolean gameActive = false;

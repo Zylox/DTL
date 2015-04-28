@@ -21,6 +21,8 @@ public class UIReactorRow extends WidgetGroup{
 	private Table mainReactorBars;
 	private Table subReactorBars;
 	
+	private UIWeaponModuleReacBar wModreac;
+	
 	private ArrayList<UIModuleSyncable> moduleReactorBars;
 	
 	public UIReactorRow(Ship ship, boolean splitSub){
@@ -55,6 +57,7 @@ public class UIReactorRow extends WidgetGroup{
 				if(mod instanceof MainModule){
 					if(mod instanceof WeaponsModule){
 						moduleReac = new UIWeaponModuleReacBar(0, reactorBar, (WeaponsModule)mod);
+						wModreac = (UIWeaponModuleReacBar) moduleReac;
 						float cardWidth = 120;
 						float cardHeight = 60;
 						UIWeaponCard card = new UIWeaponCard(cardWidth, cardHeight,ship.getWeapons().get(0), (WeaponsModule)mod, (UIWeaponModuleReacBar)moduleReac);
@@ -94,5 +97,9 @@ public class UIReactorRow extends WidgetGroup{
 		}
 		joiner.pad(5);
 		this.addActor(joiner);
+	}
+	
+	public UIWeaponModuleReacBar getWeaponUI(){
+		return wModreac;
 	}
 }

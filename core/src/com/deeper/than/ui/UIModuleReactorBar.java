@@ -167,4 +167,10 @@ public class UIModuleReactorBar extends UIIconReactorBar implements UIModuleSync
 			}
 		}
 	}
+
+	public Module getModule() {
+		return module;
+	}
+	
+	
 }

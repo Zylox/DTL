@@ -20,7 +20,7 @@ import com.deeper.than.weapons.Weapon;
  *
  */
 public class UIWeaponCard extends WidgetGroup {
-	private static NinePatch background;
+	public static NinePatch background;
 	
 	public static void loadAssets(){
 		background = new NinePatch(new Texture("weaponBackground.png"),1,3,1,3);

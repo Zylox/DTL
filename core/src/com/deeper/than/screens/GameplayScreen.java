@@ -39,6 +39,7 @@ import com.deeper.than.ui.UIReactorRow;
 import com.deeper.than.ui.UIRewardLabel;
 import com.deeper.than.ui.UISecondaryTopBar;
 import com.deeper.than.ui.UITopBar;
+import com.deeper.than.ui.UIWeaponBottomBar;
 import com.deeper.than.ui.UIWeaponCard;
 import com.deeper.than.weapons.WeaponGenerator;
 
@@ -171,6 +172,11 @@ public class GameplayScreen implements EnumerableScreen{
 		uiT.add(playerReacs).fill().expand().bottom().left();
 		playerReacs.setupReactorBars();
 		uiT.row();
+		
+		UIWeaponBottomBar bottomWeps = new UIWeaponBottomBar(playerReacs.getWeaponUI());
+		bottomWeps.setX(400);
+		bottomWeps.setY(500);
+		ui.addActor(bottomWeps);
 	
 		Label tacos = new Label("tacos", DTL.skin);
 		//tacos.setFontScale(.4f);
