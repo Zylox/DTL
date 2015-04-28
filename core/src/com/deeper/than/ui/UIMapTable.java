@@ -4,6 +4,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.deeper.than.DTL;
 import com.deeper.than.DTLMap;
+import com.deeper.than.DTLMapPoint;
 
 public class UIMapTable extends Table {
 	public UIMapTable(DTLMap map){
@@ -17,6 +18,9 @@ public class UIMapTable extends Table {
 		Table innerTable = new Table();
 		innerTable.setDebug(DTL.GLOBALDEBUG);
 		innerTable.pad(15);
-
+		
+		for(DTLMapPoint mp: map.getNodes()){
+			
+		}
 	}
 }

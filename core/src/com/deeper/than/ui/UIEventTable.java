@@ -1,10 +1,17 @@
 package com.deeper.than.ui;
 
+import java.util.ArrayList;
+
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Json;
+import com.badlogic.gdx.utils.JsonReader;
+import com.badlogic.gdx.utils.JsonValue;
 import com.deeper.than.DTL;
 import com.deeper.than.DTLEvent;
 import com.deeper.than.Response;
@@ -12,6 +19,12 @@ import com.deeper.than.Response;
 public class UIEventTable extends Table {
 	private DTLEvent event;
 	Json json;
+	private Table table = this;
+	
+	public UIEventTable(String eventString){
+		this(getDTLEventFromFile(eventString));
+	}
+	
 	public UIEventTable(DTLEvent event){
 		this.setFillParent(true);
 		this.setDebug(DTL.GLOBALDEBUG);
@@ -29,15 +42,54 @@ public class UIEventTable extends Table {
 		innerTable.add().prefHeight(DTL.VHEIGHT);
 		innerTable.row();
 		int i = 0;
-		for( Response resp: event.getInputs()){
+		for( final Response resp: event.getInputs()){
 			i++;
 			TextButton button = new TextButton(i + ": " + resp.getInputText(), DTL.skin);
 			//TODO add listeners to the buttons here, make them do things??
-			button.addListener(new ClickListener());
+			ClickListener clickListener=null;
+			if(resp.getTriggersEvent()==null){
+				clickListener = new ClickListener(){
+					public void clicked(InputEvent event, float x, float y){
+						table.getParent().getParent().clear();
+					} 
+				};
+			} else if(resp.getTriggersEvent().endsWith(".event")){
+				clickListener = new ClickListener(){
+					public void clicked(InputEvent event, float x, float y){
+						table.getParent().getParent().clear();
+						table.getParent().getParent().addActor(new UIEventTable(resp.getTriggersEvent()));
+					}
+				};
+			}
+			button.addListener(clickListener);
 			innerTable.add(button);
 			innerTable.row();
 		}
 		this.add(innerTable).expand().fill();
 
+	}
+	
+	public static DTLEvent getDTLEventFromFile(String eventString){
+		
+		try{
+			FileHandle fh = Gdx.files.internal("events/"+eventString+".event");
+			String jsonString = fh.readString();
+			JsonValue root = new JsonReader().parse(jsonString);
+			String eventTitle = root.getString("title");
+			String eventText = root.getString("text");
+			ArrayList<Response> eventResponseList = new ArrayList<Response>();
+			JsonValue jv = root.get("responses");
+			for(JsonValue resp : jv){
+				String respText = resp.getString("inputText");
+				String respTrig = resp.getString("triggersEvent");
+				eventResponseList.add(new Response(respText, respTrig));
+			}
+			return new DTLEvent(eventTitle, eventText, eventResponseList);
+		} catch (Exception e){
+			System.out.println("Failed to get event from JSON");
+			e.printStackTrace();
+		}
+		
+		return null;
 	}
 }
