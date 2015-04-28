@@ -61,8 +61,6 @@ public abstract class Weapon {
 	}
 
 	public int getPowerCost() {
-		System.out.println(Math.min(params.powerCost + qualityMods.powerCost, MAX_POWER_PER_WEAPON));
-		System.out.println(params.powerCost +" " +qualityMods.powerCost);
 		return Math.min(params.powerCost + qualityMods.powerCost, MAX_POWER_PER_WEAPON);
 	}
 	

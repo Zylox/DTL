@@ -58,16 +58,16 @@ public class UIReactorRow extends WidgetGroup{
 					if(mod instanceof WeaponsModule){
 						moduleReac = new UIWeaponModuleReacBar(0, reactorBar, (WeaponsModule)mod);
 						wModreac = (UIWeaponModuleReacBar) moduleReac;
-						float cardWidth = 120;
-						float cardHeight = 60;
-						UIWeaponCard card = new UIWeaponCard(cardWidth, cardHeight,ship.getWeapons().get(0), (WeaponsModule)mod, (UIWeaponModuleReacBar)moduleReac);
-						UIWeaponCard card2 = new UIWeaponCard(cardWidth, cardHeight,ship.getWeapons().get(1), (WeaponsModule)mod, (UIWeaponModuleReacBar)moduleReac);
-						this.addActor(card);
-						card.setX(350);
-						card.setY(100);
-						this.addActor(card2);
-						card2.setX(490);
-						card2.setY(100);
+//						float cardWidth = 120;
+//						float cardHeight = 60;
+//						UIWeaponCard card = new UIWeaponCard(cardWidth, cardHeight,ship.getWeapons().get(0), (WeaponsModule)mod, (UIWeaponModuleReacBar)moduleReac);
+//						UIWeaponCard card2 = new UIWeaponCard(cardWidth, cardHeight,ship.getWeapons().get(1), (WeaponsModule)mod, (UIWeaponModuleReacBar)moduleReac);
+//						this.addActor(card);
+//						card.setX(350);
+//						card.setY(100);
+//						this.addActor(card2);
+//						card2.setX(490);
+//						card2.setY(100);
 					}else{
 						moduleReac = new UIModuleReactorBar(mod instanceof SheildModule ? 2 : 0, Modules.getIcon(c.getCanonicalName()), reactorBar, mod);
 					}

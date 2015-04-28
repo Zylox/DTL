@@ -5,11 +5,12 @@ package com.deeper.than.ui;
 
 
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.NinePatch;
+import com.badlogic.gdx.scenes.scene2d.ui.Container;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.WidgetGroup;
-import com.badlogic.gdx.scenes.scene2d.utils.Align;
 import com.badlogic.gdx.scenes.scene2d.utils.NinePatchDrawable;
 import com.deeper.than.DTL;
 import com.deeper.than.modules.WeaponsModule;
@@ -30,10 +31,12 @@ public class UIWeaponCard extends WidgetGroup {
 	
 	public UIWeaponCard(float width, float height,Weapon weapon, WeaponsModule weapModule, UIWeaponModuleReacBar moduleUI){
 		powerBar = new UIWeaponReactor(weapon, weapModule, moduleUI);
+		Container<UIWeaponReactor> barCont = new Container<UIWeaponReactor>(powerBar);
+		barCont.fill();
 		Table table = new Table();
 		table.setFillParent(true);
 		float padLeft = 3;
-		table.add(powerBar).expand().fillY().minWidth(20).padLeft(padLeft).bottom();
+		table.add(barCont).expand().fillY().minWidth(20).padLeft(padLeft).bottom();
 		Label label = new Label(weapon.getName(), DTL.skin);
 		label.setFontScale(.9f);
 		label.setWrap(true);

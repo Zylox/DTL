@@ -12,6 +12,7 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
@@ -174,16 +175,17 @@ public class GameplayScreen implements EnumerableScreen{
 		uiT.row();
 		
 		UIWeaponBottomBar bottomWeps = new UIWeaponBottomBar(playerReacs.getWeaponUI());
-		bottomWeps.setX(400);
-		bottomWeps.setY(500);
-		ui.addActor(bottomWeps);
+		System.out.println(playerReacs.getOriginX() + " " + playerReacs.getOriginY());
+		bottomWeps.setX(DTL.VWIDTH/3);
+		bottomWeps.setY(10);
+		
 	
 		Label tacos = new Label("tacos", DTL.skin);
 		//tacos.setFontScale(.4f);
 		uiT.add(tacos).bottom().left();
 		
 		ui.addActor(uiT);
-		
+		ui.addActor(bottomWeps);
 		enemyWindow = new UIEnemyWindow(enemy);
 		enemyWindow.setBounds(DTL.VWIDTH * 2/3, DTL.VHEIGHT/6, DTL.VWIDTH/4, DTL.VHEIGHT - DTL.VHEIGHT/6 * 2);
 		enemyWindow.setUpTable();
@@ -272,6 +274,10 @@ public class GameplayScreen implements EnumerableScreen{
 		timeAccumulator = 0;
 		selectedCrew = null;
 		isPaused = false;
+	}
+	
+	public static Vector2 getStageLocation(Actor actor) {
+	    return actor.localToStageCoordinates(new Vector2(0, 0));
 	}
 	
 	@Override

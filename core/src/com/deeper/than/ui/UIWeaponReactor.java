@@ -7,6 +7,7 @@ import com.badlogic.gdx.Input.Buttons;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.deeper.than.modules.Module;
 import com.deeper.than.modules.WeaponsModule;
 import com.deeper.than.weapons.Weapon;
 
