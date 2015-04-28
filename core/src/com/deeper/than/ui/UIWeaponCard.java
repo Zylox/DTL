@@ -4,13 +4,18 @@
 package com.deeper.than.ui;
 
 
+import com.badlogic.gdx.InputProcessor;
+import com.badlogic.gdx.Input.Buttons;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.NinePatch;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.Container;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.WidgetGroup;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.NinePatchDrawable;
 import com.deeper.than.DTL;
 import com.deeper.than.modules.WeaponsModule;
@@ -22,6 +27,21 @@ import com.deeper.than.weapons.Weapon;
  */
 public class UIWeaponCard extends WidgetGroup {
 	public static NinePatch background;
+	
+	private NinePatch bgInstance;
+	private ClickListener targetSelect = new ClickListener(){
+		public boolean touchDown(InputEvent event, float x, float y, int pointer, int button){
+			if(powerBar.clickPassthrough){
+				if(button == Buttons.LEFT){
+					bgInstance.setColor(Color.DARK_GRAY);
+				}
+			}
+			if(button == Buttons.RIGHT){
+				bgInstance.setColor(Color.WHITE);
+			}
+			return true;
+		}
+	};
 	
 	public static void loadAssets(){
 		background = new NinePatch(new Texture("weaponBackground.png"),1,3,1,3);
@@ -41,10 +61,11 @@ public class UIWeaponCard extends WidgetGroup {
 		label.setFontScale(.9f);
 		label.setWrap(true);
 		table.add(label).fill().width(width-20-padLeft*2-2).padLeft(padLeft+2);
-		NinePatchDrawable bg =new NinePatchDrawable(background);
-		table.background(bg);
+		bgInstance =new NinePatch(background);
+		table.background(new NinePatchDrawable(bgInstance));
 		this.addActor(table);
 		this.clearListeners();
+		this.addListener(this.targetSelect);
 		this.addListener(powerBar.clicker);
 		setWidth(width);
 		setHeight(height);

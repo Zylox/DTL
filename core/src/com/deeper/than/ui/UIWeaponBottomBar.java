@@ -22,7 +22,13 @@ public class UIWeaponBottomBar extends WidgetGroup{
 	private WeaponsModule mod;
 	
 	public UIWeaponBottomBar(UIWeaponModuleReacBar modUI){
+		if(modUI == null){
+			return;
+		}
 		mod = ((WeaponsModule)modUI.getModule());
+		if(mod == null){
+			return;
+		}
 		ArrayList<Weapon> equippedWeapons = mod.getEquippedWeapons();
 		int i;
 		UIWeaponCard card;

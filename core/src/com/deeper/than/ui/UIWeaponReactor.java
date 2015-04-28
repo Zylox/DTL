@@ -4,10 +4,10 @@
 package com.deeper.than.ui;
 
 import com.badlogic.gdx.Input.Buttons;
+import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
-import com.deeper.than.modules.Module;
 import com.deeper.than.modules.WeaponsModule;
 import com.deeper.than.weapons.Weapon;
 
@@ -19,22 +19,26 @@ public class UIWeaponReactor extends UIPowerBar{
 	private Weapon weapon;
 	private WeaponsModule weapModule;
 	private UIWeaponModuleReacBar moduleUI;
+	protected boolean clickPassthrough = false;
 	
 	public ClickListener clicker = new ClickListener(){
 		@Override
 		public boolean touchDown(InputEvent event, float x, float y, int pointer, int button){
 			if(event.getButton() == Buttons.RIGHT){
 				setDesirePower(false);
+				clickPassthrough = false;
+				return true;
 			}
 			if(event.getButton() == Buttons.LEFT){
 				if(!isWeapPowered()){
 					setDesirePower(true);
 				}else{
-					//select fro targetting
+					clickPassthrough = true;
 				}
 			}
-			return true;
+			return false;
 		}
+		
 	};
 	
 	public UIWeaponReactor(Weapon weapon, WeaponsModule weapModule, UIWeaponModuleReacBar moduleUI) {
@@ -43,6 +47,7 @@ public class UIWeaponReactor extends UIPowerBar{
 		this.weapModule = weapModule;
 		this.moduleUI = moduleUI;
 		register();
+		
 	}
 	
 	public void register(){
@@ -70,6 +75,9 @@ public class UIWeaponReactor extends UIPowerBar{
 	private void synchronize(){
 				this.setPowered(weapon.getPowered());
 				this.updatePowered();
+				if(weapon.isPowered()){
+					clickPassthrough = true;
+				}
 			//adjustSegments(ship.getPower(), getPowered()+(ship.getPower() - getSections()));
 	}
 }

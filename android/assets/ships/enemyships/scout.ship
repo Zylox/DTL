@@ -20,3 +20,6 @@ doors=
 {1,1 up}
 {3,2 up}
 enddoors
+weapons=
+laser
+endweapons
