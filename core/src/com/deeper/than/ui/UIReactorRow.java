@@ -12,6 +12,7 @@ import com.deeper.than.modules.Module;
 import com.deeper.than.modules.Modules;
 import com.deeper.than.modules.SheildModule;
 import com.deeper.than.modules.SubModule;
+import com.deeper.than.modules.WeaponsModule;
 
 public class UIReactorRow extends WidgetGroup{
 	private Ship ship;
@@ -52,7 +53,21 @@ public class UIReactorRow extends WidgetGroup{
 			mod = ship.getModule(c);
 			if(mod != null){
 				if(mod instanceof MainModule){
-					moduleReac = new UIModuleReactorBar(mod instanceof SheildModule ? 2 : 0, Modules.getIcon(c.getCanonicalName()), reactorBar, mod);
+					if(mod instanceof WeaponsModule){
+						moduleReac = new UIWeaponModuleReacBar(0, reactorBar, (WeaponsModule)mod);
+						float cardWidth = 120;
+						float cardHeight = 60;
+						UIWeaponCard card = new UIWeaponCard(cardWidth, cardHeight,ship.getWeapons().get(0), (WeaponsModule)mod, (UIWeaponModuleReacBar)moduleReac);
+						UIWeaponCard card2 = new UIWeaponCard(cardWidth, cardHeight,ship.getWeapons().get(1), (WeaponsModule)mod, (UIWeaponModuleReacBar)moduleReac);
+						this.addActor(card);
+						card.setX(350);
+						card.setY(100);
+						this.addActor(card2);
+						card2.setX(490);
+						card2.setY(100);
+					}else{
+						moduleReac = new UIModuleReactorBar(mod instanceof SheildModule ? 2 : 0, Modules.getIcon(c.getCanonicalName()), reactorBar, mod);
+					}
 					mainReactorBars.add(moduleReac).spaceLeft(10).bottom().left().minWidth(ReactorBar.PREF_WIDTH).fillY().expandY();
 					moduleReactorBars.add(moduleReac);
 				}else if(mod instanceof SubModule){

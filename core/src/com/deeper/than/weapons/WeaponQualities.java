@@ -44,7 +44,7 @@ public enum WeaponQualities { //accuracy, damageModifier, critdamage, chance, re
 		params.critChance = getValueInRange(critChance);
 		params.rechargeSpeed = getValueInRange(rechargeSpeed);
 		params.baseMonetaryCost = getValueInRange(cost);
-		params.powerCost = getIntValueInRange((int)power.min,(int)power.max);
+		params.powerCost = getIntValueInRange((int)power.min,(int)power.max+1);
 		return params;
 	}
 	

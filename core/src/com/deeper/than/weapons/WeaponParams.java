@@ -15,7 +15,7 @@ public class WeaponParams{
 	public float critChance;
 	public float rechargeSpeed;
 	public float baseMonetaryCost;
-	public float powerCost;
+	public int powerCost;
 	public WeaponQualities quality;
 	public WeaponMakers maker;
 	

@@ -12,6 +12,7 @@ import com.deeper.than.crew.Crew;
 import com.deeper.than.crew.Races;
 import com.deeper.than.modules.Module;
 import com.deeper.than.modules.Modules;
+import com.deeper.than.modules.WeaponsModule;
 import com.deeper.than.weapons.Weapon;
 import com.deeper.than.weapons.WeaponGenerator;
 import com.deeper.than.weapons.WeaponGenerator.WeaponTypes;
@@ -421,6 +422,7 @@ public class ScriptParser implements Poolable{
 			module.setLevel(level);
 		}else if(type.equals("WeaponsModule")){
 			module = Modules.Weapons.instantiateModule(moduleId++, room, ship);
+			ship.setWeaponModule((WeaponsModule)module);
 			module.setLevel(level);
 		}
 		

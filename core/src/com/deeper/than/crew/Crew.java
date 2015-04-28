@@ -460,7 +460,7 @@ public class Crew extends Actor{
 
 		GridSquare currSq = layout[(int)start.y][(int)start.x];
 		currSq.setGValue(0);
-		currSq.setPathPointer(null);
+		currSq.setPathPointer(currSq);
 		addToOpen(currSq);
 		
 		ArrayList<Vector2> moves = new ArrayList<Vector2>();
@@ -487,7 +487,7 @@ public class Crew extends Actor{
 		
 		
 		
-		while(currSq.getPathPointer() != null){
+		while(currSq.getPathPointer() != currSq){
 			moves.add(currSq.getPos());
 			currSq = currSq.getPathPointer();
 		}

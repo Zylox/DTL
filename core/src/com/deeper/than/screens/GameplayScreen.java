@@ -10,6 +10,8 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
@@ -19,6 +21,8 @@ import com.badlogic.gdx.scenes.scene2d.utils.NinePatchDrawable;
 import com.deeper.than.Background;
 import com.deeper.than.DTL;
 import com.deeper.than.EnemyShip;
+import com.deeper.than.FloorTile;
+import com.deeper.than.GridSquare;
 import com.deeper.than.PlayerShip;
 import com.deeper.than.ShipLoadException;
 import com.deeper.than.Wall;
@@ -35,9 +39,8 @@ import com.deeper.than.ui.UIReactorRow;
 import com.deeper.than.ui.UIRewardLabel;
 import com.deeper.than.ui.UISecondaryTopBar;
 import com.deeper.than.ui.UITopBar;
-import com.deeper.than.weapons.Weapon;
+import com.deeper.than.ui.UIWeaponCard;
 import com.deeper.than.weapons.WeaponGenerator;
-import com.deeper.than.weapons.WeaponQualities;
 
 public class GameplayScreen implements EnumerableScreen{
 	
@@ -78,6 +81,7 @@ public class GameplayScreen implements EnumerableScreen{
 	}
 	
 	public void loadAssets(){
+		UIWeaponCard.loadAssets();
 		tempBackground = new Background(new Texture("tempbackground.png"));
 		highlight = new Texture(Gdx.files.internal("pixel.png"));
 		UIPauseButton.loadAssets();
@@ -88,6 +92,7 @@ public class GameplayScreen implements EnumerableScreen{
 		UIFastDrive.loadAssets();
 		Races.loadAnims();
 		shapeRen = new ShapeRenderer();
+
 		UIEnemyWindow.loadAssets();
 	}
 	
@@ -98,9 +103,9 @@ public class GameplayScreen implements EnumerableScreen{
 	private void initializeGame(){
 		
 		weaponGen = new WeaponGenerator();
-		weaponGen.getQualityDist().clearDistribution();
-		weaponGen.getQualityDist().setPercent(50, WeaponQualities.WORN);
-		weaponGen.getQualityDist().setPercent(50, WeaponQualities.LIKENEW);
+//		weaponGen.getQualityDist().clearDistribution();
+//		weaponGen.getQualityDist().setPercent(100, WeaponQualities.EXCEPTIONAL);
+
 		
 		try {
 			playerShip = new PlayerShip(Gdx.files.internal("ships/" + game.getSelectedShip() +".ship"), true, game, DTL.firstOpenId++, weaponGen);
@@ -108,17 +113,18 @@ public class GameplayScreen implements EnumerableScreen{
 			e.printStackTrace();
 		}
 		
-		for(Weapon w : playerShip.getWeapons()){
-			System.out.println(w.getName());
-			System.out.println(w.getParamString());
-			System.out.println();
-		}
+//		for(Weapon w : playerShip.getWeapons()){
+//			System.out.println(w.getName());
+//			System.out.println(w.getParamString());
+//			System.out.println();
+//		}
 		
 		
 		gameObjects = new Stage(game.getViewport());
 		
 		gameObjects.addActor(tempBackground);
 		gameObjects.addActor(playerShip);
+		shapeRen.setProjectionMatrix(gameObjects.getViewport().getCamera().combined);
 		EnemyShip enemy = null;
 		try {
 			enemy = new EnemyShip(Gdx.files.internal("ships/enemyships/scout.ship") , game, DTL.firstOpenId++, playerShip, weaponGen);
@@ -305,6 +311,30 @@ public class GameplayScreen implements EnumerableScreen{
 	   ////Rendering goes here
 	    gameObjects.draw();
 	    ui.draw();
+	    
+	    if(DTL.GRAPHICALDEBUG || DTL.PATHDEBUG){
+		    shapeRen.begin(ShapeType.Line);
+		    shapeRen.setColor(Color.RED);
+		    Vector2 pos = new Vector2();
+		    Vector2 end = new Vector2();
+		    GridSquare sq = null;
+		    GridSquare sq2 = null;
+		    for(int i = 0; i<playerShip.getLayout().length;i++){
+		    	for(int j = 0; j<playerShip.getLayout()[0].length;j++){
+		    		if(playerShip.getLayout()[i][j] != null){
+		    			sq = playerShip.getLayout()[i][j];
+		    			sq2 = sq.getPathPointer();
+		    			pos.x = playerShip.getX() + sq.getPos().x * FloorTile.TILESIZE + FloorTile.TILESIZE/2;
+		    			pos.y = playerShip.getY() + sq.getPos().y * FloorTile.TILESIZE + FloorTile.TILESIZE/2;
+		    			end.x = playerShip.getX() + sq2.getPos().x * FloorTile.TILESIZE + FloorTile.TILESIZE/2;
+		    			end.y = playerShip.getY() + sq2.getPos().y * FloorTile.TILESIZE + FloorTile.TILESIZE/2;
+		    			shapeRen.line(pos, end);
+		    			//shapeRen.line(playerShip.getLayout()[i][j].getPos(), new Vector2(100,100));
+		    		}
+			    }	
+		    }
+		    shapeRen.end();
+	    }
 	    
 
 	    

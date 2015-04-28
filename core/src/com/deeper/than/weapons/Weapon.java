@@ -7,12 +7,15 @@ public abstract class Weapon {
 	private WeaponParams params;
 	private String name;
 	private WeaponParams qualityMods;
+	private int power;
+	private boolean wantsPower;
 	
 	public Weapon(String name, WeaponParams params){
 		this.params = params;
 		this.name = name;
 		this.params.maker.modifyWeaponParams(params);
 		qualityMods = params.quality.getRandomParamMods();
+		wantsPower = false;
 	}
 	
 	public String getParamString(){
@@ -57,7 +60,41 @@ public abstract class Weapon {
 		return (float)Math.floor(params.baseMonetaryCost * qualityMods.baseMonetaryCost);
 	}
 
-	public float getPowerCost() {
+	public int getPowerCost() {
+		System.out.println(Math.min(params.powerCost + qualityMods.powerCost, MAX_POWER_PER_WEAPON));
+		System.out.println(params.powerCost +" " +qualityMods.powerCost);
 		return Math.min(params.powerCost + qualityMods.powerCost, MAX_POWER_PER_WEAPON);
+	}
+	
+	public int getPowered(){
+		return power;
+	}
+	
+	/**
+	 * Sets how much power the weapon has to work with
+	 * @param power
+	 * @return
+	 */
+	public int setPower(int power){
+		if(power>getPowerCost()){
+			power = getPowerCost();
+		}else if(power<0){
+			power = 0;
+		}
+		
+		this.power = power;
+		return power;
+	}
+	
+	public boolean isPowered(){
+		return power == getPowerCost();
+	}
+	
+	public boolean doesWantPower(){
+		return wantsPower;
+	}
+	
+	public void setWantsPower(boolean want){
+		this.wantsPower = want;
 	}
 }
