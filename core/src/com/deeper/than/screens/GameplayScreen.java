@@ -79,7 +79,7 @@ public class GameplayScreen implements EnumerableScreen{
 	private InputMultiplexer input;
 
 	private boolean isPaused;
-	
+	private boolean eventWindow;
 	
 	Background tempBackground;
 	
@@ -264,8 +264,8 @@ public class GameplayScreen implements EnumerableScreen{
 				if(character == ' '){
 					setPaused(!isPaused());
 				}
-				if(character == '3'){
-					
+				if(character == '`'){
+					eventWindow = false;
 				}
 				
 				return false;
@@ -280,6 +280,7 @@ public class GameplayScreen implements EnumerableScreen{
 		timeAccumulator = 0;
 		selectedCrew = null;
 		isPaused = false;
+		eventWindow = true;
 	}
 	
 	@Override
@@ -309,6 +310,9 @@ public class GameplayScreen implements EnumerableScreen{
 	    
 	    timeAccumulator += delta;
 	    if(timeAccumulator > DTL.getFrameTime()){
+	    	if(!eventWindow){
+	    		eventTable.clear();
+	    	}
 	    	playerReacs.update();
 	    	playerShip.update();
 	    	if(enemyWindow != null){
