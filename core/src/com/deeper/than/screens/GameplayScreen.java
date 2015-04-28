@@ -64,9 +64,9 @@ public class GameplayScreen implements EnumerableScreen{
 	
 	
 	private Stage gameObjects;
-	private Stage mapStage;
+//	private Stage mapStage;
 //	private Stage eventStage;
-	private Table mapTable;
+	private UIPopUpWindow<Table> mapTable;
 	private UIPopUpWindow<UIEventTable> eventTable;
 	private PlayerShip playerShip;
 	private UIFastDrive playerFastDrive;
@@ -398,7 +398,7 @@ public class GameplayScreen implements EnumerableScreen{
 		playerShip.dispose();
 		gameObjects.dispose();
 //		eventStage.dispose();
-		mapStage.dispose();
+//		mapStage.dispose();
 	}
 	
 	/**

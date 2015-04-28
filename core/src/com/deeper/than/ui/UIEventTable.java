@@ -14,13 +14,13 @@ public class UIEventTable extends Table {
 	Json json;
 	public UIEventTable(DTLEvent event){
 		this.setFillParent(true);
-		//this.setDebug(true);
+		this.setDebug(DTL.GLOBALDEBUG);
 			
 		Label title = new Label(event.getTitle(), DTL.skin);
 		this.add(title).left().top();
 		this.row();
 		Table innerTable = new Table();
-		innerTable.setDebug(true);
+		innerTable.setDebug(DTL.GLOBALDEBUG);
 		innerTable.pad(35);
 		innerTable.add().prefHeight(DTL.VHEIGHT / 5);
 		innerTable.row();
