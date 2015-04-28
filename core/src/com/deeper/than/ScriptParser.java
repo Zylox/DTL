@@ -10,16 +10,13 @@ import com.badlogic.gdx.utils.Pool;
 import com.badlogic.gdx.utils.Pool.Poolable;
 import com.deeper.than.crew.Crew;
 import com.deeper.than.crew.Races;
-import com.deeper.than.modules.BridgeModule;
-import com.deeper.than.modules.ClimateControlModule;
-import com.deeper.than.modules.DockingModule;
-import com.deeper.than.modules.EngineModule;
-import com.deeper.than.modules.HatchControlModule;
-import com.deeper.than.modules.MedbayModule;
 import com.deeper.than.modules.Module;
 import com.deeper.than.modules.Modules;
-import com.deeper.than.modules.SensorsModule;
-import com.deeper.than.modules.SheildModule;
+import com.deeper.than.weapons.Weapon;
+import com.deeper.than.weapons.WeaponGenerator;
+import com.deeper.than.weapons.WeaponGenerator.WeaponTypes;
+import com.deeper.than.weapons.WeaponMakers;
+import com.deeper.than.weapons.WeaponQualities;
 
 
 public class ScriptParser implements Poolable{
@@ -57,15 +54,15 @@ public class ScriptParser implements Poolable{
 	private int lineNum=0;
 	private String[] tokens;
 	
-	public void loadShipScript(Ship ship, String str) throws IOException, ShipLoadException{
-		loadShipScript(ship, new Scanner(str));
+	public void loadShipScript(Ship ship, String str, WeaponGenerator weaponGen) throws IOException, ShipLoadException{
+		loadShipScript(ship, new Scanner(str), weaponGen);
 	}
 	
-	public void loadShipScript(Ship ship, FileHandle filepath) throws IOException, ShipLoadException{
-		loadShipScript(ship, new Scanner(filepath.read()));
+	public void loadShipScript(Ship ship, FileHandle filepath, WeaponGenerator weaponGen) throws IOException, ShipLoadException{
+		loadShipScript(ship, new Scanner(filepath.read()), weaponGen);
 	}
 
-	public void proccessNextLine(String line, Ship ship, Scanner scanner) throws ShipLoadException{
+	public void proccessNextLine(String line, Ship ship, Scanner scanner, WeaponGenerator weaponGen) throws ShipLoadException{
 		tokens = line.split(" ");
 		
 		switch(tokens[0]){
@@ -134,6 +131,9 @@ public class ScriptParser implements Poolable{
 				doorSet = true;
 			}
 			break;
+		case "weapons=":
+			loadWeapons(scanner, ship, weaponGen);
+			break;
 		case "layout=":
 			if(!xDimSet || !yDimSet){
 				return;
@@ -147,6 +147,102 @@ public class ScriptParser implements Poolable{
 			loadDoors(scanner, ship);
 			break;
 		}
+	}
+	
+	private void loadWeapons(Scanner scanner, Ship ship, WeaponGenerator weaponGen){
+		String line;
+		WeaponTypes type;
+		WeaponMakers make;
+		WeaponQualities quality;
+		Weapon weapon;
+		while(scanner.hasNext()){
+			line = getNextNonCommentLine(scanner);
+			type = null;
+			make = null;
+			quality = null;
+			weapon = null;
+			tokens = line.split(" ");
+			if(tokens.length >= 1){
+				if(tokens[0].equals("endweapons")){
+					return;
+				}
+				else{
+					type = getWeaponType(tokens[0]);
+				}
+			}
+			if(tokens.length >= 2){
+				quality = getWeaponQuality(tokens[1]);
+			}
+			if(tokens.length >= 3){
+				make = getWeaponMake(tokens[2]);
+			}
+			if(type!=null){
+				if(make==null && quality!=null){
+					weapon = weaponGen.generate(type, quality);
+				}else if(make!=null && quality==null){
+					weapon = weaponGen.generate(type, make);
+				}else if(make!= null && quality!=null){
+					weapon = weaponGen.generate(type, quality, make);
+				}else if(make== null && quality==null){
+					weapon = weaponGen.generate(type);
+				}
+			}
+			if(weapon != null){
+				ship.addWeapon(weapon);
+			}
+		}
+	}
+	
+	private WeaponMakers getWeaponMake(String make){
+		switch(make){
+		case "bnl":
+			return WeaponMakers.BUY_N_LARGE;
+		case "xyl":
+			return WeaponMakers.XYL;
+		case "threetek":
+			return WeaponMakers.THREE_TEK;
+		case "lukco":
+			return WeaponMakers.LUK_CO;
+		case "boomnzoom":
+			return WeaponMakers.BOOM_N_ZOOM;
+		}
+		return null;
+	}
+	
+	private WeaponQualities getWeaponQuality(String quality){
+		switch(quality){
+		case "exceptional":
+			return WeaponQualities.EXCEPTIONAL;
+		case "pristine":
+			return WeaponQualities.PRISTINE;
+		case "likenew":
+			return WeaponQualities.LIKENEW;
+		case "worn":
+			return WeaponQualities.WORN;
+		case "damaged":
+			return WeaponQualities.DAMAGED;
+		}
+		return null;
+	}
+	
+	private WeaponTypes getWeaponType(String type){
+		switch(type){
+		case "beamweapon":
+			return WeaponTypes.BEAM_WEAPON;
+		case "concussionbomb":
+			return WeaponTypes.CONCUSSION_BOMB;
+		case "emp":
+			return WeaponTypes.EMP_WEAPON;
+		case "laser":
+			return WeaponTypes.LASER;
+		case "railgun":
+			return WeaponTypes.RAILGUN;
+		case "supercool":
+			return WeaponTypes.SUPERCOOLING_BEAM;
+		case "torpedo":
+			return WeaponTypes.TORPEDO_LAUNCHER;
+		}
+		return null;
 	}
 	
 	private void initializeShipLayout(Ship ship){
@@ -262,7 +358,7 @@ public class ScriptParser implements Poolable{
 		}
 	}
 	
-	public void loadShipScript(Ship ship, Scanner scanner) throws IOException, ShipLoadException{
+	public void loadShipScript(Ship ship, Scanner scanner, WeaponGenerator weaponGen) throws IOException, ShipLoadException{
 		nameSet = false;
 		xDimSet = false;
 		yDimSet = false;
@@ -279,7 +375,7 @@ public class ScriptParser implements Poolable{
 		String line;
 		while(scanner.hasNext()){
 			line = getNextNonCommentLine(scanner);
-			proccessNextLine(line, ship, scanner);
+			proccessNextLine(line, ship, scanner, weaponGen);
 		}
 		
 		setUnsetsToDefault(ship);

@@ -33,11 +33,11 @@ public enum WeaponMakers {
 			params.baseMonetaryCost *= .8;
 		}else if(this == THREE_TEK){
 			params.accuracy *= .9;
-			params.rechargeSpeed *= 1.2;
+			params.rechargeSpeed *= .8f;
 		}else if(this == LUK_CO){
 			params.critChance *= 1.2;
 		}else if(this == XYL){
-			params.baseDamage *= 1.2;
+			params.baseDamage += 1;
 		}else if(this == BOOM_N_ZOOM){
 			params.critChance = 0;
 			params.accuracy = 1;

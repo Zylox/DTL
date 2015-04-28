@@ -20,7 +20,7 @@ public class Laser extends Weapon {
 		params.baseDamage = 1;
 		params.critDamage = 1;
 		params.critChance = 1;
-		params.rechargeSpeed = 20; //%/sec
+		params.rechargeSpeed = 5; //sec
 		params.baseMonetaryCost = 30;
 		params.powerCost = 1;
 		return params;

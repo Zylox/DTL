@@ -26,6 +26,8 @@ import com.deeper.than.modules.SensorsModule;
 import com.deeper.than.modules.SheildModule;
 import com.deeper.than.screens.GameplayScreen;
 import com.deeper.than.screens.Screens;
+import com.deeper.than.weapons.Weapon;
+import com.deeper.than.weapons.WeaponGenerator;
 
 /**
  * A ship in the game. Loads a ship from a shipScript. Contains all the logic to manage the ship.
@@ -70,12 +72,36 @@ public class Ship extends Group{
 	private int maxHealth;
 	private int power;
 	
+	private ArrayList<Weapon> weapons;
+	
 	/**
 	 * Creates a ship based on the shipScript added in.
 	 * @param filepath Internal path to the script. ex. "kes.ship".
 	 * @param game Reference to the game object
 	 */
-	public Ship(FileHandle filepath, boolean isPlayerShip, DTL game, int id) throws ShipLoadException{
+	public Ship(FileHandle filepath, boolean isPlayerShip, DTL game, int id, WeaponGenerator weaponGen) throws ShipLoadException{
+		
+		this.game = game;
+		crew = new ArrayList<Crew>();
+		doors = new ArrayList<Door>();
+		rooms = new ArrayList<Room>();
+		walls = new OrderedMap<Integer, CellBorder>();
+		modules = new ArrayList<Module>();
+		weapons = new ArrayList<Weapon>();
+		
+		try {
+			//Pulls a parser from the parser pool and loads the script
+			ScriptParser parser = ScriptParser.parserPool.obtain();
+			parser.loadShipScript(this, filepath, weaponGen);
+			ScriptParser.parserPool.free(parser);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+		init();
+	}
+	
+	public Ship(String script, DTL game, int id, WeaponGenerator weaponGen) throws ShipLoadException{
 		
 		this.game = game;
 		crew = new ArrayList<Crew>();
@@ -87,7 +113,7 @@ public class Ship extends Group{
 		try {
 			//Pulls a parser from the parser pool and loads the script
 			ScriptParser parser = ScriptParser.parserPool.obtain();
-			parser.loadShipScript(this, filepath);
+			parser.loadShipScript(this, script, weaponGen);
 			ScriptParser.parserPool.free(parser);
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -96,33 +122,12 @@ public class Ship extends Group{
 		init();
 	}
 	
-	public Ship(String script, DTL game, int id) throws ShipLoadException{
-		
-		this.game = game;
-		crew = new ArrayList<Crew>();
-		doors = new ArrayList<Door>();
-		rooms = new ArrayList<Room>();
-		walls = new OrderedMap<Integer, CellBorder>();
-		modules = new ArrayList<Module>();
-		
-		try {
-			//Pulls a parser from the parser pool and loads the script
-			ScriptParser parser = ScriptParser.parserPool.obtain();
-			parser.loadShipScript(this, script);
-			ScriptParser.parserPool.free(parser);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		
-		init();
-	}
-	
-	public void reInit(FileHandle filepath) throws ShipLoadException{
+	public void reInit(FileHandle filepath, WeaponGenerator weaponGen) throws ShipLoadException{
 		clearCollections();
 		try {
 			//Pulls a parser from the parser pool and loads the script
 			ScriptParser parser = ScriptParser.parserPool.obtain();
-			parser.loadShipScript(this, filepath);
+			parser.loadShipScript(this, filepath, weaponGen);
 			ScriptParser.parserPool.free(parser);
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -130,12 +135,12 @@ public class Ship extends Group{
 		init();
 	}
 	
-	public void reInit(String script) throws ShipLoadException{
+	public void reInit(String script, WeaponGenerator weaponGen) throws ShipLoadException{
 		clearCollections();
 		try {
 			//Pulls a parser from the parser pool and loads the script
 			ScriptParser parser = ScriptParser.parserPool.obtain();
-			parser.loadShipScript(this, script);
+			parser.loadShipScript(this, script, weaponGen);
 			ScriptParser.parserPool.free(parser);
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -602,6 +607,14 @@ public class Ship extends Group{
 	public void addModule(Module module){
 		highestModuleId = Math.max(module.getId(), highestModuleId);
 		this.modules.add(module);
+	}
+	
+	public void addWeapon(Weapon weapon){
+		this.weapons.add(weapon);
+	}
+	
+	public ArrayList<Weapon> getWeapons(){
+		return weapons;
 	}
 	
 	public int getGridWidth() {

@@ -1,35 +1,71 @@
 package com.deeper.than.weapons;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Random;
 
 import com.badlogic.gdx.utils.Array;
 
 public class WeaponQualityDistribution {
-	private Array<Range> ranges;
+	private ArrayList<Range> ranges;
 	private int percents[] = {20,20,20,20,20};
+	private int storedPercents[] = Arrays.copyOf(percents, percents.length);
 	private boolean rangesChanged;
 	private Random ran;
 	
 	public WeaponQualityDistribution(){
 		calculateRanges();
 		ran = new Random();
+		rangesChanged = false;
 	}
 	
 	public WeaponQualityDistribution(long seed){
 		calculateRanges();
 		ran = new Random(seed);
+		rangesChanged = false;
+	}
+	
+	
+	public void storeDistribution(){
+		for(int i = 0; i<percents.length;i++){
+			storedPercents[i] = percents[i];
+		}
+	}
+	
+	public void restoreDistribution(){
+		for(int i = 0; i<percents.length;i++){
+			percents[i] = storedPercents[i];
+		}
+		rangesChanged = true;
+	}
+	
+	public void clearDistribution(){
+		for(int i = 0; i<percents.length;i++){
+			percents[i] = 0;
+		}
+		rangesChanged = true;
+	}
+	public void setEvenDistribution(){
+		for(int i = 0; i<percents.length;i++){
+			percents[i] = 20;
+		}
+		rangesChanged = true;
 	}
 	
 	private void calculateRanges(){
 		if(ranges == null){
-			ranges = new Array<Range>(percents.length);
+			ranges = new ArrayList<Range>();
+			for(int i = 0; i<percents.length;i++){
+				ranges.add(new Range());
+			}
 		}
 		int acc = 0;
-		for(int i = 0; i < ranges.size; i++){
+		for(int i = 0; i < ranges.size(); i++){
 			ranges.get(i).min = acc;
 			acc += percents[i];
 			ranges.get(i).max = acc;
 		}
+		
 		rangesChanged = false;
 	}
 	
@@ -43,9 +79,9 @@ public class WeaponQualityDistribution {
 		}
 		
 		Range r;
-		for(int i = 0; i<ranges.size; i++){
+		for(int i = 0; i<ranges.size(); i++){
 			r = ranges.get(i);
-			if(percentRoll >= r.min || percentRoll < r.max){
+			if(percentRoll >= r.min && percentRoll < r.max){
 				return getQualityByIndex(i);
 			}
 		}

@@ -317,7 +317,6 @@ public class Crew extends Actor{
 			//this.act(Gdx.graphics.getDeltaTime());
 			state = CrewState.WALKING;
 		}else{
-			System.out.println(moves.toString());
 			if(moves.size() != 0){
 				move = moves.get(moves.size()-1);
 				moves.clear();

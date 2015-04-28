@@ -18,5 +18,16 @@ public class WeaponParams{
 	public float powerCost;
 	public WeaponQualities quality;
 	public WeaponMakers maker;
+	
+	public String getParamString(){
+		String paramString = Float.toString(accuracy) + "\n" +
+							 Float.toString(baseDamage) + "\n" +
+							 Float.toString(critDamage) + "\n" +
+							 Float.toString(critChance) + "\n" +
+							 Float.toString(rechargeSpeed) + "\n" +
+							 Float.toString(baseMonetaryCost) + "\n" +
+							 Float.toString(powerCost);
+		return paramString;
+	}
 }
 

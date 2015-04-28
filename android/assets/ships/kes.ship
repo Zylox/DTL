@@ -5,6 +5,17 @@ health= 10
 power= 8
 currency= 90
 fuel= 90
+weapons=
+laser
+beamweapon
+concussionbomb
+emp
+laser
+railgun
+supercool
+torpedo
+taco
+endweapons
 layout=
 {4,3 4,4} , human
 {1,1 1,2} , human

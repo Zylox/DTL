@@ -11,7 +11,6 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
@@ -36,6 +35,9 @@ import com.deeper.than.ui.UIReactorRow;
 import com.deeper.than.ui.UIRewardLabel;
 import com.deeper.than.ui.UISecondaryTopBar;
 import com.deeper.than.ui.UITopBar;
+import com.deeper.than.weapons.Weapon;
+import com.deeper.than.weapons.WeaponGenerator;
+import com.deeper.than.weapons.WeaponQualities;
 
 public class GameplayScreen implements EnumerableScreen{
 	
@@ -58,6 +60,7 @@ public class GameplayScreen implements EnumerableScreen{
 	private float timeAccumulator;
 	private Crew selectedCrew;
 	private UIEnemyWindow enemyWindow;
+	private WeaponGenerator weaponGen;
 	
 	private InputMultiplexer input;
 
@@ -93,18 +96,32 @@ public class GameplayScreen implements EnumerableScreen{
 	 * 
 	 */
 	private void initializeGame(){
+		
+		weaponGen = new WeaponGenerator();
+		weaponGen.getQualityDist().clearDistribution();
+		weaponGen.getQualityDist().setPercent(50, WeaponQualities.WORN);
+		weaponGen.getQualityDist().setPercent(50, WeaponQualities.LIKENEW);
+		
 		try {
-			playerShip = new PlayerShip(Gdx.files.internal("ships/" + game.getSelectedShip() +".ship"), true, game, DTL.firstOpenId++);
+			playerShip = new PlayerShip(Gdx.files.internal("ships/" + game.getSelectedShip() +".ship"), true, game, DTL.firstOpenId++, weaponGen);
 		} catch (ShipLoadException e) {
 			e.printStackTrace();
 		}
+		
+		for(Weapon w : playerShip.getWeapons()){
+			System.out.println(w.getName());
+			System.out.println(w.getParamString());
+			System.out.println();
+		}
+		
+		
 		gameObjects = new Stage(game.getViewport());
 		
 		gameObjects.addActor(tempBackground);
 		gameObjects.addActor(playerShip);
 		EnemyShip enemy = null;
 		try {
-			enemy = new EnemyShip(Gdx.files.internal("ships/enemyships/scout.ship") , game, DTL.firstOpenId++, playerShip);
+			enemy = new EnemyShip(Gdx.files.internal("ships/enemyships/scout.ship") , game, DTL.firstOpenId++, playerShip, weaponGen);
 		} catch (ShipLoadException e) {
 			e.printStackTrace();
 		}
@@ -137,14 +154,7 @@ public class GameplayScreen implements EnumerableScreen{
 		tab.add().prefWidth(1000000);
 		uiT.add(tab).left();
 		uiT.row();
-//		crewPlates = new ArrayList<CrewPlate>();
-//		CrewPlate crewPlate;
-//		for(Crew c : playerShip.getCrew()){
-//			crewPlate = new CrewPlate(c);
-//			crewPlates.add(crewPlate);
-//			uiT.add(crewPlate).prefWidth((Crew.CREW_HEIGHT/Crew.SCALE)+50+10).prefHeight(Crew.CREW_HEIGHT/Crew.SCALE+10).left().pad(1f);
-//			uiT.row();
-//		}
+
 		crewPlateBar = new UICrewPlateBar(playerShip.getCrew());
 		uiT.add(crewPlateBar).expand().left().fill();
 		uiT.add().expand();

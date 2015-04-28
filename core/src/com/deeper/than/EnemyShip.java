@@ -9,6 +9,7 @@ import com.deeper.than.crew.Crew;
 import com.deeper.than.crew.CrewGoToRoomTask;
 import com.deeper.than.crew.CrewRepairTask;
 import com.deeper.than.crew.CrewTask;
+import com.deeper.than.weapons.WeaponGenerator;
 
 public class EnemyShip extends Ship{
 
@@ -17,8 +18,8 @@ public class EnemyShip extends Ship{
 	private ArrayList<CrewTask> taskQueue;
 	
 	
-	public EnemyShip(FileHandle filepath, DTL game, int id, PlayerShip playerShip)  throws ShipLoadException{
-		super(filepath, false, game, id);
+	public EnemyShip(FileHandle filepath, DTL game, int id, PlayerShip playerShip, WeaponGenerator weaponGen)  throws ShipLoadException{
+		super(filepath, false, game, id, weaponGen);
 		this.playerShip = playerShip;
 		taskQueue = new ArrayList<CrewTask>();
 	}
