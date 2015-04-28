@@ -8,12 +8,35 @@ import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
 public enum Races {
-	HUMAN("human", 1f, .6f, 50, 75, 5, 100, 1.1f, 1f);
+	HUMAN("human", 1f, .6f, 50, 75, 5, 100, 1.1f, 1f),
+	SCAIL("scail", .6f, 1f, 300, 40, 7, 80, 1f, 1f),
+	TEKDRONE("tekdrone", 1f, .6f, 100, 90, 3, 100, 1f, 1.5f),
+	GOGOR("gogor", .6f, .4f, 40, 100, 5, 150, 1f, 1f),
+	MUR("mur", .9f, .8f, 150, 60, 5, 100, 1f, 1f),
+	ILLUMI("illumi", 1f, .7f, 50, 75, 5, 70, 1f, 1f),
+	GLACIEN("glacien", .8f, .8f, 80, 150, 5, 80, 1f, 1f);
+	
 	
 	public static final String[] humanNames = {"Bob", "Jeb", "Steve", "Jim", "Nick", "Zach", "Will", "Ben", "GIJoe", "Jimmy", "Jake", "Ian", "John", "Bill", "James", "Zebulon", "Horatio",
 											   "John", "Michael", "Tim", "Shawn", "Wyatt", "Isaac", "Jan", "Shan", "Thomas", "Jonah", "Nathan", "Matt", "Dakota", "Kitchenset", "Joe",
-											   "Ivan", "Tyler", "Harlee", "Tom", "Andy", "Matsuda", "Lelouch", "Light", "Lawliet", "Tai", "Izzy", "Ash", "Bambi", "Rock", "Dwayne", "Meller",
+											   "Ivan", "Tyler", "Goku", "Harlee", "Tom", "Andy", "Matsuda", "Lelouch", "Light", "Lawliet", "Tai", "Izzy", "Ash", "Bambi", "Rock", "Dwayne", "Meller",
 											   "Kamina", "Simon", "Kittan", "Aang", "Tenzin", "Meelo", "Sokka", "Varrick", "Bane", "Batman", "Joker", "Clark"};
+	
+	public static final String[] gogorNames = {"Biggoron", "Dangoro", "Igor", "Darbus", "Darmani", "Daruna", "Gongoron", "Gorko", "Golo", "Goronbeck", "Gortram", "Kagoro", "Brick", "Thing", "Hulk"};
+	
+	public static final String[] scailNames = {"Ekans", "Arbok", "Asmodeus", "Bailona", "Basilisk", "Belka", "Bijou", "Cleo", "Dragar", "Henry", "Jaja", "Jake", "Kane", "Kaa", "Kali", "Kraken", "Madusa", "Mojo",
+												"Monty", "Nigel", "Balboa", "Slither", "Slyther", "Viper", "Ziggy"};
+	
+	public static final String[] tekdroneNames = {"R2D2", "C3PO", "Talos", "Gnut", "Hal", "IP", "Optimus", "Prime", "Megatron", "Wire", "Gadget", "Android", "Rust", "Combot", "Micro", "Ovroid", "Jet", "Alpha",
+													"Mecha", "Axel", "Cole", "Andromeda", "Bit", "Plex", "Circuit"};
+	
+	public static final String[] murNames = {"Japas", "Laruto", "Lulu", "Oren", "Ruto", "Ralias", "Tijo", "Toto", "Zora", "Mikau", "Ariel", "Posidon", "Raine", "Lake", "Marine", "Glade", "Fjord", "Kai", "Morrissey",
+											"Muir", "Seaton", "Thor", "Zeus"};
+	
+	public static final String[] illumiNames = {"Illum", "Watt", "Volt", "Spark", "Lectro", "Bulb", "Light", "Brighton", "Tesla", "Vodd", "Volgin", "Arc", "Mag", "Fuse", "Pulse", "Pylo", "Wire", "Surge", "Conducto"};
+	
+	public static final String[] glacienNames = {"Brycen", "Wulfric", "Pryce", "Ice", "Articuno", "Glalie", "Taiga", "Heath", "Aquilo", "Borealis", "Grey", "Polaris", "Lynx", "Timber", "Brisk", "Frosty", "Brumal", 
+												"Hiemal", "Frore", "Gelid"};
 	
 	public static float FRAME_TIME = .5f;
 	
