@@ -1,10 +1,13 @@
 package com.deeper.than.screens;
 
+import java.util.ArrayList;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Input.Buttons;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.InputProcessor;
+import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
@@ -16,12 +19,16 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.Align;
 import com.badlogic.gdx.scenes.scene2d.utils.NinePatchDrawable;
+import com.badlogic.gdx.utils.JsonReader;
+import com.badlogic.gdx.utils.JsonValue;
 import com.deeper.than.Background;
 import com.deeper.than.DTL;
+import com.deeper.than.DTLEvent;
 import com.deeper.than.DTLMap;
 import com.deeper.than.EnemyShip;
 import com.deeper.than.MapGenerator;
 import com.deeper.than.PlayerShip;
+import com.deeper.than.Response;
 import com.deeper.than.ShipLoadException;
 import com.deeper.than.Wall;
 import com.deeper.than.crew.Crew;
@@ -31,9 +38,11 @@ import com.deeper.than.modules.Modules;
 import com.deeper.than.ui.UICrewPlateBar;
 import com.deeper.than.ui.UICrewSkillsPlate;
 import com.deeper.than.ui.UIEnemyWindow;
+import com.deeper.than.ui.UIEventTable;
 import com.deeper.than.ui.UIFastDrive;
 import com.deeper.than.ui.UIMapScreen;
 import com.deeper.than.ui.UIPauseButton;
+import com.deeper.than.ui.UIPopUpWindow;
 import com.deeper.than.ui.UIReactorRow;
 import com.deeper.than.ui.UIRewardLabel;
 import com.deeper.than.ui.UISecondaryTopBar;
@@ -56,7 +65,9 @@ public class GameplayScreen implements EnumerableScreen{
 	
 	private Stage gameObjects;
 	private Stage mapStage;
+//	private Stage eventStage;
 	private Table mapTable;
+	private UIPopUpWindow<UIEventTable> eventTable;
 	private PlayerShip playerShip;
 	private UIFastDrive playerFastDrive;
 	private float timeAccumulator;
@@ -68,7 +79,7 @@ public class GameplayScreen implements EnumerableScreen{
 	private InputMultiplexer input;
 
 	private boolean isPaused;
-	
+	private boolean eventWindow;
 	
 	Background tempBackground;
 	
@@ -181,6 +192,11 @@ public class GameplayScreen implements EnumerableScreen{
 		
 		ui.setDebugAll(DTL.GRAPHICALDEBUG);
 		
+//		eventStage = new Stage(game.getViewport());
+//		<Table>(eventTable, "template");
+		eventTable = new UIPopUpWindow<UIEventTable>(new UIEventTable(getDTLEventFromFile("template")));
+		ui.addActor(eventTable);
+		
 		input = new InputMultiplexer();
 		input.addProcessor(ui);
 		input.addProcessor(gameObjects);
@@ -248,6 +264,10 @@ public class GameplayScreen implements EnumerableScreen{
 				if(character == ' '){
 					setPaused(!isPaused());
 				}
+				if(character == '`'){
+					eventWindow = false;
+				}
+				
 				return false;
 			}
 			
@@ -260,6 +280,7 @@ public class GameplayScreen implements EnumerableScreen{
 		timeAccumulator = 0;
 		selectedCrew = null;
 		isPaused = false;
+		eventWindow = true;
 	}
 	
 	@Override
@@ -289,6 +310,9 @@ public class GameplayScreen implements EnumerableScreen{
 	    
 	    timeAccumulator += delta;
 	    if(timeAccumulator > DTL.getFrameTime()){
+	    	if(!eventWindow){
+	    		eventTable.clear();
+	    	}
 	    	playerReacs.update();
 	    	playerShip.update();
 	    	if(enemyWindow != null){
@@ -300,11 +324,13 @@ public class GameplayScreen implements EnumerableScreen{
 	    	ui.act();
 	    	crewPlateBar.update();
 	    	timeAccumulator -= DTL.getFrameTime();
+//	    	eventStage.act();
 	    }
 
 	   ////Rendering goes here
 	    gameObjects.draw();
 	    ui.draw();
+//	    eventStage.draw();
 	    
 
 	    
@@ -371,6 +397,8 @@ public class GameplayScreen implements EnumerableScreen{
 		// TODO Auto-generated method stub
 		playerShip.dispose();
 		gameObjects.dispose();
+//		eventStage.dispose();
+		mapStage.dispose();
 	}
 	
 	/**
@@ -399,4 +427,27 @@ public class GameplayScreen implements EnumerableScreen{
 		}
 	}
 
+	public DTLEvent getDTLEventFromFile(String eventString){
+		
+		try{
+			FileHandle fh = Gdx.files.internal("events/"+eventString+".event");
+			String jsonString = fh.readString();
+			JsonValue root = new JsonReader().parse(jsonString);
+			String eventTitle = root.getString("title");
+			String eventText = root.getString("text");
+			ArrayList<Response> eventResponseList = new ArrayList<Response>();
+			JsonValue jv = root.get("responses");
+			for(JsonValue resp : jv){
+				String respText = resp.getString("inputText");
+				String respTrig = resp.getString("triggersEvent");
+				eventResponseList.add(new Response(respText, respTrig));
+			}
+			return new DTLEvent(eventTitle, eventText, eventResponseList);
+		} catch (Exception e){
+			System.out.println("Failed to get event from JSON");
+			e.printStackTrace();
+		}
+		
+		return null;
+	}
 }
