@@ -194,7 +194,7 @@ public class GameplayScreen implements EnumerableScreen{
 		
 //		eventStage = new Stage(game.getViewport());
 //		<Table>(eventTable, "template");
-		eventTable = new UIPopUpWindow<UIEventTable>(new UIEventTable(getDTLEventFromFile("template")));
+		eventTable = new UIPopUpWindow<UIEventTable>(new UIEventTable("template"));
 		ui.addActor(eventTable);
 		
 		input = new InputMultiplexer();
@@ -263,9 +263,6 @@ public class GameplayScreen implements EnumerableScreen{
 				
 				if(character == ' '){
 					setPaused(!isPaused());
-				}
-				if(character == '`'){
-					eventWindow = false;
 				}
 				
 				return false;

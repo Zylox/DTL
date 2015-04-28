@@ -56,8 +56,9 @@ public class UIEventTable extends Table {
 			} else if(resp.getTriggersEvent().endsWith(".event")){
 				clickListener = new ClickListener(){
 					public void clicked(InputEvent event, float x, float y){
+						
+						table.getParent().getParent().addActor(new UIEventTable(resp.getTriggersEvent().substring(0, resp.getTriggersEvent().length()-6)));
 						table.getParent().getParent().clear();
-						table.getParent().getParent().addActor(new UIEventTable(resp.getTriggersEvent()));
 					}
 				};
 			}
