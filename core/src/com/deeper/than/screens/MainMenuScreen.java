@@ -44,7 +44,7 @@ public class MainMenuScreen implements EnumerableScreen {
 		stage2 = new Stage(game.getViewport());
 		stage2.getViewport().update((int) (DTL.VWIDTH/1), (int) (DTL.VHEIGHT/1), false);
 
-		/*Image img = new Image(new Texture(Gdx.files.internal("demonjonathan.png")));
+		Image img = new Image(new Texture(Gdx.files.internal("demonjonathan.png")));
 		img.setBounds(img.getX()+img.getWidth()/4, img.getY()+img.getHeight()/4, img.getWidth()/2, img.getHeight()/2);
 		img.setOrigin(img.getWidth()/2, img.getHeight()/2);
 //		img.setBounds(img.getX(), img.getY(), img.getWidth(), img.getHeight());
@@ -54,7 +54,7 @@ public class MainMenuScreen implements EnumerableScreen {
 		    }
 		});
 		stage2.addActor(img);
-		img.setPosition(40, (stage.getViewport().getWorldHeight()/2)-(img.getHeight()/2));*/
+		img.setPosition(20, (stage.getViewport().getWorldHeight()/2)-(img.getHeight()/2));
 		
 		input = new InputMultiplexer();
 		input.addProcessor(stage);
@@ -62,7 +62,7 @@ public class MainMenuScreen implements EnumerableScreen {
 		Gdx.input.setInputProcessor(input);
 		
 		table = new Table();
-		table.setBackground(new TextureRegionDrawable(new TextureRegion(new Texture(Gdx.files.internal("title_screen2.png")))));
+		table.setBackground(new TextureRegionDrawable(new TextureRegion(new Texture(Gdx.files.internal("mainMenuBackground.png")))));
 		table.setFillParent(true);
 		stage.addActor(table);
 		
@@ -125,7 +125,7 @@ public class MainMenuScreen implements EnumerableScreen {
 		
 		
 		table.setDebug(DTL.GRAPHICALDEBUG);
-		//img.setDebug(DTL.GRAPHICALDEBUG);
+		img.setDebug(DTL.GRAPHICALDEBUG);
 		
 		loadAssets();
 	}
