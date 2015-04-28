@@ -31,9 +31,12 @@ import com.deeper.than.modules.Modules;
 import com.deeper.than.ui.UICrewPlateBar;
 import com.deeper.than.ui.UICrewSkillsPlate;
 import com.deeper.than.ui.UIEnemyWindow;
+import com.deeper.than.ui.UIEventPopUp;
+import com.deeper.than.ui.UIEventTable;
 import com.deeper.than.ui.UIFastDrive;
 import com.deeper.than.ui.UIMapScreen;
 import com.deeper.than.ui.UIPauseButton;
+import com.deeper.than.ui.UIPopUpWindow;
 import com.deeper.than.ui.UIReactorRow;
 import com.deeper.than.ui.UIRewardLabel;
 import com.deeper.than.ui.UISecondaryTopBar;
@@ -56,7 +59,9 @@ public class GameplayScreen implements EnumerableScreen{
 	
 	private Stage gameObjects;
 	private Stage mapStage;
+//	private Stage eventStage;
 	private Table mapTable;
+	private UIPopUpWindow<UIEventTable> eventTable;
 	private PlayerShip playerShip;
 	private UIFastDrive playerFastDrive;
 	private float timeAccumulator;
@@ -181,6 +186,11 @@ public class GameplayScreen implements EnumerableScreen{
 		
 		ui.setDebugAll(DTL.GRAPHICALDEBUG);
 		
+//		eventStage = new Stage(game.getViewport());
+//		<Table>(eventTable, "template");
+		eventTable = new UIPopUpWindow<UIEventTable>(new UIEventTable("template"));
+		ui.addActor(eventTable);
+		
 		input = new InputMultiplexer();
 		input.addProcessor(ui);
 		input.addProcessor(gameObjects);
@@ -248,6 +258,10 @@ public class GameplayScreen implements EnumerableScreen{
 				if(character == ' '){
 					setPaused(!isPaused());
 				}
+				if(character == '3'){
+					
+				}
+				
 				return false;
 			}
 			
@@ -300,11 +314,13 @@ public class GameplayScreen implements EnumerableScreen{
 	    	ui.act();
 	    	crewPlateBar.update();
 	    	timeAccumulator -= DTL.getFrameTime();
+//	    	eventStage.act();
 	    }
 
 	   ////Rendering goes here
 	    gameObjects.draw();
 	    ui.draw();
+//	    eventStage.draw();
 	    
 
 	    
@@ -371,6 +387,8 @@ public class GameplayScreen implements EnumerableScreen{
 		// TODO Auto-generated method stub
 		playerShip.dispose();
 		gameObjects.dispose();
+//		eventStage.dispose();
+		mapStage.dispose();
 	}
 	
 	/**
