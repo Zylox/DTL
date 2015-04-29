@@ -43,15 +43,22 @@ public class UIModuleReactorBar extends UIIconReactorBar implements UIModuleSync
 		}
 	} 
 	
-	private void clickPowerUp(){
+	protected void clickPowerUp(){
+		clickPowerUp(1);
+	}
+	protected void clickPowerUp(int amt){
 		if(!module.isOnLockdown()){
-			setDesiredPowerLevel(getPowered()+1);
+			setDesiredPowerLevel(getPowered()+amt);
 		}
 	}
 	
-	private void clickPowerDown(){
+	protected void clickPowerDown(){
+		clickPowerDown(1);
+	}
+	
+	protected void clickPowerDown(int amt){
 		if(!module.isOnLockdown()){
-			setDesiredPowerLevel(getPowered()-1);
+			setDesiredPowerLevel(getPowered()-amt);
 		}
 	}
 	
@@ -167,4 +174,10 @@ public class UIModuleReactorBar extends UIIconReactorBar implements UIModuleSync
 			}
 		}
 	}
+
+	public Module getModule() {
+		return module;
+	}
+	
+	
 }

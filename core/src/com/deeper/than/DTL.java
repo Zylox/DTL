@@ -20,6 +20,8 @@ public class DTL extends Game {
 	@SuppressWarnings("unused")
 	public static final boolean GRAPHICALDEBUG = false || GLOBALDEBUG;
 	@SuppressWarnings("unused")
+	public static final boolean PATHDEBUG = true || GLOBALDEBUG;
+	@SuppressWarnings("unused")
 	public static final boolean TEXTDEBUG = true || GLOBALDEBUG;
 	public static boolean gameActive = false;
 	public static boolean developmentMode = true;
@@ -41,10 +43,6 @@ public class DTL extends Game {
 	
 	@Override
 	public void create () {
-		
-		
-		//Gdx.graphics.setDisplayMode(Gdx.graphics.getDesktopDisplayMode().width, Gdx.graphics.getDesktopDisplayMode().height, true);
-		
 		startTime = System.currentTimeMillis();
 		
 		Gdx.graphics.setDisplayMode(VWIDTH, VHEIGHT, false);

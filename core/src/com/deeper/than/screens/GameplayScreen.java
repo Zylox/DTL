@@ -10,20 +10,25 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
+import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.Align;
 import com.badlogic.gdx.scenes.scene2d.utils.NinePatchDrawable;
-import com.deeper.than.Background;
 import com.deeper.than.DTL;
 import com.deeper.than.DTLMap;
 import com.deeper.than.EnemyShip;
 import com.deeper.than.MapGenerator;
+import com.deeper.than.FloorTile;
+import com.deeper.than.GridSquare;
 import com.deeper.than.PlayerShip;
 import com.deeper.than.ShipLoadException;
 import com.deeper.than.Wall;
+import com.deeper.than.background.Background;
 import com.deeper.than.crew.Crew;
 import com.deeper.than.crew.Races;
 import com.deeper.than.modules.Module;
@@ -41,6 +46,9 @@ import com.deeper.than.ui.UIReactorRow;
 import com.deeper.than.ui.UIRewardLabel;
 import com.deeper.than.ui.UISecondaryTopBar;
 import com.deeper.than.ui.UITopBar;
+import com.deeper.than.ui.UIWeaponBottomBar;
+import com.deeper.than.ui.UIWeaponCard;
+import com.deeper.than.weapons.WeaponGenerator;
 
 public class GameplayScreen implements EnumerableScreen{
 	
@@ -67,6 +75,7 @@ public class GameplayScreen implements EnumerableScreen{
 	private UIEnemyWindow enemyWindow;
 	private DTLMap map;
 	private MapGenerator mapGenerator;
+	private WeaponGenerator weaponGen;
 	
 	private InputMultiplexer input;
 
@@ -82,7 +91,9 @@ public class GameplayScreen implements EnumerableScreen{
 	}
 	
 	public void loadAssets(){
+		UIWeaponCard.loadAssets();
 		tempBackground = new Background(new Texture("tempbackground.png"));
+		tempBackground.setColor(Color.WHITE);
 		highlight = new Texture(Gdx.files.internal("pixel.png"));
 		UIPauseButton.loadAssets();
 		UIRewardLabel.loadAssets();
@@ -92,6 +103,7 @@ public class GameplayScreen implements EnumerableScreen{
 		UIFastDrive.loadAssets();
 		Races.loadAnims();
 		shapeRen = new ShapeRenderer();
+
 		UIEnemyWindow.loadAssets();
 		mapGenerator = new MapGenerator();
 		UIMapScreen.loadAssets();
@@ -106,18 +118,32 @@ public class GameplayScreen implements EnumerableScreen{
 		mapGenerator.generate();
 		map = mapGenerator.getMap();
 		
+		weaponGen = new WeaponGenerator();
+//		weaponGen.getQualityDist().clearDistribution();
+//		weaponGen.getQualityDist().setPercent(100, WeaponQualities.EXCEPTIONAL);
+
+		
 		try {
-			playerShip = new PlayerShip(Gdx.files.internal("ships/" + game.getSelectedShip() +".ship"), true, game, DTL.firstOpenId++);
+			playerShip = new PlayerShip(Gdx.files.internal("ships/" + game.getSelectedShip() +".ship"), true, game, DTL.firstOpenId++, weaponGen);
 		} catch (ShipLoadException e) {
 			e.printStackTrace();
 		}
+		
+//		for(Weapon w : playerShip.getWeapons()){
+//			System.out.println(w.getName());
+//			System.out.println(w.getParamString());
+//			System.out.println();
+//		}
+		
+		
 		gameObjects = new Stage(game.getViewport());
 		
 		gameObjects.addActor(tempBackground);
 		gameObjects.addActor(playerShip);
+		shapeRen.setProjectionMatrix(gameObjects.getViewport().getCamera().combined);
 		EnemyShip enemy = null;
 		try {
-			enemy = new EnemyShip(Gdx.files.internal("ships/enemyships/scout.ship") , game, DTL.firstOpenId++, playerShip);
+			enemy = new EnemyShip(Gdx.files.internal("ships/enemyships/scout.ship") , game, DTL.firstOpenId++, playerShip, weaponGen);
 		} catch (ShipLoadException e) {
 			e.printStackTrace();
 		}
@@ -150,14 +176,7 @@ public class GameplayScreen implements EnumerableScreen{
 		tab.add().prefWidth(1000000);
 		uiT.add(tab).left();
 		uiT.row();
-//		crewPlates = new ArrayList<CrewPlate>();
-//		CrewPlate crewPlate;
-//		for(Crew c : playerShip.getCrew()){
-//			crewPlate = new CrewPlate(c);
-//			crewPlates.add(crewPlate);
-//			uiT.add(crewPlate).prefWidth((Crew.CREW_HEIGHT/Crew.SCALE)+50+10).prefHeight(Crew.CREW_HEIGHT/Crew.SCALE+10).left().pad(1f);
-//			uiT.row();
-//		}
+
 		crewPlateBar = new UICrewPlateBar(playerShip.getCrew());
 		uiT.add(crewPlateBar).expand().left().fill();
 		uiT.add().expand();
@@ -168,13 +187,19 @@ public class GameplayScreen implements EnumerableScreen{
 		uiT.add(playerReacs).fill().expand().bottom().left();
 		playerReacs.setupReactorBars();
 		uiT.row();
+		
+		UIWeaponBottomBar bottomWeps = new UIWeaponBottomBar(playerReacs.getWeaponUI());
+		System.out.println(playerReacs.getOriginX() + " " + playerReacs.getOriginY());
+		bottomWeps.setX(DTL.VWIDTH/3);
+		bottomWeps.setY(10);
+		
 	
 		Label tacos = new Label("tacos", DTL.skin);
 		//tacos.setFontScale(.4f);
-		uiT.add(tacos).bottom().left();
+		//uiT.add(tacos).bottom().left();
 		
 		ui.addActor(uiT);
-		
+		ui.addActor(bottomWeps);
 		enemyWindow = new UIEnemyWindow(enemy);
 		enemyWindow.setBounds(DTL.VWIDTH * 2/3, DTL.VHEIGHT/6, DTL.VWIDTH/4, DTL.VHEIGHT - DTL.VHEIGHT/6 * 2);
 		enemyWindow.setUpTable();
@@ -286,6 +311,10 @@ public class GameplayScreen implements EnumerableScreen{
 		eventWindow = true;
 	}
 	
+	public static Vector2 getStageLocation(Actor actor) {
+	    return actor.localToStageCoordinates(new Vector2(0, 0));
+	}
+	
 	@Override
 	public void show() {
 		// TODO Auto-generated method stub
@@ -303,6 +332,7 @@ public class GameplayScreen implements EnumerableScreen{
 		// TODO Auto-generated method stub
 	    Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
+	    
 	    ////Key inputs here
 	    if(Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)){
 	    	mainMenu();
@@ -334,6 +364,30 @@ public class GameplayScreen implements EnumerableScreen{
 	    gameObjects.draw();
 	    ui.draw();
 //	    eventStage.draw();
+	    
+	    if(DTL.GRAPHICALDEBUG || DTL.PATHDEBUG){
+		    shapeRen.begin(ShapeType.Line);
+		    shapeRen.setColor(Color.RED);
+		    Vector2 pos = new Vector2();
+		    Vector2 end = new Vector2();
+		    GridSquare sq = null;
+		    GridSquare sq2 = null;
+		    for(int i = 0; i<playerShip.getLayout().length;i++){
+		    	for(int j = 0; j<playerShip.getLayout()[0].length;j++){
+		    		if(playerShip.getLayout()[i][j] != null){
+		    			sq = playerShip.getLayout()[i][j];
+		    			sq2 = sq.getPathPointer();
+		    			pos.x = playerShip.getX() + sq.getPos().x * FloorTile.TILESIZE + FloorTile.TILESIZE/2;
+		    			pos.y = playerShip.getY() + sq.getPos().y * FloorTile.TILESIZE + FloorTile.TILESIZE/2;
+		    			end.x = playerShip.getX() + sq2.getPos().x * FloorTile.TILESIZE + FloorTile.TILESIZE/2;
+		    			end.y = playerShip.getY() + sq2.getPos().y * FloorTile.TILESIZE + FloorTile.TILESIZE/2;
+		    			shapeRen.line(pos, end);
+		    			//shapeRen.line(playerShip.getLayout()[i][j].getPos(), new Vector2(100,100));
+		    		}
+			    }	
+		    }
+		    shapeRen.end();
+	    }
 	    
 
 	    

@@ -1,6 +1,7 @@
 package com.deeper.than;
 
 import com.badlogic.gdx.files.FileHandle;
+import com.deeper.than.weapons.WeaponGenerator;
 
 public class PlayerShip extends Ship {
 
@@ -8,8 +9,8 @@ public class PlayerShip extends Ship {
 	private int fuel;
 	
 	public PlayerShip(FileHandle filepath, boolean isPlayerShip, DTL game,
-			int id) throws ShipLoadException {
-		super(filepath, isPlayerShip, game, id);
+			int id, WeaponGenerator weaponGen) throws ShipLoadException {
+		super(filepath, isPlayerShip, game, id, weaponGen);
 	}
 	
 	

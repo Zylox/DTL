@@ -80,7 +80,7 @@ public class UIPowerBar extends WidgetGroup{
 	@Override
 	public void draw(Batch batch, float parentAlpha){
 		Color color = batch.getColor().cpy();
-		batch.setColor(Color.TEAL);
+		batch.setColor(Color.GREEN);
 		if(isLockedDown){ 
 			drawLockdownSquare(batch);
 		}

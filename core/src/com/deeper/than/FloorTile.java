@@ -169,6 +169,8 @@ public class FloorTile extends Actor{
 		float waterLevel = gridSquare.getRoom().getWaterLevel();
 		if(waterLevel > 90){
 			return .5f;
+		}else if(waterLevel > 50){
+			return .8f;
 		}else{
 			return 1f;
 		}

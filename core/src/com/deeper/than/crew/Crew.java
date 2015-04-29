@@ -72,6 +72,8 @@ public class Crew extends Actor{
 	
 	private ArrayList<GridSquare> openList;
 	private ArrayList<GridSquare> closedList;
+	private boolean hovered;
+	private DrownCooldown drowner;
 		
 	public Crew(String name, Races race, Ship ship){
 		this.ownerShip = ship;
@@ -90,9 +92,22 @@ public class Crew extends Actor{
 		state = CrewState.IDLE;
 		skills = new CrewSkills();
 		task = null;
+		hovered = false;
+		drowner = new DrownCooldown(this.race);
 		
 		if(ship instanceof PlayerShip){
 			addListener(new ClickListener() {
+				
+				@Override
+				public void enter(InputEvent event, float x, float y, int pointer, Actor fromActor){
+					hovered = true;
+				}
+				
+				@Override
+				public void exit(InputEvent event, float x, float y, int pointer, Actor fromActor){
+					hovered = false;
+				}
+				
 				public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
 					if(button == Buttons.LEFT){
 						setAsSelected();	
@@ -102,6 +117,23 @@ public class Crew extends Actor{
 			    }
 			});
 		}
+		
+		this.addAction(new Action() {
+			
+			@Override
+			public boolean act(float delta) {
+				if(room.getWaterLevel() > 50){
+					drowner.advanceDrowning();
+					if(drowner.isDrowning()){
+						System.out.println("DROWNING");
+						setHealth(getHealth()-.1f);
+					}
+				}else{
+					drowner.endCooldown();
+				}
+				return false;
+			}
+		});
 		
 	}
 	
@@ -170,6 +202,11 @@ public class Crew extends Actor{
 				}
 			}
 		}
+		Color color = batch.getColor().cpy();
+		if(hovered || getHealth() != race.getHealth()){
+			drawHealthBar(batch);
+		}
+		
 		float delta = 0;
 		if(!((GameplayScreen)Screens.GAMEPLAY.getScreen()).isPaused()){
 			 delta = Gdx.graphics.getDeltaTime();
@@ -181,7 +218,7 @@ public class Crew extends Actor{
 		}
 		TextureRegion tex = getFrame(stateTime, direction);
 		tex.getTexture().setFilter(TextureFilter.Linear, TextureFilter.Linear);
-		Color color = batch.getColor().cpy();
+		
 		if(isSelected())
 		{
 			batch.setColor(.0f, 1f, .0f, 1);
@@ -189,6 +226,13 @@ public class Crew extends Actor{
 			batch.setColor(Color.RED);
 		}
 		batch.draw(tex, getX(), getY(), getOriginX(), getOriginY(), getWidth(), getHeight(), getScaleX(), getScaleY(), getRotation());
+		batch.setColor(color);
+	}
+	
+	private void drawHealthBar(Batch batch){
+		Color color = batch.getColor().cpy();
+		batch.setColor(Color.GREEN);
+		batch.draw(GameplayScreen.highlight,getX(), getY()+getHeight(), getHealth()/5, 2);
 		batch.setColor(color);
 	}
 	
@@ -317,7 +361,6 @@ public class Crew extends Actor{
 			//this.act(Gdx.graphics.getDeltaTime());
 			state = CrewState.WALKING;
 		}else{
-			System.out.println(moves.toString());
 			if(moves.size() != 0){
 				move = moves.get(moves.size()-1);
 				moves.clear();
@@ -461,7 +504,7 @@ public class Crew extends Actor{
 
 		GridSquare currSq = layout[(int)start.y][(int)start.x];
 		currSq.setGValue(0);
-		currSq.setPathPointer(null);
+		currSq.setPathPointer(currSq);
 		addToOpen(currSq);
 		
 		ArrayList<Vector2> moves = new ArrayList<Vector2>();
@@ -488,7 +531,7 @@ public class Crew extends Actor{
 		
 		
 		
-		while(currSq.getPathPointer() != null){
+		while(currSq.getPathPointer() != currSq){
 			moves.add(currSq.getPos());
 			currSq = currSq.getPathPointer();
 		}

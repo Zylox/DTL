@@ -4,12 +4,14 @@ import java.util.ArrayList;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.deeper.than.crew.Crew;
 import com.deeper.than.crew.Crew.CrewState;
+import com.deeper.than.screens.GameplayScreen;
 
 public class GridSquare extends Group{
 	
@@ -37,7 +39,6 @@ public class GridSquare extends Group{
 		tile = null;
 		borders = new CellBorder[4];
 		room = null;
-		pathPointer = null;
 		hValue = 0;
 		gValue = 0;
 		pathClosed = false;
@@ -45,6 +46,7 @@ public class GridSquare extends Group{
 		onClosedList = false;
 		isManningStation = false;
 		setDebug(DTL.GRAPHICALDEBUG);
+		pathPointer = this;
 	}
 	
 	public boolean isSameRoom(GridSquare square){
@@ -156,9 +158,14 @@ public class GridSquare extends Group{
 		}
 	}
 
+	public Vector2 pathPointerEndPos(){
+		return pathPointer.getPos();
+	}
+	
 	@Override
 	public void draw(Batch batch, float parentAlpha){
 		super.draw(batch, parentAlpha);
+		
 		if(!room.isVisible() && !ship.colorizeRooms()){
 			Color color = batch.getColor();
 			batch.setColor(new Color(.5f,.5f,.5f,1f));

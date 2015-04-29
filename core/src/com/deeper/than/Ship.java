@@ -24,8 +24,11 @@ import com.deeper.than.modules.HatchControlModule;
 import com.deeper.than.modules.Module;
 import com.deeper.than.modules.SensorsModule;
 import com.deeper.than.modules.SheildModule;
+import com.deeper.than.modules.WeaponsModule;
 import com.deeper.than.screens.GameplayScreen;
 import com.deeper.than.screens.Screens;
+import com.deeper.than.weapons.Weapon;
+import com.deeper.than.weapons.WeaponGenerator;
 
 /**
  * A ship in the game. Loads a ship from a shipScript. Contains all the logic to manage the ship.
@@ -33,6 +36,8 @@ import com.deeper.than.screens.Screens;
  *
  */
 public class Ship extends Group{
+	public static final int EQUIPED_WEAPON_MAX = 4;
+	
 	/**
 	 * A reference to the game for reasons. Don't ask the reasons.
 	 */
@@ -53,6 +58,7 @@ public class Ship extends Group{
 	private BridgeModule bridge;
 	private EngineModule engine;
 	protected SensorsModule sensors;
+	private WeaponsModule weaponMod;
 	
 	/** Width in squares of the ship*/
 	protected int gridWidth;
@@ -70,12 +76,14 @@ public class Ship extends Group{
 	private int maxHealth;
 	private int power;
 	
+	private ArrayList<Weapon> weapons;
+	
 	/**
 	 * Creates a ship based on the shipScript added in.
 	 * @param filepath Internal path to the script. ex. "kes.ship".
 	 * @param game Reference to the game object
 	 */
-	public Ship(FileHandle filepath, boolean isPlayerShip, DTL game, int id) throws ShipLoadException{
+	public Ship(FileHandle filepath, boolean isPlayerShip, DTL game, int id, WeaponGenerator weaponGen) throws ShipLoadException{
 		
 		this.game = game;
 		crew = new ArrayList<Crew>();
@@ -83,11 +91,12 @@ public class Ship extends Group{
 		rooms = new ArrayList<Room>();
 		walls = new OrderedMap<Integer, CellBorder>();
 		modules = new ArrayList<Module>();
+		weapons = new ArrayList<Weapon>();
 		
 		try {
 			//Pulls a parser from the parser pool and loads the script
 			ScriptParser parser = ScriptParser.parserPool.obtain();
-			parser.loadShipScript(this, filepath);
+			parser.loadShipScript(this, filepath, weaponGen);
 			ScriptParser.parserPool.free(parser);
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -96,7 +105,7 @@ public class Ship extends Group{
 		init();
 	}
 	
-	public Ship(String script, DTL game, int id) throws ShipLoadException{
+	public Ship(String script, DTL game, int id, WeaponGenerator weaponGen) throws ShipLoadException{
 		
 		this.game = game;
 		crew = new ArrayList<Crew>();
@@ -104,11 +113,12 @@ public class Ship extends Group{
 		rooms = new ArrayList<Room>();
 		walls = new OrderedMap<Integer, CellBorder>();
 		modules = new ArrayList<Module>();
+		weapons = new ArrayList<Weapon>();
 		
 		try {
 			//Pulls a parser from the parser pool and loads the script
 			ScriptParser parser = ScriptParser.parserPool.obtain();
-			parser.loadShipScript(this, script);
+			parser.loadShipScript(this, script, weaponGen);
 			ScriptParser.parserPool.free(parser);
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -117,12 +127,12 @@ public class Ship extends Group{
 		init();
 	}
 	
-	public void reInit(FileHandle filepath) throws ShipLoadException{
+	public void reInit(FileHandle filepath, WeaponGenerator weaponGen) throws ShipLoadException{
 		clearCollections();
 		try {
 			//Pulls a parser from the parser pool and loads the script
 			ScriptParser parser = ScriptParser.parserPool.obtain();
-			parser.loadShipScript(this, filepath);
+			parser.loadShipScript(this, filepath, weaponGen);
 			ScriptParser.parserPool.free(parser);
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -130,12 +140,12 @@ public class Ship extends Group{
 		init();
 	}
 	
-	public void reInit(String script) throws ShipLoadException{
+	public void reInit(String script, WeaponGenerator weaponGen) throws ShipLoadException{
 		clearCollections();
 		try {
 			//Pulls a parser from the parser pool and loads the script
 			ScriptParser parser = ScriptParser.parserPool.obtain();
-			parser.loadShipScript(this, script);
+			parser.loadShipScript(this, script, weaponGen);
 			ScriptParser.parserPool.free(parser);
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -198,6 +208,8 @@ public class Ship extends Group{
 					bridge = (BridgeModule) m;
 				}else if(m instanceof EngineModule){
 					engine = (EngineModule) m;
+				}else if(m instanceof WeaponsModule){
+					weaponMod = (WeaponsModule) m;
 				}
 			}
 			
@@ -325,23 +337,10 @@ public class Ship extends Group{
 			}
 		}
 	}
-//	
-//	public void createModuleBars(Table uiT){
-//		for(Module m : modules){
-//			if(m instanceof SheildModule){
-//				
-//			}else if(m instanceof EngineModule){
-//				
-//			}else if(m instanceof MedbayModule){
-//				
-//			}else if(m instanceof ClimateControlModule){
-//				
-//			}else if(m instanceof CloakingModule){
-//				
-//			}
-//		}
-//	}
-	
+
+	private void divyPowerToWeps(){
+		
+	}
 	
 	/**
 	 * Contains any non Action based update logic.
@@ -604,6 +603,36 @@ public class Ship extends Group{
 		this.modules.add(module);
 	}
 	
+	public void addWeapon(Weapon weapon){
+		this.weapons.add(weapon);
+		if(this.weaponMod != null){
+			weaponMod.equipWeapon(weapon);
+		}
+	}
+	
+	/**
+	 * Attempts to equipWeapon.
+	 * If max weapons already equiped, it will return false.
+	 * @param weapon
+	 * @return equip success or failure
+	 */	
+	public void unEquipWeapon(Weapon weapon){
+		if(weaponMod != null){
+			weaponMod.unEquipWeapon(weapon);
+		}
+	}
+	
+	public ArrayList<Weapon> getWeapons(){
+		return weapons;
+	}
+	
+	public ArrayList<Weapon> getEquippedWeapons(){
+		if(weaponMod != null){
+			return weaponMod.getEquippedWeapons();
+		}
+		return null;
+	}
+	
 	public int getGridWidth() {
 		return gridWidth;
 	}
@@ -738,6 +767,10 @@ public class Ship extends Group{
 	public int getPower() {
 		return power;
 	}
+	
+	public void setWeaponModule(WeaponsModule wMod){
+		this.weaponMod = wMod;
+	}
 
 	public void setPower(int power) {
 		this.power = power;
@@ -749,6 +782,10 @@ public class Ship extends Group{
 	
 	public SensorsModule getSensors(){
 		return sensors;
+	}
+	
+	public int getMaxWeapons(){
+		return EQUIPED_WEAPON_MAX;
 	}
 	
 	/**
@@ -764,6 +801,5 @@ public class Ship extends Group{
 		}
 		return drainRate;
 	}
-	
 
 }
