@@ -87,8 +87,7 @@ public class FloorTile extends Actor{
 					if(((GameplayScreen)Screens.GAMEPLAY.getScreen()).isTargetting() && ship instanceof EnemyShip){
 						((GameplayScreen)Screens.GAMEPLAY.getScreen()).getTargetting().setTarget(gridSquare.getRoom());
 					}
-					return false;
-				}else{
+					
 					if(!((GameplayScreen)Screens.GAMEPLAY.getScreen()).isCrewSelected()){
 						Module mod = gridSquare.getRoom().getModule();
 						if(mod != null){
@@ -98,6 +97,9 @@ public class FloorTile extends Actor{
 						}
 					}
 					((GameplayScreen)Screens.GAMEPLAY.getScreen()).setSelectedCrew(null);
+					return false;
+				}else{
+
 					return false;
 				}
 			}
