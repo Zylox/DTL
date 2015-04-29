@@ -41,19 +41,20 @@ public class UIMapTable extends Table {
 		this.add(title).left().top();
 		this.row();
 		TextButton exit = new TextButton("X", DTL.skin);
-		this.add(exit).right().top();
+		
 		ClickListener clickListener = new ClickListener(){
 			public void clicked(InputEvent event, float x, float y){
 				parent.setVisible(false);
 			}
 		};
 		exit.addListener(clickListener);
+		this.add(exit).right().top();
 		this.row();
 		
-		Widget innerTable = new Widget();
+		Table innerTable = new Table();
 		innerTable.setDebug(DTL.GLOBALDEBUG);
 		innerTable.setFillParent(true);
-		innerTable.scaleBy(.5f);
+		innerTable.scaleBy(1f);
 		
 		
 		Texture u_node = UIMapScreen.getUnvisitedNodeTexture();
@@ -74,18 +75,19 @@ public class UIMapTable extends Table {
 			} else {
 				img.add(new Image(u_node));
 			}
-			
 			//innerTable.moveBy(x, y);
 			img.get(i).setX(x);
 			img.get(i).setY(y);
-			
+			innerTable.add(img.get(i)).padTop(y/2.5f).padLeft(10);
 			//innerTable.add(img).padTop(y/2f).padLeft(x/2f);
 			//innerTable.row();
 			
 			i++;
 		}
 
-		this.add(innerTable);
+		
+		
+		this.add(innerTable).expand().fill();
 		this.add().prefHeight(DTL.VHEIGHT);
 		this.row();
 	}
