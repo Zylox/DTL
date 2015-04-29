@@ -101,7 +101,7 @@ public class RandNoiseGenerator {
 				map[j][i] = value;
 			}
 		}
-	//	scale(.1f,.9f);
+		scale(.1f,.9f);
 	}
 	
 	public void scale(float goalLow, float goalHigh){
