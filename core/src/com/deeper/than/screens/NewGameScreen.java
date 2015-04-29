@@ -78,14 +78,17 @@ public class NewGameScreen implements EnumerableScreen {
 			dirHandle = Gdx.files.internal(baseDir);
 		}
 		
-		int numberOfShips = 4;
+		int numberOfShips = 8;
 		FileHandle[] fileHandles = new FileHandle[numberOfShips];
 		//fileHandles[0] = Gdx.files.internal(baseDir + "/");
 		fileHandles[0] = Gdx.files.internal(baseDir + "/kes.ship");
 		fileHandles[1] = Gdx.files.internal(baseDir + "/tres.ship");
 		fileHandles[2] = Gdx.files.internal(baseDir + "/wigwam.ship");
 		fileHandles[3] = Gdx.files.internal(baseDir + "/theq.ship");
-		
+		fileHandles[4] = Gdx.files.internal(baseDir + "/swordfishii.ship");
+		fileHandles[5] = Gdx.files.internal(baseDir + "/thebox.ship");
+		fileHandles[6] = Gdx.files.internal(baseDir + "/thewut.ship");
+		fileHandles[7] = Gdx.files.internal(baseDir + "/beetle.ship");
 		
 		ArrayList<String> collectedNames = new ArrayList<String>();
 		for(int i = 0; i<fileHandles.length; i++){
