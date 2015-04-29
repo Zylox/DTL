@@ -9,6 +9,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.NinePatch;
+import com.badlogic.gdx.scenes.scene2d.Action;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.Container;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
@@ -50,8 +51,10 @@ public class UIWeaponCard extends WidgetGroup {
 	
 	private UIWeaponReactor powerBar;
 	private UIWeaponBottomBar container;
+	private Weapon weapon;
 	
 	public UIWeaponCard(float width, float height,Weapon weapon, WeaponsModule weapModule, UIWeaponModuleReacBar moduleUI){
+		this.weapon = weapon;
 		container = null;
 		powerBar = new UIWeaponReactor(weapon, weapModule, moduleUI);
 		Container<UIWeaponReactor> barCont = new Container<UIWeaponReactor>(powerBar);
@@ -72,6 +75,17 @@ public class UIWeaponCard extends WidgetGroup {
 		this.addListener(powerBar.clicker);
 		setWidth(width);
 		setHeight(height);
+		
+		this.addAction(new Action() {
+			
+			@Override
+			public boolean act(float delta) {
+				if(powerBar.getPowered() ==0){
+					unSelectSelf();
+				}
+				return false;
+			}
+		});
 	}
 	
 	public boolean setSelfSelected(){
