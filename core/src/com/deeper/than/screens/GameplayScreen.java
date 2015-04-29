@@ -19,7 +19,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.Align;
 import com.badlogic.gdx.scenes.scene2d.utils.NinePatchDrawable;
-import com.deeper.than.Background;
 import com.deeper.than.DTL;
 import com.deeper.than.EnemyShip;
 import com.deeper.than.FloorTile;
@@ -27,6 +26,7 @@ import com.deeper.than.GridSquare;
 import com.deeper.than.PlayerShip;
 import com.deeper.than.ShipLoadException;
 import com.deeper.than.Wall;
+import com.deeper.than.background.Background;
 import com.deeper.than.crew.Crew;
 import com.deeper.than.crew.Races;
 import com.deeper.than.modules.Module;
@@ -85,6 +85,7 @@ public class GameplayScreen implements EnumerableScreen{
 	public void loadAssets(){
 		UIWeaponCard.loadAssets();
 		tempBackground = new Background(new Texture("tempbackground.png"));
+		tempBackground.setColor(Color.WHITE);
 		highlight = new Texture(Gdx.files.internal("pixel.png"));
 		UIPauseButton.loadAssets();
 		UIRewardLabel.loadAssets();
