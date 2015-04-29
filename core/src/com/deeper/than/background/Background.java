@@ -30,7 +30,6 @@ public class Background extends Widget{
 		}else{
 			image = randNoise.getNextImage(.002f);
 			Color color2 = this.getColor().cpy();
-//			color2.g += 1.5;
 			
 			image.setColor(color2.mul(Color.BLUE).mul(Color.LIGHT_GRAY).clamp());
 		}

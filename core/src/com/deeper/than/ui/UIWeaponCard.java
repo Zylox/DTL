@@ -4,7 +4,6 @@
 package com.deeper.than.ui;
 
 
-import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.Input.Buttons;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
@@ -33,11 +32,13 @@ public class UIWeaponCard extends WidgetGroup {
 		public boolean touchDown(InputEvent event, float x, float y, int pointer, int button){
 			if(powerBar.clickPassthrough){
 				if(button == Buttons.LEFT){
-					bgInstance.setColor(Color.DARK_GRAY);
+					if(container != null){
+						setSelfSelected();
+					}
 				}
 			}
 			if(button == Buttons.RIGHT){
-				bgInstance.setColor(Color.WHITE);
+				unSelectSelf();
 			}
 			return true;
 		}
@@ -48,8 +49,10 @@ public class UIWeaponCard extends WidgetGroup {
 	}
 	
 	private UIWeaponReactor powerBar;
+	private UIWeaponBottomBar container;
 	
 	public UIWeaponCard(float width, float height,Weapon weapon, WeaponsModule weapModule, UIWeaponModuleReacBar moduleUI){
+		container = null;
 		powerBar = new UIWeaponReactor(weapon, weapModule, moduleUI);
 		Container<UIWeaponReactor> barCont = new Container<UIWeaponReactor>(powerBar);
 		barCont.fill();
@@ -69,5 +72,34 @@ public class UIWeaponCard extends WidgetGroup {
 		this.addListener(powerBar.clicker);
 		setWidth(width);
 		setHeight(height);
+	}
+	
+	public boolean setSelfSelected(){
+		if(container != null){
+			container.setSelected(this);
+			return true;
+		}
+		return false;
+	}
+	public boolean unSelectSelf(){
+		if(container != null && container.getSelected() == this){
+			container.setSelected(null);
+			return true;
+		}
+		return false;
+	}	
+	
+	@Override
+	public void draw(Batch batch, float parentAlpha){
+		if(container != null && container.getSelected() == this){
+			bgInstance.setColor(Color.DARK_GRAY);
+		}else{
+			bgInstance.setColor(Color.WHITE);
+		}
+		super.draw(batch, parentAlpha);
+	}
+	
+	public void registerContainer(UIWeaponBottomBar cont){
+		this.container = cont;
 	}
 }

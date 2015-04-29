@@ -20,6 +20,7 @@ public class UIWeaponBottomBar extends WidgetGroup{
 	private static final float cardWidth = 120;
 	private static final float cardHeight = 60;
 	private WeaponsModule mod;
+	private UIWeaponCard selected;
 	
 	public UIWeaponBottomBar(UIWeaponModuleReacBar modUI){
 		if(modUI == null){
@@ -29,11 +30,13 @@ public class UIWeaponBottomBar extends WidgetGroup{
 		if(mod == null){
 			return;
 		}
+		selected = null;
 		ArrayList<Weapon> equippedWeapons = mod.getEquippedWeapons();
 		int i;
 		UIWeaponCard card;
 		for(i = 0; i<equippedWeapons.size(); i++){
 			card = new UIWeaponCard(cardWidth, cardHeight, equippedWeapons.get(i), mod, modUI);
+			card.registerContainer(this);
 			card.setX(i*cardWidth + i * 4);
 			this.addActor(card);
 		}
@@ -45,6 +48,15 @@ public class UIWeaponBottomBar extends WidgetGroup{
 			emptyCont.setHeight(cardHeight);
 			this.addActor(emptyCont);
 		}
+	}
+	
+	protected UIWeaponCard getSelected(){
+		return selected;
+	}
+
+
+	public void setSelected(UIWeaponCard selected) {
+		this.selected = selected;
 	}
 	
 	@Override
