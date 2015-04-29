@@ -13,6 +13,7 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
@@ -194,7 +195,14 @@ public class GameplayScreen implements EnumerableScreen{
 		
 //		eventStage = new Stage(game.getViewport());
 //		<Table>(eventTable, "template");
-		eventTable = new UIPopUpWindow<UIEventTable>(new UIEventTable("template"));
+		UIEventTable uiEventTable = new UIEventTable("template");
+		eventTable = new UIPopUpWindow<UIEventTable>(uiEventTable);
+		uiEventTable.setParent(eventTable);
+		uiEventTable.setUpUI();
+
+		//eventTable.setUpUI();
+		//eventTable.setPa
+		
 		ui.addActor(eventTable);
 		
 		input = new InputMultiplexer();

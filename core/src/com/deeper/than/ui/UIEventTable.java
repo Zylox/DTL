@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
@@ -20,6 +21,8 @@ public class UIEventTable extends Table {
 	private DTLEvent event;
 	Json json;
 	private Table table = this;
+	Group parent;
+	
 	
 	public UIEventTable(String eventString){
 		this(getDTLEventFromFile(eventString));
@@ -28,7 +31,10 @@ public class UIEventTable extends Table {
 	public UIEventTable(DTLEvent event){
 		this.setFillParent(true);
 		this.setDebug(DTL.GLOBALDEBUG);
-			
+		this.event = event;
+	}
+	
+	public void setUpUI(){
 		Label title = new Label(event.getTitle(), DTL.skin);
 		this.add(title).left().top();
 		this.row();
@@ -37,7 +43,10 @@ public class UIEventTable extends Table {
 		innerTable.pad(35);
 		innerTable.add().prefHeight(DTL.VHEIGHT / 5);
 		innerTable.row();
-		innerTable.add( new Label(event.getText(), DTL.skin)).left().expand();
+		Label label  = new Label(event.getText(), DTL.skin);
+		label.setWrap(true);
+//		label.setWidth(100);
+		innerTable.add(label).left().expand().width(DTL.VWIDTH/2);
 		innerTable.row();
 		innerTable.add().prefHeight(DTL.VHEIGHT);
 		innerTable.row();
@@ -50,15 +59,18 @@ public class UIEventTable extends Table {
 			if(resp.getTriggersEvent()==null){
 				clickListener = new ClickListener(){
 					public void clicked(InputEvent event, float x, float y){
-						table.getParent().getParent().clear();
+//						table.getParent().getParent().clear();
+						parent.setVisible(false);
 					} 
 				};
 			} else if(resp.getTriggersEvent().endsWith(".event")){
 				clickListener = new ClickListener(){
 					public void clicked(InputEvent event, float x, float y){
-						
-						table.getParent().getParent().addActor(new UIEventTable(resp.getTriggersEvent().substring(0, resp.getTriggersEvent().length()-6)));
-						table.getParent().getParent().clear();
+						int length = resp.getTriggersEvent().length();
+						UIEventTable newPopUp = new UIEventTable(resp.getTriggersEvent().substring(0, length-6));
+						newPopUp.setParent(parent);
+						newPopUp.setUpUI();
+						((UIPopUpWindow<UIEventTable>) parent).loadNewChild((newPopUp));
 					}
 				};
 			}
@@ -92,5 +104,9 @@ public class UIEventTable extends Table {
 		}
 		
 		return null;
+	}
+	
+	public void setParent(Group parent){
+		this.parent = parent;
 	}
 }
