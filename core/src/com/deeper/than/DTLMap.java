@@ -11,11 +11,13 @@ public class DTLMap {
 	private int level;
 	//lattice of connection of nodes, not set up until after nodes are set up
 	private Map<Integer,Integer> lattice = new HashMap<Integer,Integer>();
+	private int currentNode;
 	
 	public DTLMap(int level){
 		setLevel(level);
 		nodes.clear();
 		lattice.clear();
+		setCurrentNode(0);
 	}
 	
 	public int getLevel(){
@@ -40,5 +42,13 @@ public class DTLMap {
 	
 	public void addConnection(int start, int end){
 		lattice.put(start,end);
+	}
+	
+	public void setCurrentNode(int currentNode){
+		this.currentNode = currentNode;
+	}
+	
+	public int getCurrentNode(){
+		return currentNode;
 	}
 }

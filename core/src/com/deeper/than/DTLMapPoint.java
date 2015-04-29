@@ -8,12 +8,14 @@ public class DTLMapPoint {
 	private String event;
 	//false by default, true if player has been to node already
 	private boolean visited;
+	private int number;
 	
-	public DTLMapPoint(int x, int y, String event){
+	public DTLMapPoint(int x, int y, String event, int number){
 		setVisited(false);
 		setX(x);
 		setY(y);
 		setEvent(event);
+		setNumber(number);
 	}
 
 	public int getX() {
@@ -46,5 +48,13 @@ public class DTLMapPoint {
 
 	public void setVisited(boolean visited) {
 		this.visited = visited;
+	}
+	
+	public void setNumber(int number){
+		this.number = number;
+	}
+	
+	public int getNumber(){
+		return number;
 	}
 }

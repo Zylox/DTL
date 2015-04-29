@@ -38,7 +38,11 @@ public class UIWeaponCard extends WidgetGroup {
 			if(powerBar.clickPassthrough){
 				if(button == Buttons.LEFT){
 					if(container != null){
-						setSelfSelected();
+						if(isSelected()){
+							unSelectSelf();
+						}else{
+							setSelfSelected();
+						}
 					}
 				}
 			}
@@ -112,6 +116,13 @@ public class UIWeaponCard extends WidgetGroup {
 		}
 		return false;
 	}	
+	
+	public boolean isSelected(){
+		if(container!=null){
+			return container.getSelected() == this;
+		}
+		return false;
+	}
 	
 	@Override
 	public void draw(Batch batch, float parentAlpha){

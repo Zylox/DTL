@@ -21,7 +21,9 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.Align;
 import com.badlogic.gdx.scenes.scene2d.utils.NinePatchDrawable;
 import com.deeper.than.DTL;
+import com.deeper.than.DTLMap;
 import com.deeper.than.EnemyShip;
+import com.deeper.than.MapGenerator;
 import com.deeper.than.FloorTile;
 import com.deeper.than.GridSquare;
 import com.deeper.than.PlayerShip;
@@ -35,8 +37,12 @@ import com.deeper.than.modules.Modules;
 import com.deeper.than.ui.UICrewPlateBar;
 import com.deeper.than.ui.UICrewSkillsPlate;
 import com.deeper.than.ui.UIEnemyWindow;
+import com.deeper.than.ui.UIEventTable;
 import com.deeper.than.ui.UIFastDrive;
+import com.deeper.than.ui.UIMapScreen;
+import com.deeper.than.ui.UIMapTable;
 import com.deeper.than.ui.UIPauseButton;
+import com.deeper.than.ui.UIPopUpWindow;
 import com.deeper.than.ui.UIReactorRow;
 import com.deeper.than.ui.UIRewardLabel;
 import com.deeper.than.ui.UISecondaryTopBar;
@@ -61,6 +67,8 @@ public class GameplayScreen implements EnumerableScreen{
 	
 	
 	private Stage gameObjects;
+	private UIPopUpWindow<UIMapTable> mapTable;
+	private UIPopUpWindow<UIEventTable> eventTable;
 	private PlayerShip playerShip;
 	private UIFastDrive playerFastDrive;
 	private float timeAccumulator;
@@ -68,10 +76,13 @@ public class GameplayScreen implements EnumerableScreen{
 	private UIEnemyWindow enemyWindow;
 	private WeaponGenerator weaponGen;
 	private UIWeaponBottomBar bottomBar;
+	private DTLMap map;
+	private MapGenerator mapGenerator;
 	
 	private InputMultiplexer input;
 
 	private boolean isPaused;
+	private boolean eventWindow;
 	
 	Background tempBackground;
 	
@@ -79,9 +90,6 @@ public class GameplayScreen implements EnumerableScreen{
 		this.game = game;
 
 		loadAssets();
-		
-		
-		
 	}
 	
 	public void loadAssets(){
@@ -99,6 +107,9 @@ public class GameplayScreen implements EnumerableScreen{
 		shapeRen = new ShapeRenderer();
 		reticule = new Sprite(new Texture(Gdx.files.internal("targetreticule.png")));
 		UIEnemyWindow.loadAssets();
+		mapGenerator = new MapGenerator();
+		UIMapScreen.loadAssets();
+		
 	}
 	
 
@@ -106,6 +117,8 @@ public class GameplayScreen implements EnumerableScreen{
 	 * 
 	 */
 	private void initializeGame(){
+		mapGenerator.generate();
+		map = mapGenerator.getMap();
 		
 		weaponGen = new WeaponGenerator();
 //		weaponGen.getQualityDist().clearDistribution();
@@ -195,6 +208,21 @@ public class GameplayScreen implements EnumerableScreen{
 		
 		ui.setDebugAll(DTL.GRAPHICALDEBUG);
 		
+		UIEventTable uiEventTable = new UIEventTable("template");
+		eventTable = new UIPopUpWindow<UIEventTable>(uiEventTable);
+		uiEventTable.setParent(eventTable);
+		uiEventTable.setUpUI();
+		
+		ui.addActor(eventTable);
+		
+		UIMapTable uiMapTable = new UIMapTable(map);
+		mapTable = new UIPopUpWindow<UIMapTable>(uiMapTable);
+		uiMapTable.setParent(mapTable);
+		uiMapTable.setUpMapUI();
+		mapTable.setVisible(false);
+		
+		ui.addActor(mapTable);
+		
 		input = new InputMultiplexer();
 		input.addProcessor(ui);
 		input.addProcessor(gameObjects);
@@ -262,6 +290,11 @@ public class GameplayScreen implements EnumerableScreen{
 				if(character == ' '){
 					setPaused(!isPaused());
 				}
+				
+				if(character=='m'){
+					drawMap();
+				}
+				
 				return false;
 			}
 			
@@ -274,6 +307,7 @@ public class GameplayScreen implements EnumerableScreen{
 		timeAccumulator = 0;
 		selectedCrew = null;
 		isPaused = false;
+		eventWindow = true;
 	}
 	
 	public static Vector2 getStageLocation(Actor actor) {
@@ -308,6 +342,9 @@ public class GameplayScreen implements EnumerableScreen{
 	    
 	    timeAccumulator += delta;
 	    if(timeAccumulator > DTL.getFrameTime()){
+	    	if(!eventWindow){
+	    		eventTable.clear();
+	    	}
 	    	playerReacs.update();
 	    	playerShip.update();
 	    	if(enemyWindow != null){
@@ -320,11 +357,13 @@ public class GameplayScreen implements EnumerableScreen{
 	    	ui.act();
 	    	crewPlateBar.update();
 	    	timeAccumulator -= DTL.getFrameTime();
+//	    	eventStage.act();
 	    }
 
 	   ////Rendering goes here
 	    gameObjects.draw();
 	    ui.draw();
+//	    eventStage.draw();
 	    
 	    if(DTL.GRAPHICALDEBUG || DTL.PATHDEBUG){
 		    shapeRen.begin(ShapeType.Line);
@@ -460,5 +499,14 @@ public class GameplayScreen implements EnumerableScreen{
 			batch.setColor(returnColor);
 		}
 	}
-
+	
+	public void drawMap(){
+		if(!mapTable.isVisible()){
+			pause();
+			mapTable.setVisible(true);
+		} else {
+			mapTable.setVisible(false);
+			setPaused(false);
+		}
+	}
 }

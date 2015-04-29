@@ -1,3 +1,4 @@
+
 /**
  * 
  */
@@ -12,13 +13,30 @@ import com.badlogic.gdx.scenes.scene2d.utils.NinePatchDrawable;
  * @author zach
  *
  */
-public class UIPopUpWindow<T extends Actor> extends Table{
+public class UIPopUpWindow<T extends Actor> extends Table {
+
+	private Container<T> cont;
+	private NinePatchDrawable bg;
 	
-	public  UIPopUpWindow(T actor){
+	public UIPopUpWindow(T actor) {
 		this.setFillParent(true);
-		Container<T> cont = new Container<T>(actor);
+		cont = new Container<T>(actor);
 		cont.fill();
-		cont.background(new NinePatchDrawable(UIEnemyWindow.backgroundNinePatch));
+		bg = new NinePatchDrawable(UIEnemyWindow.backgroundNinePatch);
+		cont.background(bg);
+		addContToTable();
+	}
+	
+	public void loadNewChild(T t){
+		cont = new Container<T>(t);
+		cont.fill();
+		cont.background(bg);
+		this.clear();
+		addContToTable();
+	
+	}
+	
+	private void addContToTable(){
 		this.add(cont).fill().expand();
 		this.pad(100);
 	}
