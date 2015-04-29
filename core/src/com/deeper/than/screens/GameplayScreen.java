@@ -1,35 +1,27 @@
 package com.deeper.than.screens;
 
-import java.util.ArrayList;
-
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Input.Buttons;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.InputProcessor;
-import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.Align;
 import com.badlogic.gdx.scenes.scene2d.utils.NinePatchDrawable;
-import com.badlogic.gdx.utils.JsonReader;
-import com.badlogic.gdx.utils.JsonValue;
 import com.deeper.than.Background;
 import com.deeper.than.DTL;
-import com.deeper.than.DTLEvent;
 import com.deeper.than.DTLMap;
 import com.deeper.than.EnemyShip;
 import com.deeper.than.MapGenerator;
 import com.deeper.than.PlayerShip;
-import com.deeper.than.Response;
 import com.deeper.than.ShipLoadException;
 import com.deeper.than.Wall;
 import com.deeper.than.crew.Crew;
@@ -42,6 +34,7 @@ import com.deeper.than.ui.UIEnemyWindow;
 import com.deeper.than.ui.UIEventTable;
 import com.deeper.than.ui.UIFastDrive;
 import com.deeper.than.ui.UIMapScreen;
+import com.deeper.than.ui.UIMapTable;
 import com.deeper.than.ui.UIPauseButton;
 import com.deeper.than.ui.UIPopUpWindow;
 import com.deeper.than.ui.UIReactorRow;
@@ -65,7 +58,7 @@ public class GameplayScreen implements EnumerableScreen{
 	
 	
 	private Stage gameObjects;
-	private UIPopUpWindow<Table> mapTable;
+	private UIPopUpWindow<UIMapTable> mapTable;
 	private UIPopUpWindow<UIEventTable> eventTable;
 	private PlayerShip playerShip;
 	private UIFastDrive playerFastDrive;
@@ -198,6 +191,14 @@ public class GameplayScreen implements EnumerableScreen{
 		
 		ui.addActor(eventTable);
 		
+		UIMapTable uiMapTable = new UIMapTable(map);
+		mapTable = new UIPopUpWindow<UIMapTable>(uiMapTable);
+		uiMapTable.setParent(mapTable);
+		uiMapTable.setUpMapUI();
+		mapTable.setVisible(false);
+		
+		ui.addActor(mapTable);
+		
 		input = new InputMultiplexer();
 		input.addProcessor(ui);
 		input.addProcessor(gameObjects);
@@ -264,6 +265,10 @@ public class GameplayScreen implements EnumerableScreen{
 				
 				if(character == ' '){
 					setPaused(!isPaused());
+				}
+				
+				if(character=='m'){
+					drawMap();
 				}
 				
 				return false;
@@ -395,8 +400,6 @@ public class GameplayScreen implements EnumerableScreen{
 		// TODO Auto-generated method stub
 		playerShip.dispose();
 		gameObjects.dispose();
-//		eventStage.dispose();
-//		mapStage.dispose();
 	}
 	
 	/**
@@ -423,5 +426,10 @@ public class GameplayScreen implements EnumerableScreen{
 		if(color != null){
 			batch.setColor(returnColor);
 		}
+	}
+	
+	public void drawMap(){
+		pause();
+		mapTable.setVisible(true);
 	}
 }

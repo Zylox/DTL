@@ -32,9 +32,14 @@ public class UIEventTable extends Table {
 		this.setFillParent(true);
 		this.setDebug(DTL.GRAPHICALDEBUG);
 		this.event = event;
+		this.parent = null;
 	}
 	
 	public void setUpUI(){
+		if(this.parent==null){
+			System.out.println("UIEventTable: you must setParent() first");
+			return;
+		}
 		parent.setVisible(true);
 		Label title = new Label(event.getTitle(), DTL.skin);
 		this.add(title).left().top();
