@@ -21,7 +21,7 @@ public class UIEventTable extends Table {
 	private DTLEvent event;
 	Json json;
 	private Table table = this;
-	Group parent;
+	UIPopUpWindow<UIEventTable> parent;
 	
 	
 	public UIEventTable(String eventString){
@@ -35,6 +35,7 @@ public class UIEventTable extends Table {
 	}
 	
 	public void setUpUI(){
+		parent.setVisible(true);
 		Label title = new Label(event.getTitle(), DTL.skin);
 		this.add(title).left().top();
 		this.row();
@@ -59,7 +60,6 @@ public class UIEventTable extends Table {
 			if(resp.getTriggersEvent()==null){
 				clickListener = new ClickListener(){
 					public void clicked(InputEvent event, float x, float y){
-//						table.getParent().getParent().clear();
 						parent.setVisible(false);
 					} 
 				};
@@ -70,7 +70,7 @@ public class UIEventTable extends Table {
 						UIEventTable newPopUp = new UIEventTable(resp.getTriggersEvent().substring(0, length-6));
 						newPopUp.setParent(parent);
 						newPopUp.setUpUI();
-						((UIPopUpWindow<UIEventTable>) parent).loadNewChild((newPopUp));
+						parent.loadNewChild((newPopUp));
 					}
 				};
 			}
@@ -106,7 +106,7 @@ public class UIEventTable extends Table {
 		return null;
 	}
 	
-	public void setParent(Group parent){
+	public void setParent(UIPopUpWindow<UIEventTable> parent){
 		this.parent = parent;
 	}
 }
