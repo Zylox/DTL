@@ -25,14 +25,14 @@ public class Background extends Widget{
 		
 		if(((GameplayScreen)Screens.GAMEPLAY.getScreen()).isPaused()){
 			image = randNoise.getNextImage(0f);
-			image.setColor(this.getColor().cpy().mul(Color.DARK_GRAY).mul(Color.BLUE));
+			image.setColor(this.getColor().cpy().mul(Color.DARK_GRAY).mul(Color.BLUE).clamp());
 
 		}else{
-			image = randNoise.getNextImage(.001f);
+			image = randNoise.getNextImage(.002f);
 			Color color2 = this.getColor().cpy();
 //			color2.g += 1.5;
 			
-			image.setColor(color2.mul(Color.BLUE).mul(Color.LIGHT_GRAY));
+			image.setColor(color2.mul(Color.BLUE).mul(Color.LIGHT_GRAY).clamp());
 		}
 		image.setBounds(0, 0, DTL.VWIDTH, DTL.VHEIGHT);
 		image.draw(batch, parentAlpha);

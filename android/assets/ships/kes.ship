@@ -6,21 +6,21 @@ power= 8
 currency= 90
 fuel= 90
 layout=
-{4,3 4,4} , human
-{1,1 1,2} , human
-{1,3 1,4} , human
-{3,6 3,7 4,6 4,7} , WeaponsModule , 1 , human
-{1,6 1,7 2,6 2,7} , human
-{2,4 2,5 3,4 3,5} , human
-{0,6 0,7} , human
-{5,6 5,7} , human
+{4,3 4,4}
+{1,1 1,2}
+{1,3 1,4}
+{3,6 3,7 4,6 4,7}
+{1,6 1,7 2,6 2,7}
+{2,4 2,5 3,4 3,5} , WeaponsModule , 3 , human
+{0,6 0,7}
+{5,6 5,7}
 {3,8 3,9 4,8 4,9} , MedbayModule , 1
 {1,8 1,9 2,8 2,9} , SheildModule , 2
-{3,10 3,11} , SensorsModule , 3
+{3,10 3,11} , SensorsModule , 1
 {2,10 2,11} , HatchControlModule , 1
 {2,12 2,13 3,12 3,13}
-{2,14 3,14} , BridgeModule , 1
-{2,1 2,2 3,1 3,2} , EngineModule , 1
+{2,14 3,14} , BridgeModule , 1 , human
+{2,1 2,2 3,1 3,2} , EngineModule , 2 , human
 {2,0 3,0}
 {4,1 4,2} , ClimateControlModule , 1
 endlayout
@@ -53,7 +53,7 @@ doors=
 {4,2 right}
 enddoors
 weapons=
-laser
-beamweapon
-concussionbomb
+torpedo worn
+laser likenew
+
 endweapons

@@ -13,11 +13,13 @@ public class WeaponsModule extends MainModule {
 	public WeaponsModule(int id, int maxLevel, Room room, Ship ship) {
 		super(id, maxLevel, 1, room, ship);
 		equippedWeapons = new ArrayList<Weapon>();
+		manable = true;
 	}
 	
 	public WeaponsModule(int id, int maxLevel, int level, Room room, Ship ship) {
 		super(id, maxLevel, level, room, ship);
 		equippedWeapons = new ArrayList<Weapon>();
+		manable = true;
 	}
 	
 	public ArrayList<Weapon> getEquippedWeapons(){

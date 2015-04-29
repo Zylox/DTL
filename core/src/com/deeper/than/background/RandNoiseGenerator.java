@@ -16,31 +16,39 @@ import com.badlogic.gdx.scenes.scene2d.ui.Image;
 public class RandNoiseGenerator {
 
 	private float[][] map;
+	private float[][] copyMap;
 	
 	private float highestValue;
 	private float lowestValue;
 	private Pixmap pix;
 	private Image img;
+	private Texture tex;
 	
 	private float simplexDepth=0;
-	private long seed;
+	private Color color;
+	private OpenSimplexNoise simplex;
 	
 	public RandNoiseGenerator(int width, int height, long seed){
-		this.seed = seed;
 		map = new float[height/4][width/4];
+		copyMap = new float[height/4][width/4];;
+		color = new Color();
+		pix = new Pixmap(map[0].length, map.length, FORMAT);
+		tex = new Texture(pix);
+		img = new Image(tex);
+		simplex = new OpenSimplexNoise(seed);
 	}
 	
 	public Image getNextImage(float delta){
 		simplexDepth+=delta;
-		map = getOpenSimplexHeighMap(map, seed, simplexDepth);
+		getOpenSimplexHeighMap(simplexDepth);
 		generateNewPicture();
 		return img;
 	}
 	
 	public void generateNewPicture(){
-		pix = genGreyscaleMap(map);
-		img = new Image(new Texture(pix));
-		pix.dispose();
+		genGreyscaleMap(map);
+		tex.draw(pix, 0,0);
+		
 	}
 	
 //	private void transformMap(){
@@ -51,7 +59,7 @@ public class RandNoiseGenerator {
 	
 	private static final Format FORMAT = Pixmap.Format.RGBA8888;
 	private Pixmap genGreyscaleMap(float[][] map){
-		Pixmap pix = new Pixmap(map[0].length, map.length, FORMAT);
+		
 		float mapValue = 0;
 		float hold;
 		for(int j = 0; j < map.length; j++){
@@ -59,7 +67,11 @@ public class RandNoiseGenerator {
 				mapValue = map[j][i];				
 				//water
 				hold = mapValue*mapValue/1f;
-				pix.setColor(new Color(hold,hold,hold, 1));
+				color.a = 1;
+				color.r = hold;
+				color.g = hold;
+				color.b = hold;
+				pix.setColor(color);
 				
 
 				pix.drawPixel(i, j);
@@ -69,9 +81,7 @@ public class RandNoiseGenerator {
 	}
 	
 	
-	public float[][] getOpenSimplexHeighMap(float[][] map, long seed){
-		OpenSimplexNoise simplex = new OpenSimplexNoise(seed);
-		this.map = map;
+	public void getOpenSimplexHeighMap(){
 		highestValue = -100000;
 		lowestValue = 100000;
 		for(int j = 0; j<map.length; j++){
@@ -82,12 +92,9 @@ public class RandNoiseGenerator {
 				map[j][i] = (float)Math.tan(value);
 			}
 		}
-		return map;
 	}
 	
-	public float[][] getOpenSimplexHeighMap(float[][] map, long seed, double z){
-		OpenSimplexNoise simplex = new OpenSimplexNoise(seed);
-		this.map = map;
+	public void getOpenSimplexHeighMap(double z){
 		highestValue = -100000;
 		lowestValue = 100000;
 		for(int j = 0; j<map.length; j++){
@@ -98,12 +105,11 @@ public class RandNoiseGenerator {
 				map[j][i] = value*value;
 			}
 		}
-		map = scale(0,1);
-		return map;
+		scale(.1f,.9f);
 	}
 	
-	public float[][] scale(float goalLow, float goalHigh){
-	float[][] newArray = copyMap(map);
+	public void scale(float goalLow, float goalHigh){
+	copyMap();
 	float avgValue = 0;
 	float lowAdjust = goalLow-lowestValue;
 	float scaleValue = goalHigh/(highestValue+lowAdjust);
@@ -116,23 +122,20 @@ public class RandNoiseGenerator {
 			avgValue = map[j][i];
 			avgValue += lowAdjust;
 			avgValue *= scaleValue;
-			newArray[j][i] = avgValue;
+			copyMap[j][i] = avgValue;
 			highestValue = Math.max(highestValue, avgValue);
 			lowestValue = Math.min(lowestValue, avgValue);
 		}
 	}
-	map = newArray;
-	return newArray;		
+	
+	map = copyMap;
 }
 	
-	public float[][] copyMap(float[][] oldMap){
-	float newArray[][] = new float[oldMap.length][oldMap[0].length];
-	for(int j = oldMap.length-1; j>=0; j--){
-		for(int i = oldMap[0].length-1; i>=0;i--){
-			newArray[j][i] = oldMap[j][i];
+	public void copyMap(){
+		for(int j = map.length-1; j>=0; j--){
+			for(int i = map[0].length-1; i>=0;i--){
+				copyMap[j][i] = map[j][i];
+			}
 		}
 	}
-	return newArray;
-}
-	
 }

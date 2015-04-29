@@ -69,7 +69,7 @@ public class UIReactorRow extends WidgetGroup{
 //						card2.setX(490);
 //						card2.setY(100);
 					}else{
-						moduleReac = new UIModuleReactorBar(mod instanceof SheildModule ? 2 : 0, Modules.getIcon(c.getCanonicalName()), reactorBar, mod);
+						moduleReac = new UIModuleReactorBar(mod instanceof SheildModule ? 2 : 1, Modules.getIcon(c.getCanonicalName()), reactorBar, mod);
 					}
 					mainReactorBars.add(moduleReac).spaceLeft(10).bottom().left().minWidth(ReactorBar.PREF_WIDTH).fillY().expandY();
 					moduleReactorBars.add(moduleReac);

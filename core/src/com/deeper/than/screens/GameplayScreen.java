@@ -183,7 +183,7 @@ public class GameplayScreen implements EnumerableScreen{
 	
 		Label tacos = new Label("tacos", DTL.skin);
 		//tacos.setFontScale(.4f);
-		uiT.add(tacos).bottom().left();
+		//uiT.add(tacos).bottom().left();
 		
 		ui.addActor(uiT);
 		ui.addActor(bottomWeps);
@@ -298,6 +298,7 @@ public class GameplayScreen implements EnumerableScreen{
 		// TODO Auto-generated method stub
 	    Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
+	    
 	    ////Key inputs here
 	    if(Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)){
 	    	mainMenu();
