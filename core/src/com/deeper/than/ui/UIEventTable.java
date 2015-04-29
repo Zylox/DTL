@@ -30,7 +30,7 @@ public class UIEventTable extends Table {
 	
 	public UIEventTable(DTLEvent event){
 		this.setFillParent(true);
-		this.setDebug(DTL.GLOBALDEBUG);
+		this.setDebug(DTL.GRAPHICALDEBUG);
 		this.event = event;
 	}
 	

@@ -65,8 +65,6 @@ public class GameplayScreen implements EnumerableScreen{
 	
 	
 	private Stage gameObjects;
-//	private Stage mapStage;
-//	private Stage eventStage;
 	private UIPopUpWindow<Table> mapTable;
 	private UIPopUpWindow<UIEventTable> eventTable;
 	private PlayerShip playerShip;
@@ -193,15 +191,10 @@ public class GameplayScreen implements EnumerableScreen{
 		
 		ui.setDebugAll(DTL.GRAPHICALDEBUG);
 		
-//		eventStage = new Stage(game.getViewport());
-//		<Table>(eventTable, "template");
 		UIEventTable uiEventTable = new UIEventTable("template");
 		eventTable = new UIPopUpWindow<UIEventTable>(uiEventTable);
 		uiEventTable.setParent(eventTable);
 		uiEventTable.setUpUI();
-
-		//eventTable.setUpUI();
-		//eventTable.setPa
 		
 		ui.addActor(eventTable);
 		
@@ -430,29 +423,5 @@ public class GameplayScreen implements EnumerableScreen{
 		if(color != null){
 			batch.setColor(returnColor);
 		}
-	}
-
-	public DTLEvent getDTLEventFromFile(String eventString){
-		
-		try{
-			FileHandle fh = Gdx.files.internal("events/"+eventString+".event");
-			String jsonString = fh.readString();
-			JsonValue root = new JsonReader().parse(jsonString);
-			String eventTitle = root.getString("title");
-			String eventText = root.getString("text");
-			ArrayList<Response> eventResponseList = new ArrayList<Response>();
-			JsonValue jv = root.get("responses");
-			for(JsonValue resp : jv){
-				String respText = resp.getString("inputText");
-				String respTrig = resp.getString("triggersEvent");
-				eventResponseList.add(new Response(respText, respTrig));
-			}
-			return new DTLEvent(eventTitle, eventText, eventResponseList);
-		} catch (Exception e){
-			System.out.println("Failed to get event from JSON");
-			e.printStackTrace();
-		}
-		
-		return null;
 	}
 }
