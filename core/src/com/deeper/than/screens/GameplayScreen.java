@@ -10,6 +10,7 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
@@ -48,7 +49,7 @@ public class GameplayScreen implements EnumerableScreen{
 	
 	public static ShapeRenderer shapeRen;
 	public static Texture highlight;
-	
+	public static Sprite reticule;
 	
 	private DTL game;
 	private Stage ui;
@@ -66,6 +67,7 @@ public class GameplayScreen implements EnumerableScreen{
 	private Crew selectedCrew;
 	private UIEnemyWindow enemyWindow;
 	private WeaponGenerator weaponGen;
+	private UIWeaponBottomBar bottomBar;
 	
 	private InputMultiplexer input;
 
@@ -95,7 +97,7 @@ public class GameplayScreen implements EnumerableScreen{
 		UIFastDrive.loadAssets();
 		Races.loadAnims();
 		shapeRen = new ShapeRenderer();
-
+		reticule = new Sprite(new Texture(Gdx.files.internal("targetreticule.png")));
 		UIEnemyWindow.loadAssets();
 	}
 	
@@ -175,22 +177,19 @@ public class GameplayScreen implements EnumerableScreen{
 		playerReacs.setupReactorBars();
 		uiT.row();
 		
-		UIWeaponBottomBar bottomWeps = new UIWeaponBottomBar(playerReacs.getWeaponUI());
+		bottomBar = new UIWeaponBottomBar(playerReacs.getWeaponUI());
 		System.out.println(playerReacs.getOriginX() + " " + playerReacs.getOriginY());
-		bottomWeps.setX(DTL.VWIDTH/3);
-		bottomWeps.setY(10);
+		bottomBar.setX(DTL.VWIDTH/3);
+		bottomBar.setY(10);
 		
 	
-		Label tacos = new Label("tacos", DTL.skin);
-		//tacos.setFontScale(.4f);
-		//uiT.add(tacos).bottom().left();
 		
 		ui.addActor(uiT);
-		ui.addActor(bottomWeps);
 		enemyWindow = new UIEnemyWindow(enemy);
 		enemyWindow.setBounds(DTL.VWIDTH * 2/3, DTL.VHEIGHT/6, DTL.VWIDTH/4, DTL.VHEIGHT - DTL.VHEIGHT/6 * 2);
 		enemyWindow.setUpTable();
 		ui.addActor(enemyWindow);
+		ui.addActor(bottomBar);
 		
 		
 		
@@ -316,6 +315,7 @@ public class GameplayScreen implements EnumerableScreen{
 	    	}
 	    	playerFastDrive.update(true);
 	    	evadeValue.setText("Evade: " + Integer.toString((int)(playerShip.getEvade()*100)) + "%");
+	    	
 	    	gameObjects.act();
 	    	ui.act();
 	    	crewPlateBar.update();
@@ -361,6 +361,10 @@ public class GameplayScreen implements EnumerableScreen{
 		this.selectedCrew = crew;
 	}
 	
+	public UIEnemyWindow getEnemyWindow(){
+		return enemyWindow;
+	}
+	
 	public Crew getSelectedCrew(){
 		return selectedCrew;
 	}
@@ -370,6 +374,20 @@ public class GameplayScreen implements EnumerableScreen{
 			return false;
 		}
 		return true;
+	}
+	
+	public boolean isTargetting(){
+		if(bottomBar != null){
+			return bottomBar.getSelected() != null; 
+		}
+		return false;
+	}
+	
+	public UIWeaponCard getTargetting(){
+		if(bottomBar != null){
+			return bottomBar.getSelected();
+		}
+		return null;
 	}
 	
 	@Override

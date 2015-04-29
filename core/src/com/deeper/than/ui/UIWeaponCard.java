@@ -9,6 +9,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.NinePatch;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Action;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.Container;
@@ -18,7 +19,10 @@ import com.badlogic.gdx.scenes.scene2d.ui.WidgetGroup;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.NinePatchDrawable;
 import com.deeper.than.DTL;
+import com.deeper.than.Room;
 import com.deeper.than.modules.WeaponsModule;
+import com.deeper.than.screens.GameplayScreen;
+import com.deeper.than.screens.Screens;
 import com.deeper.than.weapons.Weapon;
 
 /**
@@ -52,10 +56,12 @@ public class UIWeaponCard extends WidgetGroup {
 	private UIWeaponReactor powerBar;
 	private UIWeaponBottomBar container;
 	private Weapon weapon;
+	private Room target;
 	
 	public UIWeaponCard(float width, float height,Weapon weapon, WeaponsModule weapModule, UIWeaponModuleReacBar moduleUI){
 		this.weapon = weapon;
 		container = null;
+		target = null;
 		powerBar = new UIWeaponReactor(weapon, weapModule, moduleUI);
 		Container<UIWeaponReactor> barCont = new Container<UIWeaponReactor>(powerBar);
 		barCont.fill();
@@ -83,9 +89,13 @@ public class UIWeaponCard extends WidgetGroup {
 				if(powerBar.getPowered() ==0){
 					unSelectSelf();
 				}
+				
 				return false;
 			}
 		});
+	}
+	
+	private void fire(){
 	}
 	
 	public boolean setSelfSelected(){
@@ -110,10 +120,31 @@ public class UIWeaponCard extends WidgetGroup {
 		}else{
 			bgInstance.setColor(Color.WHITE);
 		}
+		
+		
 		super.draw(batch, parentAlpha);
+		if(target != null){
+			GameplayScreen.reticule.setColor(Color.RED);
+			Vector2 centerLoc = target.getCenterLoc();
+			float offX = ((GameplayScreen)Screens.GAMEPLAY.getScreen()).getEnemyWindow().getX();
+			float offY= ((GameplayScreen)Screens.GAMEPLAY.getScreen()).getEnemyWindow().getY();
+			GameplayScreen.reticule.setPosition(centerLoc.x+offX-container.getX() - GameplayScreen.reticule.getWidth()/2, centerLoc.y+offY-container.getY()-GameplayScreen.reticule.getHeight()/2);
+			GameplayScreen.reticule.draw(batch);
+			
+		}
 	}
 	
 	public void registerContainer(UIWeaponBottomBar cont){
 		this.container = cont;
 	}
+
+	public Room getTarget() {
+		return target;
+	}
+
+	public void setTarget(Room target) {
+		this.target = target;
+	}
+	
+	
 }

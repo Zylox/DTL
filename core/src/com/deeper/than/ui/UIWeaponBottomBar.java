@@ -50,7 +50,7 @@ public class UIWeaponBottomBar extends WidgetGroup{
 		}
 	}
 	
-	protected UIWeaponCard getSelected(){
+	public UIWeaponCard getSelected(){
 		return selected;
 	}
 
@@ -63,4 +63,5 @@ public class UIWeaponBottomBar extends WidgetGroup{
 	public void draw(Batch batch, float parentAlpha){
 		super.draw(batch, parentAlpha);
 	}
+	
 }

@@ -862,6 +862,10 @@ public class Crew extends Actor{
 		return ownerShip;
 	}
 	
+	public Ship getOccupiedShip(){
+		return occupiedShip;
+	}
+	
 	public Races getRace() {
 		return race;
 	}

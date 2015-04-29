@@ -65,7 +65,7 @@ public class FloorTile extends Actor{
 				
 				if(button == Buttons.RIGHT){
 					Crew crew = ((GameplayScreen)Screens.GAMEPLAY.getScreen()).getSelectedCrew();
-					if(crew != null){
+					if(crew != null && crew.getOccupiedShip() == ship){
 						GridSquare gs = gridSquare.getRoom().selectTileToWalkTo();
 						Vector2 movePos;
 						if(gs!= null){
@@ -83,6 +83,11 @@ public class FloorTile extends Actor{
 					}
 				
 					return true;
+				}else if(button == Buttons.LEFT){
+					if(((GameplayScreen)Screens.GAMEPLAY.getScreen()).isTargetting() && ship instanceof EnemyShip){
+						((GameplayScreen)Screens.GAMEPLAY.getScreen()).getTargetting().setTarget(gridSquare.getRoom());
+					}
+					return false;
 				}else{
 					if(!((GameplayScreen)Screens.GAMEPLAY.getScreen()).isCrewSelected()){
 						Module mod = gridSquare.getRoom().getModule();

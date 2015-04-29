@@ -25,5 +25,13 @@ public class Laser extends Weapon {
 		params.powerCost = 1;
 		return params;
 	}
+	/* (non-Javadoc)
+	 * @see com.deeper.than.weapons.Weapon#fire()
+	 */
+	@Override
+	public void fire() {
+		// TODO Auto-generated method stub
+		
+	}
 	
 }

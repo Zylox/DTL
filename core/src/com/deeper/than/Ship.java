@@ -386,9 +386,16 @@ public class Ship extends Group{
 			for(Module m : modules){
 				m.draw(batch);
 			}
+			
 			for(Room r : rooms){
 				if(r.isHoveredOver() && ((GameplayScreen)Screens.GAMEPLAY.getScreen()).isCrewSelected()){
-					r.drawHover(batch);
+					if(this instanceof PlayerShip){
+						r.drawHover(batch);
+					}
+				}else if(r.isHoveredOver() && ((GameplayScreen)Screens.GAMEPLAY.getScreen()).isTargetting()){
+					if(this instanceof EnemyShip){
+						r.drawHover(batch);
+					}
 				}
 			}
 			

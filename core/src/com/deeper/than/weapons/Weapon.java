@@ -1,6 +1,10 @@
 package com.deeper.than.weapons;
 
-public abstract class Weapon {
+import com.badlogic.gdx.scenes.scene2d.Action;
+import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.deeper.than.modules.Cooldown;
+
+public abstract class Weapon extends Actor{
 
 	public static final int MAX_POWER_PER_WEAPON = 4;
 
@@ -9,6 +13,8 @@ public abstract class Weapon {
 	private WeaponParams qualityMods;
 	private int power;
 	private boolean wantsPower;
+	private Cooldown cooldown;
+	private boolean shot;
 	
 	public Weapon(String name, WeaponParams params){
 		this.params = params;
@@ -16,6 +22,20 @@ public abstract class Weapon {
 		this.params.maker.modifyWeaponParams(params);
 		qualityMods = params.quality.getRandomParamMods();
 		wantsPower = false;
+		shot = false;
+		cooldown = new Cooldown();
+		cooldown.setCooldownLimit(getRechargeSpeed());
+		this.addAction(new Action() {
+			
+			@Override
+			public boolean act(float delta) {
+				if(shot){
+					cooldown.startCooldown();
+				}
+				cooldown.advanceCooldown(1);
+				return false;
+			}
+		});
 	}
 	
 	public String getParamString(){
@@ -67,6 +87,12 @@ public abstract class Weapon {
 	public int getPowered(){
 		return power;
 	}
+	
+	public boolean isOnCooldown(){
+		return cooldown.isOnCooldown();
+	}
+	
+	public abstract void fire();
 	
 	/**
 	 * Sets how much power the weapon has to work with

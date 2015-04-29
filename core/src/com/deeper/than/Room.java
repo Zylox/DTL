@@ -169,16 +169,22 @@ public class Room {
 		bounds = new Vector2();
 		centerLoc.x = ship.getX() +  minX + (maxX-minX)/2;
 		centerLoc.y = ship.getY() + minY + (maxY-minY)/2;
+		
 		bottomLeft.x = ship.getX() + minX;
 		bottomLeft.y = ship.getY() + minY;
 		bounds.x = maxX-minX;
 		bounds.y = maxY-minY;
 	}
 	
+	public Vector2 getBottomLeft(){
+		return bottomLeft;
+	}
+	
 	public void drawHover(Batch batch){
 		if(bottomLeft == null){
 			calculateBounds();
 		}
+//		System.out.println(centerLoc);
 		Texture wall = GameplayScreen.highlight;
 		Color color = batch.getColor();
 		batch.setColor(Color.YELLOW);
