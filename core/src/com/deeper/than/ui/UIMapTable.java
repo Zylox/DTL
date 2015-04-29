@@ -1,5 +1,6 @@
 package com.deeper.than.ui;
 
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
@@ -47,14 +48,18 @@ public class UIMapTable extends Table {
 		
 		Table innerTable = new Table();
 		innerTable.setDebug(DTL.GLOBALDEBUG);
+		innerTable.setFillParent(true);
 		innerTable.pad(15);
-		innerTable.add().prefHeight(DTL.VHEIGHT);
-		innerTable.row();
+		
+		Texture u_node = UIMapScreen.getUnvisitedNodeTexture();
+		Texture v_node = UIMapScreen.getVisitedNodeTexture();
+		Texture c_node = UIMapScreen.getCurrentNodeTexture();
 		
 		for(DTLMapPoint mp: map.getNodes()){
 			
 		}
-		
+		innerTable.add().prefHeight(DTL.VHEIGHT);
+		innerTable.row();
 		this.add(innerTable);
 	}
 }

@@ -15,5 +15,15 @@ public class UIMapScreen extends Table {
 		unvisitedNode = new Texture(Gdx.files.internal("nodes/u_point.png"));
 	}
 	
+	public static Texture getVisitedNodeTexture(){
+		return visitedNode;
+	}
 	
+	public static Texture getCurrentNodeTexture(){
+		return currentNode;
+	}
+	
+	public static Texture getUnvisitedNodeTexture(){
+		return unvisitedNode;
+	}
 }
