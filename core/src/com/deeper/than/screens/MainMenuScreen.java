@@ -62,7 +62,7 @@ public class MainMenuScreen implements EnumerableScreen {
 		Gdx.input.setInputProcessor(input);
 		
 		table = new Table();
-		table.setBackground(new TextureRegionDrawable(new TextureRegion(new Texture(Gdx.files.internal("title_screen2.png")))));
+		table.setBackground(new TextureRegionDrawable(new TextureRegion(new Texture(Gdx.files.internal("title_screen2.1.png")))));
 		table.setFillParent(true);
 		stage.addActor(table);
 		
