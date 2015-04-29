@@ -54,9 +54,13 @@ public class UIMapTable extends Table {
 		Texture u_node = UIMapScreen.getUnvisitedNodeTexture();
 		Texture v_node = UIMapScreen.getVisitedNodeTexture();
 		Texture c_node = UIMapScreen.getCurrentNodeTexture();
+		int i=0;
 		
 		for(DTLMapPoint mp: map.getNodes()){
+			float x = (float) mp.getX();
+			float y = (float) mp.getY();
 			
+			i++;
 		}
 		innerTable.add().prefHeight(DTL.VHEIGHT);
 		innerTable.row();
