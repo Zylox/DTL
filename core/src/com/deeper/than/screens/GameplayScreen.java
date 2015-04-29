@@ -429,7 +429,12 @@ public class GameplayScreen implements EnumerableScreen{
 	}
 	
 	public void drawMap(){
-		pause();
-		mapTable.setVisible(true);
+		if(!mapTable.isVisible()){
+			pause();
+			mapTable.setVisible(true);
+		} else {
+			mapTable.setVisible(false);
+			setPaused(false);
+		}
 	}
 }

@@ -30,10 +30,11 @@ public class UIMapTable extends Table {
 			return;
 		}
 		this.setFillParent(true);
+		
+		
 		Label title = new Label("Map, level: " + map.getLevel(), DTL.skin);
 		this.add(title).left().top();
 		this.row();
-		
 		TextButton exit = new TextButton("X", DTL.skin);
 		this.add(exit).right().top();
 		ClickListener clickListener = new ClickListener(){
@@ -47,9 +48,13 @@ public class UIMapTable extends Table {
 		Table innerTable = new Table();
 		innerTable.setDebug(DTL.GLOBALDEBUG);
 		innerTable.pad(15);
+		innerTable.add().prefHeight(DTL.VHEIGHT);
+		innerTable.row();
 		
 		for(DTLMapPoint mp: map.getNodes()){
 			
 		}
+		
+		this.add(innerTable);
 	}
 }
