@@ -100,6 +100,7 @@ public class Ship extends Group{
 			ScriptParser.parserPool.free(parser);
 		} catch (IOException e) {
 			e.printStackTrace();
+			Gdx.app.exit();
 		}
 		
 		init();

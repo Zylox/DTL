@@ -29,7 +29,10 @@ public class EnemyShip extends Ship{
 	}
 	
 	public boolean canPlayerSeeMyPower(){
-		return playerShip.getSensors().canSeeEnemyPowerUse();
+		if(playerShip.getSensors() != null){
+			return playerShip.getSensors().canSeeEnemyPowerUse();
+		}
+		return false;
 	}
 
 	@Override
