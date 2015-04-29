@@ -56,11 +56,23 @@ public class ScriptParser implements Poolable{
 	private String[] tokens;
 	
 	public void loadShipScript(Ship ship, String str, WeaponGenerator weaponGen) throws IOException, ShipLoadException{
-		loadShipScript(ship, new Scanner(str), weaponGen);
+		Scanner scanner = new Scanner(str);
+		try{
+			loadShipScript(ship, scanner, weaponGen);
+		}catch(Exception e){
+			scanner.close();
+			throw e;
+		}
 	}
 	
 	public void loadShipScript(Ship ship, FileHandle filepath, WeaponGenerator weaponGen) throws IOException, ShipLoadException{
-		loadShipScript(ship, new Scanner(filepath.read()), weaponGen);
+		Scanner scanner = new Scanner(filepath.read());
+		try{
+			loadShipScript(ship, scanner, weaponGen);
+		}catch(Exception e){
+			scanner.close();
+			throw e;
+		}
 	}
 
 	public void proccessNextLine(String line, Ship ship, Scanner scanner, WeaponGenerator weaponGen) throws ShipLoadException{

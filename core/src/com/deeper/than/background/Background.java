@@ -51,7 +51,7 @@ public class Background extends Widget{
 	@Override
 	public void draw(Batch batch, float parentAlpha){
 		Color color = batch.getColor().cpy();
-		
+
 		image.setBounds(0, 0, DTL.VWIDTH, DTL.VHEIGHT);
 		image.draw(batch, parentAlpha);
 		batch.setColor(color);
