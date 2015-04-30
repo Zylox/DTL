@@ -12,7 +12,7 @@ layout=
 {3,7 4,8} , human
 {5,1 6,1} , human
 {5,2 5,3 6,2 6,3} , WeaponsModule , 1
-{5,6 5,7 6,6 6,7} , SheildModule , 1
+{5,6 5,7 6,6 6,7}
 {5,8 6,8}
 {4,4 4,5 5,4 5,5} , EngineModule , 1
 {7,1 7,2}
@@ -22,30 +22,6 @@ layout=
 {8,6 8,7}
 endlayout
 doors=
-{1,2 up}
-{1,7 down}
-{2,1 right}
-{2,2 right}
-{4,1 right}
-{6,1 right}
-{7,2 right}
-{6,2 right}
-{5,2 left}
-{3,2 up}
-{4,2 up}
-{5,3 up}
-{5,5 down}
-{4,4 left}
-{4,5 left}
-{8,3 up}
-{8,6 down}
-{8,7 left}
-{6,7 right}
-{5,7 left}
-{6,8 right}
-{5,8 left}
-{3,7 down}
-{4,7 down}
 enddoors
 weapons=
 empweapon
