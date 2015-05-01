@@ -41,8 +41,8 @@ public class MainMenuScreen implements EnumerableScreen {
 	public void create(DTL game){
 		this.game = game;
 		stage = new Stage(game.getViewport());
-		stage2 = new Stage(game.getViewport());
-		stage2.getViewport().update((int) (DTL.VWIDTH/1), (int) (DTL.VHEIGHT/1), false);
+//		stage2 = new Stage(game.getViewport());
+		//stage2.getViewport().update((int) (DTL.VWIDTH/1), (int) (DTL.VHEIGHT/1), false);
 
 		/*Image img = new Image(new Texture(Gdx.files.internal("demonjonathan.png")));
 		img.setBounds(img.getX()+img.getWidth()/4, img.getY()+img.getHeight()/4, img.getWidth()/2, img.getHeight()/2);
@@ -58,7 +58,7 @@ public class MainMenuScreen implements EnumerableScreen {
 		
 		input = new InputMultiplexer();
 		input.addProcessor(stage);
-		input.addProcessor(stage2);
+//		input.addProcessor(stage2);
 		Gdx.input.setInputProcessor(input);
 		
 		table = new Table();
@@ -125,7 +125,6 @@ public class MainMenuScreen implements EnumerableScreen {
 		
 		
 		table.setDebug(DTL.GRAPHICALDEBUG);
-		//img.setDebug(DTL.GRAPHICALDEBUG);
 		
 		loadAssets();
 	}
@@ -153,24 +152,24 @@ public class MainMenuScreen implements EnumerableScreen {
 	    	loadtest = false;
 	    }
 	    
-		for(Actor a : stage2.getActors()){
-			a.addAction(Actions.rotateBy(1));
-			a.addAction(Actions.moveBy((float)Math.random()*10-.5f*10, (float)Math.random()*10-.5f*10));
-
-		}
+//		for(Actor a : stage2.getActors()){
+//			a.addAction(Actions.rotateBy(1));
+//			a.addAction(Actions.moveBy((float)Math.random()*10-.5f*10, (float)Math.random()*10-.5f*10));
+//
+//		}
 	    
 	    stage.act(delta);
-	    stage2.act(delta);
+	//    stage2.act(delta);
 	    
 	    stage.draw();
-	    stage2.draw();
+//	    stage2.draw();
 	    
 	}
 
 	@Override
 	public void resize(int width, int height) {
 		
-		stage2.getViewport().update(width, height, false);
+		//stage2.getViewport().update(width, height, false);
 		stage.getViewport().update(width, height, true);
 		game.setViewport(stage.getViewport());
 	}

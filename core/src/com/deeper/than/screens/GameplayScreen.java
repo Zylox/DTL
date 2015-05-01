@@ -90,6 +90,7 @@ public class GameplayScreen implements EnumerableScreen{
 		this.game = game;
 
 		loadAssets();
+		weaponGen = new WeaponGenerator();
 	}
 	
 	public void loadAssets(){
@@ -120,7 +121,7 @@ public class GameplayScreen implements EnumerableScreen{
 		mapGenerator.generate();
 		map = mapGenerator.getMap();
 		
-		weaponGen = new WeaponGenerator();
+		
 //		weaponGen.getQualityDist().clearDistribution();
 //		weaponGen.getQualityDist().setPercent(100, WeaponQualities.EXCEPTIONAL);
 
@@ -508,5 +509,9 @@ public class GameplayScreen implements EnumerableScreen{
 			mapTable.setVisible(false);
 			setPaused(false);
 		}
+	}
+	
+	public WeaponGenerator getWeaponGenerator(){
+		return weaponGen;
 	}
 }
