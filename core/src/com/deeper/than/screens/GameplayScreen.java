@@ -76,6 +76,7 @@ public class GameplayScreen implements EnumerableScreen{
 	private UIEnemyWindow enemyWindow;
 	private WeaponGenerator weaponGen;
 	private UIWeaponBottomBar bottomBar;
+	private Label pausedLabel;
 	private DTLMap map;
 	private MapGenerator mapGenerator;
 	
@@ -192,11 +193,15 @@ public class GameplayScreen implements EnumerableScreen{
 		uiT.row();
 		
 		bottomBar = new UIWeaponBottomBar(playerReacs.getWeaponUI());
-		System.out.println(playerReacs.getOriginX() + " " + playerReacs.getOriginY());
 		bottomBar.setX(DTL.VWIDTH/3);
 		bottomBar.setY(10);
 		
-	
+		pausedLabel = new Label("Paused\n(press space)", DTL.skin);
+		pausedLabel.setAlignment(Align.center);
+		float pLabelWidth = 55;
+		float pLabelHeight = 25;
+		pausedLabel.setBounds(DTL.VWIDTH/2 - pLabelWidth/2, DTL.VHEIGHT/3f - pLabelHeight/2, pLabelWidth, pLabelHeight);
+		ui.addActor(pausedLabel);
 		
 		ui.addActor(uiT);
 		enemyWindow = new UIEnemyWindow(enemy);
@@ -306,8 +311,8 @@ public class GameplayScreen implements EnumerableScreen{
 			}
 		});
 		timeAccumulator = 0;
-		selectedCrew = null;
-		isPaused = false;
+		selectedCrew = null;	
+		setPaused(true);
 		eventWindow = true;
 	}
 	
@@ -448,6 +453,7 @@ public class GameplayScreen implements EnumerableScreen{
 	}
 
 	public void setPaused(boolean isPaused) {
+		pausedLabel.setVisible(isPaused);
 		this.isPaused = isPaused;
 	}
 
