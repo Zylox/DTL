@@ -88,6 +88,33 @@ public class Room {
 		return false;
 	}
 	
+	public void takeDamage(int amt){
+		if(ship.takeDamage(amt)){
+			if(module != null){
+				module.recieveDamage(amt);
+			}
+		}
+	}
+	
+	public void takeDamageBypassSheilds(int amt){
+		ship.takeDamage(amt);
+		if(module != null){
+			module.recieveDamage(amt);
+		}
+	}
+	
+	public void takeSheildDamage(int amt){
+		ship.damageSheilds(amt);
+	}
+	
+	public void takeIonDamage(int amt){
+		if(!ship.takeIonDamage(amt)){
+			if(module != null){
+				module.receiveIonicCharge(amt);;
+			}
+		}
+	}
+	
 	public boolean isinRoom(Vector2 pos){
 		for(GridSquare gs : squares){
 			if(gs.getPos().equals(pos)){
@@ -143,6 +170,16 @@ public class Room {
 			calculateBounds();
 		}
 		return centerLoc;
+	}
+	
+	public Vector2 getCenterLocInStage(){
+		if(centerLoc == null){
+			calculateBounds();
+		}
+		Vector2 newC = centerLoc.cpy().sub(ship.getX(),ship.getY());
+		ship.localToStageCoordinates(newC);
+		//ship.getStage().stageToScreenCoordinates(newC);
+		return newC;
 	}
 	
 	/**
@@ -309,6 +346,14 @@ public class Room {
 			}
 		}
 		return false;
+	}
+	
+	public boolean isPlayerRoom(){
+		return this.ship instanceof PlayerShip;
+	}
+	
+	public Ship getShip(){
+		return ship;
 	}
 	
 	public int getSize(){

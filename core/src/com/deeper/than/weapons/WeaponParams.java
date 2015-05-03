@@ -10,7 +10,7 @@ package com.deeper.than.weapons;
 
 public class WeaponParams{
 	public float accuracy;
-	public float baseDamage;
+	public int baseDamage;
 	public float critDamage;
 	public float critChance;
 	public float rechargeSpeed;

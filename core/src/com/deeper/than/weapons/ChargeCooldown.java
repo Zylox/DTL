@@ -24,7 +24,18 @@ public class ChargeCooldown extends Cooldown {
 	public void charge(int amt){
 		if(this.isOnCooldown()){
 			this.advanceCooldown(amt);
+			if(!this.isOnCooldown()){
+				charged = true;
+			}
 		}
 		
+	}
+	
+	public boolean isCharged(){
+		return charged;
+	}
+	
+	public void loseCharge(){
+		charged = false;
 	}
 }

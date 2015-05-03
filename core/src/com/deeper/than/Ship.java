@@ -11,6 +11,7 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.NinePatch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.utils.OrderedMap;
@@ -76,7 +77,7 @@ public class Ship extends Group{
 	private int maxHealth;
 	private int power;
 	
-	private ArrayList<Weapon> weapons;
+	protected ArrayList<Weapon> weapons;
 	
 	/**
 	 * Creates a ship based on the shipScript added in.
@@ -255,8 +256,31 @@ public class Ship extends Group{
 				setBounds(game.getViewport().getWorldWidth()/3 - x/2,game.getViewport().getWorldHeight()/2 - y/2, x, y);
 			}
 			
+			refreshWeaponOrigins();
 			
 			loadAssets();
+	}
+	
+	public void refreshWeaponOrigins(){
+		for(Weapon w : weapons){
+			w.setFireOrigin(getTip());
+		}		
+
+	}
+	
+	public Vector2 getTip(){
+		Vector2 tip = new Vector2();
+		if(this instanceof PlayerShip){
+			tip.x = this.getWidth();
+			tip.y = this.getHeight()/2;
+		}else if(this instanceof EnemyShip){
+			tip.x = this.getWidth()/2;
+			tip.y = this.getHeight();
+		}
+		
+		this.localToStageCoordinates(tip);
+		
+		return tip;
 	}
 	
 	//public
@@ -707,8 +731,37 @@ public class Ship extends Group{
 	public int getHealth() {
 		return health;
 	}
+	
+	public boolean takeDamage(int amt){
+		if(sheilds != null && sheilds.getActiveSheildLayers() != 0){
+			damageSheilds(amt);
+			return false;
+		}else{
+			setHealth(getHealth()-amt);
+			return true;
+		}
+	}
+	
+	public boolean takeDamageBypassSheilds(int amt){		
+		setHealth(getHealth()-amt);
+		return true;
+	}
+	
+	public boolean takeIonDamage(int amt){
+		if(sheilds != null && sheilds.getActiveSheildLayers() != 0){
+			sheilds.receiveIonicCharge(amt);
+			return true;
+		}
+		return false;
+	}
 
 	public void setHealth(int health) {
+		if(health < 0){
+			health = 0;
+		}
+		if(health > getMaxHealth()){
+			health = getMaxHealth();
+		}
 		this.health = health;
 	}
 	
@@ -741,9 +794,9 @@ public class Ship extends Group{
 		return sheilds.getCooldownProgress();
 	}
 	
-	public void damageSheilds(){
+	public void damageSheilds(int amt){
 		if(sheilds != null){
-			sheilds.takeSheildDamage();
+			sheilds.takeSheildDamage(amt);
 		}
 	}
 	
@@ -755,6 +808,15 @@ public class Ship extends Group{
 		evade += bridge.getBaseEvasionRate() + engine.getEvasionChance();
 		evade *= bridge.getEvasionRetention();
 		return evade;
+	}
+	
+	public void shotEvaded(){
+		if(engine != null){
+			engine.giveEvadeExp();
+		}
+		if(bridge != null){
+			bridge.giveEvadeExp();
+		}
 	}
 	
 	public Module getModule(Class<? extends Module> module){

@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.WidgetGroup;
 import com.deeper.than.DTL;
+import com.deeper.than.EnemyShip;
 import com.deeper.than.PlayerShip;
 import com.deeper.than.Ship;
 import com.deeper.than.modules.MainModule;
@@ -56,7 +57,11 @@ public class UIReactorRow extends WidgetGroup{
 			if(mod != null){
 				if(mod instanceof MainModule){
 					if(mod instanceof WeaponsModule){
-						moduleReac = new UIWeaponModuleReacBar(0, reactorBar, (WeaponsModule)mod);
+						if(ship instanceof EnemyShip){
+							moduleReac = new UIWeaponModuleReacBar(mod.getLevel(), reactorBar, (WeaponsModule)mod);
+						}else{
+							moduleReac = new UIWeaponModuleReacBar(0, reactorBar, (WeaponsModule)mod);
+						}
 						wModreac = (UIWeaponModuleReacBar) moduleReac;
 //						float cardWidth = 120;
 //						float cardHeight = 60;

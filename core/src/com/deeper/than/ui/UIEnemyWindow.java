@@ -3,8 +3,11 @@ package com.deeper.than.ui;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.NinePatch;
+import com.badlogic.gdx.scenes.scene2d.Action;
+import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.WidgetGroup;
+import com.deeper.than.DTL;
 import com.deeper.than.EnemyShip;
 import com.deeper.than.FloorTile;
 
@@ -17,6 +20,7 @@ public class UIEnemyWindow extends WidgetGroup{
 	private EnemyShip ship;
 	private Table table;
 	private UIReactorRow shipReactors;
+	private UIWeaponBottomBar enemyWeaps;
 	
 	public UIEnemyWindow(EnemyShip ship){
 		this.ship = ship;
@@ -54,6 +58,11 @@ public class UIEnemyWindow extends WidgetGroup{
 		ship.setBounds(this.getWidth()/2 - x/2, this.getHeight()/2 - y/2, x, y);
 		this.addActor(ship);
 		
+		enemyWeaps = new UIWeaponBottomBar(shipReactors.getWeaponUI());
+		enemyWeaps.setBounds(DTL.VWIDTH, 0, 0, 0);
+		enemyWeaps.setTouchable(Touchable.disabled);
+		this.addActor(enemyWeaps);
+		ship.setWeaponsBar(enemyWeaps);
 	}
 	
 	@Override
@@ -65,6 +74,10 @@ public class UIEnemyWindow extends WidgetGroup{
 	
 	public static void loadAssets(){
 		backgroundNinePatch = new NinePatch(new Texture("enemyBackground.png"),1,3,1,3);
+	}
+	
+	public EnemyShip getShip(){
+		return ship;
 	}
 	
 }
