@@ -22,15 +22,15 @@ public class MainMenuScreen implements EnumerableScreen {
 
 	private DTL game;
 	private Stage stage;
-	private Stage stage2;
 	private Table table;
 	
 	private ShapeRenderer shapeRen;
-	TextButton playButton;
-	TextButton optionsButton;
-	TextButton exitButton;
+	private TextButton playButton;
+	private TextButton newGameButton;
+	private TextButton optionsButton;
+	private TextButton exitButton;
 	
-	InputMultiplexer input;
+	private InputMultiplexer input;
 
 	private boolean loadtest = true;
 	
@@ -41,24 +41,9 @@ public class MainMenuScreen implements EnumerableScreen {
 	public void create(DTL game){
 		this.game = game;
 		stage = new Stage(game.getViewport());
-//		stage2 = new Stage(game.getViewport());
-		//stage2.getViewport().update((int) (DTL.VWIDTH/1), (int) (DTL.VHEIGHT/1), false);
-
-		/*Image img = new Image(new Texture(Gdx.files.internal("demonjonathan.png")));
-		img.setBounds(img.getX()+img.getWidth()/4, img.getY()+img.getHeight()/4, img.getWidth()/2, img.getHeight()/2);
-		img.setOrigin(img.getWidth()/2, img.getHeight()/2);
-//		img.setBounds(img.getX(), img.getY(), img.getWidth(), img.getHeight());
-		img.addListener(new InputListener() {
-		    public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
-		        return true;
-		    }
-		});
-		stage2.addActor(img);
-		img.setPosition(20, (stage.getViewport().getWorldHeight()/2)-(img.getHeight()/2));*/
 		
 		input = new InputMultiplexer();
 		input.addProcessor(stage);
-//		input.addProcessor(stage2);
 		Gdx.input.setInputProcessor(input);
 		
 		table = new Table();
@@ -66,10 +51,17 @@ public class MainMenuScreen implements EnumerableScreen {
 		table.setFillParent(true);
 		stage.addActor(table);
 		
-		playButton = new TextButton("Play Game", DTL.skin);
+		playButton = new TextButton("Continue", DTL.skin);
 		playButton.addListener(new ChangeListener() {
 		    public void changed (ChangeEvent event, Actor actor) {
 		    	play();
+		    }
+		});
+		
+		newGameButton = new TextButton("New Game", DTL.skin);
+		newGameButton.addListener(new ChangeListener() {
+		    public void changed (ChangeEvent event, Actor actor) {
+		    	newGame();
 		    }
 		});
 		optionsButton = new TextButton("Options", DTL.skin);
@@ -85,43 +77,7 @@ public class MainMenuScreen implements EnumerableScreen {
 		    }
 		});
 		
-		
-		
-		
-		table.add().expandX();
-		table.add().expand().height(400);
-		table.add().expandX();
-		table.row();
-		table.add().expandX();
-		table.add(playButton).width(300).height(50).pad(10);
-		table.add().expandX();
-		table.row();
-		table.add().expandX();
-		table.add(optionsButton).width(300).height(50).pad(10);
-		table.add().expandX();
-		if(DTL.developmentMode){
-			TextButton shipBuilderButton = new TextButton("Ship Builder", DTL.skin);
-			shipBuilderButton.addListener(new ChangeListener() {
-				public void changed (ChangeEvent event, Actor actor) {
-					goToShipBuilder();
-				}
-			});
-
-			table.row();
-			table.add().expandX();
-			table.add(shipBuilderButton).width(300).height(50).pad(10);
-			table.add().expandX();
-		}
-		table.row();
-		table.add().expandX();
-		table.add(exitButton).width(300).height(50).pad(10);
-		table.add().expandX();
-		table.row();
-		table.add().expandX();
-		table.row();
-		table.add().expandX();
-		table.add().expand().height(300);
-		table.add().expandX();
+		configureTable(false);
 		
 		
 		table.setDebug(DTL.GRAPHICALDEBUG);
@@ -138,6 +94,9 @@ public class MainMenuScreen implements EnumerableScreen {
 		// TODO Auto-generated method stub
 		DTL.printDebug("Main Menu State");
 		Gdx.input.setInputProcessor(input);
+		if(DTL.gameActive){
+			configureTable(true);
+		}
 	}
 
 	@Override
@@ -152,17 +111,9 @@ public class MainMenuScreen implements EnumerableScreen {
 	    	loadtest = false;
 	    }
 	    
-//		for(Actor a : stage2.getActors()){
-//			a.addAction(Actions.rotateBy(1));
-//			a.addAction(Actions.moveBy((float)Math.random()*10-.5f*10, (float)Math.random()*10-.5f*10));
-//
-//		}
-	    
 	    stage.act(delta);
-	//    stage2.act(delta);
 	    
 	    stage.draw();
-//	    stage2.draw();
 	    
 	}
 
@@ -176,11 +127,50 @@ public class MainMenuScreen implements EnumerableScreen {
 
 	public void play(){
 		//sends to the GameplayScreen
-		if(DTL.gameActive){
-			game.setScreen(Screens.GAMEPLAY.getScreen());			
-		}else{
-			game.setScreen(Screens.NEWGAME.getScreen());
+//		if(DTL.gameActive){
+//			game.setScreen(Screens.GAMEPLAY.getScreen());			
+//		}else{
+//			game.setScreen(Screens.NEWGAME.getScreen());
+//		}
+		game.setScreen(Screens.GAMEPLAY.getScreen());
+	}
+	
+	public void newGame(){
+		Screens.GAMEPLAY.create(game);
+		DTL.gameActive = false;
+		game.setScreen(Screens.NEWGAME.getScreen());
+	}
+	
+	private void configureTable(boolean continueB){
+		table.clear();
+		table.add().expandX();
+		table.add().expand().height(400);
+		table.add().expandX();
+		table.row();
+		if(continueB){
+			table.add().expandX();
+			table.add(playButton).width(300).height(50).pad(10);
+			table.add().expandX();
+			table.row();
 		}
+		table.add().expandX();
+		table.add(newGameButton).width(300).height(50).pad(10);
+		table.add().expandX();
+		table.row();
+		table.add().expandX();
+		table.add(optionsButton).width(300).height(50).pad(10);
+		table.add().expandX();
+
+		table.row();
+		table.add().expandX();
+		table.add(exitButton).width(300).height(50).pad(10);
+		table.add().expandX();
+		table.row();
+		table.add().expandX();
+		table.row();
+		table.add().expandX();
+		table.add().expand().height(300);
+		table.add().expandX();
 	}
 	
 	public void goToShipBuilder(){

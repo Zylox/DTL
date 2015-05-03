@@ -23,4 +23,5 @@ public enum Screens{
 	public EnumerableScreen getScreen(){
 		return screen;
 	}
+	
 }

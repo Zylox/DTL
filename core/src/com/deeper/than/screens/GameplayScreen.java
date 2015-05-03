@@ -89,9 +89,6 @@ public class GameplayScreen implements EnumerableScreen{
 	private boolean eventWindow;
 	
 	
-	Image test;
-	
-	
 	Background tempBackground;
 	
 	public void create(DTL game){
@@ -129,23 +126,11 @@ public class GameplayScreen implements EnumerableScreen{
 		mapGenerator.generate();
 		map = mapGenerator.getMap();
 		
-		
-//		weaponGen.getQualityDist().clearDistribution();
-//		weaponGen.getQualityDist().setPercent(100, WeaponQualities.EXCEPTIONAL);
-
-		
 		try {
 			playerShip = new PlayerShip(Gdx.files.internal("ships/" + game.getSelectedShip() +".ship"), true, game, DTL.firstOpenId++, weaponGen);
 		} catch (ShipLoadException e) {
 			e.printStackTrace();
 		}
-		
-//		for(Weapon w : playerShip.getWeapons()){
-//			System.out.println(w.getName());
-//			System.out.println(w.getParamString());
-//			System.out.println();
-//		}
-		
 		
 		gameObjects = new Stage(game.getViewport());
 		
@@ -322,19 +307,6 @@ public class GameplayScreen implements EnumerableScreen{
 		selectedCrew = null;	
 		setPaused(true);
 		eventWindow = true;
-		
-//		test = new Image(highlight);
-//		
-//		Vector2 testV = new Vector2(300,300);
-//		Vector2 endPoint = new Vector2(DTL.VWIDTH-100,DTL.VHEIGHT-100);
-//	    test.setBounds(testV.x, testV.y, 10, 3);
-//	    test.setColor(Color.RED);
-//	    test.setOrigin(Align.center);
-//	    test.setRotation(endPoint.cpy().sub(testV).angle());
-//	    
-//	    test.addAction(Actions.moveTo(endPoint.x, endPoint.y,3));
-//	    test.setOriginCenter();
-//	    test.rotate(1);
 	}
 	
 	public static Vector2 getStageLocation(Actor actor) {
@@ -394,20 +366,10 @@ public class GameplayScreen implements EnumerableScreen{
 	   ////Rendering goes here
 	    gameObjects.draw();
 	    ui.draw();
-//	    test.act(Gdx.graphics.getDeltaTime());
-	    ui.getBatch().begin();
-//	    test.draw(ui.getBatch(), 1);
-	    ui.getBatch().end();
-	    
-//	    eventStage.draw();
 	    
 	    if(DTL.GRAPHICALDEBUG || DTL.PATHDEBUG){
 		    shapeRen.begin(ShapeType.Line);
 		    shapeRen.setColor(Color.RED);
-//		    shapeRen.line(new Vector2(0,0), new Vector2(224,240).add(DTL.VWIDTH * 2/3, DTL.VHEIGHT/6));
-////		    System.out.println(new Vector2(224,240).add(DTL.VWIDTH * 2/3, DTL.VHEIGHT/6));
-//		    shapeRen.line(new Vector2(0,0), new Vector2(224,240));
-//		    shapeRen.line(new Vector2(0,0), new Vector2(666,360));
 		    Vector2 pos = new Vector2();
 		    Vector2 end = new Vector2();
 		    GridSquare sq = null;

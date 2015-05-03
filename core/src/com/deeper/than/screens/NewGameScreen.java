@@ -143,9 +143,6 @@ public class NewGameScreen implements EnumerableScreen {
 	public void show() {
 		// TODO Auto-generated method stub
 		DTL.printDebug("New Game Screen");
-		if(DTL.gameActive){
-			game.setScreen(Screens.GAMEPLAY.getScreen());
-		}
 	
 		Gdx.input.setInputProcessor(input);
 	}
