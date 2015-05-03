@@ -54,6 +54,12 @@ public class UIWeaponBottomBar extends WidgetGroup{
 		}
 	}
 	
+	public void clearTargets(){
+		for(UIWeaponCard wc : cards){
+			wc.setTarget(null);
+		}
+	}
+	
 	public void shotFired(){
 		mod.giveShotExp();
 	}

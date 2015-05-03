@@ -384,6 +384,11 @@ public class GameplayScreen implements EnumerableScreen{
 	    	crewPlateBar.update();
 	    	timeAccumulator -= DTL.getFrameTime();
 //	    	eventStage.act();
+	    	if(enemyWindow != null && enemyWindow.getShip().getHealth() <=0){
+	    		enemyWindow.remove();
+	    		enemyWindow = null;
+	    		bottomBar.clearTargets();
+	    	}
 	    }
 
 	   ////Rendering goes here
