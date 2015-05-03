@@ -1,0 +1,26 @@
+name= scoutv3
+xDim= 10
+yDim= 5
+health= 9
+power= 16
+layout=
+{1,1 2,1 3,1} , SensorsModule , 1
+{1,2 1,3 2,2} , MedbayModule , 1
+{1,4 1,5} , EngineModule , 1 , human
+{1,6 1,7 2,7} , WeaponsModule , 1 , human
+{1,8 2,8 3,8} , SheildModule , 2
+{2,4 2,5 3,4 3,5} , BridgeModule , 1 , human
+endlayout
+doors=
+{1,1 right}
+{1,7 right}
+{1,3 right}
+{1,5 right}
+{1,4 up}
+{1,5 up}
+enddoors
+weapons=
+laser
+torpedo worn
+laser worn
+endweapons
