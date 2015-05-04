@@ -1,3 +1,9 @@
+/**
+ * The container for the grid spot in a ship
+ * holds walls and the floor
+ * Created by: Zach Higginbotham
+ * Implementations by: Zach Higginbotham
+ */
 package com.deeper.than;
 
 import java.util.ArrayList;
@@ -13,15 +19,22 @@ import com.deeper.than.crew.Crew;
 import com.deeper.than.crew.Crew.CrewState;
 import com.deeper.than.screens.GameplayScreen;
 
+/**
+ * The container for the ship componenets at a spot
+ * @author zach
+ *
+ */
 public class GridSquare extends Group{
 	
 	private FloorTile tile;
+	//the walls
 	private CellBorder[] borders;
-	//private Crew crewMember;
 	private ArrayList<Crew> crewOnSquare;
 	private Vector2 pos;
+	//if this square is the spot to stand for manning or not.
 	private boolean isManningStation;
 	
+	//items used for pathfinding
 	private GridSquare pathPointer;
 	private float hValue;
 	private float gValue;
@@ -55,12 +68,13 @@ public class GridSquare extends Group{
 		}
 		return false;
 	}
-	
+
+	/**
+	 * Adds a border to the container. Will overwrite the old one if it exists
+	 * @param border
+	 */
 	public void addBorder(CellBorder border){
 		borders[border.orientation] = border;
-		//border.setGridSquare(this);
-		//addActor(door);
-		//border.init();
 	}
 	
 	public CellBorder getBorder(int orientation){
@@ -68,6 +82,11 @@ public class GridSquare extends Group{
 		return border;
 	}
 	
+	/**
+	 * Returns door at orientation if one exists, else null
+	 * @param orientation
+	 * @return
+	 */
 	public Door getDoor(int orientation){
 		CellBorder border = borders[orientation];
 		if(border instanceof Door){
@@ -85,21 +104,23 @@ public class GridSquare extends Group{
 		return false;
 	}
 	
+	/**
+	 * Sets the floortile and conforms itself to the tiles size
+	 * @param tile
+	 */
 	public void setFloorTile(FloorTile tile){
 		this.tile = tile;
 		setBounds(tile.pos.x*FloorTile.TILESIZE, tile.pos.y*FloorTile.TILESIZE, FloorTile.TILESIZE, FloorTile.TILESIZE);
 		tile.setBounds(0, 0, getWidth(), getHeight());
-		addListener(new InputListener() {
-			public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
-				//printWalls();
-				//DTL.printDebug("WaterLevel: " + room.getWaterLevel());
-				return false;
-		    }
-		});
 		addActor(tile);
 		pos = tile.pos;
 	}
 	
+	/**
+	 * returns the orientation relative to to provided gridsquare
+	 * @param adj
+	 * @return
+	 */
 	public int getRelativeOrientation(GridSquare adj){
 		if(pos.y == adj.getPos().y){
 			//if in line
@@ -126,6 +147,10 @@ public class GridSquare extends Group{
 		return -1;
 	}
 	
+	/**
+	 * Adds door in a reflected orientation
+	 * @param doorToReflect
+	 */
 	public void setReflectedDoor(Door doorToReflect){
 		doorToReflect.getFullFlip();		
 		this.addBorder(doorToReflect);
@@ -191,6 +216,10 @@ public class GridSquare extends Group{
 		return true;
 	}
 	
+	/**
+	 * Gets how many crew are standing on tile, and thus not just moving through it. if this is more than 1 it should be resolved
+	 * @return crew standing on tile
+	 */
 	public int crewStandingCount(){
 		int count = 0;
 		for(Crew c : crewOnSquare){
@@ -201,6 +230,10 @@ public class GridSquare extends Group{
 		return count;
 	}
 	
+	/**
+	 * Gets all but the first person who was standing on the square originally
+	 * @return
+	 */
 	public ArrayList<Crew> intrudingStandingCrew(){
 		ArrayList<Crew> iIC = new ArrayList<Crew>();
 		for(int i = 1; i<crewOnSquare.size(); i++){
@@ -260,6 +293,10 @@ public class GridSquare extends Group{
 		this.hValue = hValue;
 	}
 	
+	/**
+	 * Sets hvalue using the Manhattan heuristic
+	 * @param dest
+	 */
 	public void setHManh(Vector2 dest){
 		float distance = Math.abs(dest.x-pos.x) + Math.abs(dest.y-pos.y);
 		setHValue(distance);

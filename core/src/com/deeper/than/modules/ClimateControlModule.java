@@ -1,8 +1,18 @@
+/**
+ * Controls water level primarily
+ * Created by: Zach Higginbotham
+ * Implementations by: Zach Higginbotham
+ */
 package com.deeper.than.modules;
 
 import com.deeper.than.Room;
 import com.deeper.than.Ship;
 
+/**
+ * Climate control module for a ship
+ * @author zach
+ *
+ */
 public class ClimateControlModule extends MainModule {
 	
 	private static final String name = "ClimateControlModule";

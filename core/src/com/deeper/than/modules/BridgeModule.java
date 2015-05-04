@@ -10,6 +10,11 @@ import com.deeper.than.Room;
 import com.deeper.than.Ship;
 import com.deeper.than.crew.CrewSkills.CrewSkillsTypes;
 
+/**
+ * Bridge module for a ship
+ * @author zach
+ *
+ */
 public class BridgeModule extends SubModule {
 
 	private static final float evasionRetentions[] = {0,0,.5f,.8f};

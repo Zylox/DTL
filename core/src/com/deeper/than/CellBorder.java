@@ -1,16 +1,27 @@
+/**
+ * The super class for things that surround tiles in the ship structure
+ * Created by: Zach Higginbotham
+ * Implementations by: Zach Higginbotham
+ */
 package com.deeper.than;
 
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Group;
 
+/**
+ * Super class for things that surround tiles in the ship structure
+ * @author zach
+ *
+ */
 public abstract class CellBorder extends Group {
 	
 	public static final int IDSENTINEL  = -1;
 	
 	private int id;
-	protected Ship ship;
-	protected GridSquare gs;
+	protected Ship ownerShip;
+	protected GridSquare ownerSquare;
 	protected Vector2 pos;
+	//up down left or right
 	protected int orientation;
 	
 	
@@ -21,7 +32,7 @@ public abstract class CellBorder extends Group {
 	public CellBorder(Vector2 pos, int orientation, Ship ship){
 		this.pos = pos;
 		this.orientation = orientation;
-		this.ship = ship;
+		this.ownerShip = ship;
 		id = IDSENTINEL;
 	}	
 	
@@ -31,6 +42,7 @@ public abstract class CellBorder extends Group {
 			return false;
 		}
 		
+		//if the id's match and they arent the setninel value, they are equal.
 		if(((CellBorder)o).getId() == this.getId()){
 			if(this.getId() != IDSENTINEL){
 				return true;
@@ -39,23 +51,27 @@ public abstract class CellBorder extends Group {
 		return false;
 	}
 	
+	/**
+	 * Set up object based on supplied data
+	 * Mainly position data
+	 */
 	public abstract void init();
 	public abstract void reinit();
 
 	public Ship getShip() {
-		return ship;
+		return ownerShip;
 	}
 
 	public void setShip(Ship ship) {
-		this.ship = ship;
+		this.ownerShip = ship;
 	}
 
 	public GridSquare getGridSquare() {
-		return gs;
+		return ownerSquare;
 	}
 
 	public void setGridSquare(GridSquare gs){
-		this.gs = gs;
+		this.ownerSquare = gs;
 	}
 	
 	public Vector2 getPos() {
@@ -101,7 +117,7 @@ public abstract class CellBorder extends Group {
 			setPos(tmp.getPos().x-1, tmp.getPos().y);
 			break;
 		default:
-			DTL.printDebug("Orientation messud up for Cellborder fullflip");
+			DTL.printDebug("Orientation messed up for Cellborder fullflip");
 			break;
 		}
 		tmp.flipOrientation();

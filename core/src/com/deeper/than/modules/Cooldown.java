@@ -1,3 +1,8 @@
+/**
+ * Cooldown utility for various puruposes
+ * Created by: Zach Higginbotham
+ * Implementations by: Zach Higginbotham
+ */
 package com.deeper.than.modules;
 
 import com.deeper.than.DTL;

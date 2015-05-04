@@ -1,3 +1,8 @@
+/**
+ * UI element that dipslays crew info in the top left
+ * Created by: Zach Higginbotham
+ * Implementations by: Zach Higginbotham
+ */
 package com.deeper.than.ui;
 
 import com.badlogic.gdx.graphics.Color;
@@ -17,8 +22,14 @@ import com.deeper.than.crew.Crew;
 import com.deeper.than.screens.GameplayScreen;
 import com.deeper.than.screens.Screens;
 
+/**
+ * Ui element that displays crew info
+ * @author zach
+ *
+ */
 public class CrewPlate extends WidgetGroup {
 	private Crew crew;
+	//healthbar
 	private Image bar;
 	private Image crewImg;
 	private Table table;
@@ -27,15 +38,14 @@ public class CrewPlate extends WidgetGroup {
 	public CrewPlate(Crew crew){
 		this.crew = crew;
 		this.skillsPlate = new UICrewSkillsPlate(crew.getSkills());
+		//configures table, jsut messy ui parameterization
 		table = new Table(DTL.skin);
-		//table.background(new TextureRegionDrawable(new TextureRegion(GameplayScreen.highlight)));
 		table.background(new NinePatchDrawable(UIEnemyWindow.backgroundNinePatch));
 		table.setColor(Color.GRAY);
 		table.setFillParent(true);
 		bar = new Image(GameplayScreen.highlight);
 		
 		crewImg = new Image(crew.getIcon());
-		
 		
 		table.add(crewImg).prefWidth(Crew.CREW_HEIGHT/Crew.SCALE).prefHeight(Crew.CREW_HEIGHT/Crew.SCALE).left();
 		Table innerTable = new Table();
@@ -44,14 +54,13 @@ public class CrewPlate extends WidgetGroup {
 		innerTable.add(crewName).fill().top().expandX().padBottom(5);
 		innerTable.row();
 		innerTable.add(bar).fill();
-		//table.add(new CrewHealthBar(crew)).left().expand();
-		//table.add().expand();
 		table.add(innerTable).expand().fill();
 		table.row();
 		this.addActor(table);
 		skillsPlate.setX(80);
 		skillsPlate.setY(getY()-UICrewSkillsPlate.minIconSize*6+20);
 		skillsPlate.setHeight(20);
+		//set plate to invisible and only uninvisible it if the crewplate is being hovered, which is set in the click listener callback
 		skillsPlate.setVisible(false);
 		this.addActor(skillsPlate);
 		addListener(new ClickListener() {
@@ -69,20 +78,17 @@ public class CrewPlate extends WidgetGroup {
 			}
 			
 		});
-		
-		
-		
 	}
 	
 	private void setSkillsVisible(boolean visible){
 		skillsPlate.setVisible(visible);
 	}
 	
+	//set crew as selected if plate is clicked
 	private void setAsSelected(){
 		((GameplayScreen)Screens.GAMEPLAY.getScreen()).setSelectedCrew(crew);
 		crew.setSelected(true);
 	}
-	
 	
 	public Crew getCrew(){
 		return crew;
@@ -90,14 +96,12 @@ public class CrewPlate extends WidgetGroup {
 	
 	@Override
 	public void draw(Batch batch, float parentAlpha){
-////		Texture back = GameplayScreen.highlight;
 		Color color = batch.getColor().cpy();
-
-////		//batch.draw(back, getX(), getY(), getWidth(), getHeight());
+		//resize and color bar
 		bar.setColor(Color.GREEN);
-		
 		bar.setBounds(bar.getX(), bar.getY(),(getWidth()-crewImg.getWidth())*(crew.getHealth()/crew.getRace().getHealth()) -2, 5);
 		
+		//set background color
 		if(crew.isSelected()){
 			table.setColor(Color.DARK_GRAY);
 		}else{
@@ -105,8 +109,6 @@ public class CrewPlate extends WidgetGroup {
 		}
 		super.draw(batch, parentAlpha);
 		batch.setColor(color);
-////		TextureRegion icon = crew.getIcon();
-////		batch.draw(icon, getX(), getY(),getWidth(), getHeight());
 	}
 	
 	

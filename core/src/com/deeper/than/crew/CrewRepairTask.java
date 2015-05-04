@@ -1,3 +1,8 @@
+/**
+ * Task to set a crew to repair a room
+ * Created by: Zach Higginbotham
+ * Implementations by: Zach Higginbotham
+ */
 package com.deeper.than.crew;
 
 import com.badlogic.gdx.math.Vector2;
@@ -5,9 +10,13 @@ import com.badlogic.gdx.utils.Pool;
 import com.deeper.than.Room;
 import com.deeper.than.crew.Crew.CrewState;
 
+/**
+ * Crew heads to and repairs a room
+ * @author zach
+ *
+ */
 public class CrewRepairTask extends CrewTask{
 
-	//private final Array<CrewRepairTask> activeRepairTasks = new Array<CrewRepairTask>();
 	
 	private static final Pool<CrewRepairTask> repairTaskPool = new Pool<CrewRepairTask>(){
 	    @Override
@@ -16,6 +25,10 @@ public class CrewRepairTask extends CrewTask{
 	    }
 	};
 	
+	/**
+	 * Retrieves an object for use, make sure to init
+	 * @return
+	 */
 	public static CrewRepairTask obtain(){
 		return repairTaskPool.obtain();
 	}

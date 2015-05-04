@@ -1,3 +1,8 @@
+/**
+ * Main gameplaye context. Gameplay logic all hooks in here, although a large portion takes place in ship.
+ * Created by: Zach Higginbotham
+ * Implementations by: Zach Higginbotham and Nick Ferguson
+ */
 package com.deeper.than.screens;
 
 import com.badlogic.gdx.Gdx;
@@ -56,12 +61,25 @@ import com.deeper.than.ui.UIWeaponCard;
 import com.deeper.than.weapons.Projectile;
 import com.deeper.than.weapons.WeaponGenerator;
 
+/**
+ * Screen where gameplay happens
+ * @author zach
+ *
+ */
 public class GameplayScreen implements EnumerableScreen{
 	
+	//for debuggin
 	public static ShapeRenderer shapeRen;
+	
+	//1 white pixel for stretching and coloring to our needs
 	public static Texture highlight;
+	
+	//reticule for aiming
 	public static Sprite reticule;
 	
+	//all possible music
+	//Music is by Rob cosh: https://soundcloud.com/rob-cosh/sets/ponder
+	//Liscence: http://creativecommons.org/licenses/by-sa/3.0/
 	public static final String musicHandles[] = {"music/Rob Cosh - PONDER - 03 Flow-01.wav",
 		 										 "music/Rob Cosh - PONDER - 03 Flow-02.wav",
 		 										 "music/Rob Cosh - PONDER - 03 Flow-03.wav",
@@ -76,7 +94,7 @@ public class GameplayScreen implements EnumerableScreen{
 	private UIReactorRow playerReacs;
 	private UICrewPlateBar crewPlateBar;
 	
-	
+	//various ui elements
 	private Stage ui;
 	private Stage gameObjects;
 	private Stage gameOverStage;
@@ -93,6 +111,7 @@ public class GameplayScreen implements EnumerableScreen{
 	private Label pausedLabel;
 	private MapGenerator mapGenerator;
 	
+	//multiplexes input over multuple input proccesors
 	private InputMultiplexer input;
 
 	private boolean isPaused;
@@ -108,6 +127,7 @@ public class GameplayScreen implements EnumerableScreen{
 		weaponGen = new WeaponGenerator();
 	}
 	
+	//loads neede assets
 	public void loadAssets(){
 		UIWeaponCard.loadAssets();
 		background = new Background(new Texture("tempbackground.png"));
@@ -128,32 +148,24 @@ public class GameplayScreen implements EnumerableScreen{
 		
 		music = Gdx.audio.newMusic(Gdx.files.internal(musicHandles[musicCounter]));
 		music.setOnCompletionListener(new OnCompletionListener() {
-			
+			//auto loads next song/song section.
 			@Override
 			public void onCompletion(Music music) {
 				musicCounter++;
 				if(musicCounter >= musicHandles.length){
 					musicCounter = 0;
 				}
-				//loadNewMusic();
 				music.dispose();
 				music = Gdx.audio.newMusic(Gdx.files.internal(musicHandles[musicCounter]));
-//				GameplayScreen.music = music;
-//				GameplayScreen.music.play();
 				music.play();
 				music.setOnCompletionListener(this);
 			}
 		});
 	}
 	
-	
-	
-	private void playMusic(){
-		music.play();
-	}
 
 	/**
-	 * 
+	 * lays out the ui. looks messy, just the nature of ui's
 	 */
 	private void initializeGame(){
 		mapGenerator.generate();
@@ -240,6 +252,7 @@ public class GameplayScreen implements EnumerableScreen{
 		
 		ui.setDebugAll(DTL.GRAPHICALDEBUG);
 		
+		//////Author: Nick
 		UIEventTable uiEventTable = new UIEventTable("template");
 		eventTable = new UIPopUpWindow<UIEventTable>(uiEventTable);
 		uiEventTable.setParent(eventTable);
@@ -254,8 +267,9 @@ public class GameplayScreen implements EnumerableScreen{
 		mapTable.setVisible(false);
 		
 		ui.addActor(mapTable);
+		//////
 		
-		
+		//initialize gamge over but set it invisible
 		Table goT = new Table();
 		Label goL = new Label("Game Over",DTL.skin);
 		TextButton goB = new TextButton("Main Menu", DTL.skin);
@@ -285,9 +299,11 @@ public class GameplayScreen implements EnumerableScreen{
 		gameOver.setVisible(false);
 		gameOverStage = new Stage(game.getViewport());
 		gameOverStage.addActor(gameOver);
+		//set our multiplexer for input and add input, in order of precedence
 		input = new InputMultiplexer();
 		input.addProcessor(ui);
 		input.addProcessor(gameObjects);
+		//input for various actions in gameplay
 		input.addProcessor(new InputProcessor() {
 			
 			@Override
@@ -336,27 +352,19 @@ public class GameplayScreen implements EnumerableScreen{
 			public boolean keyTyped(char character) {
 				// TODO Auto-generated method stub
 				if(character == 'a'){
-					for(Crew c : playerShip.getCrew()){
-						c.setHealth(c.getHealth() - 10);
-					}
-					playerShip.setCurrency(playerShip.getCurrency()+100);
-					//playerShip.damageSheilds();
-//					SheildModule s = (SheildModule)playerShip.getModule(SheildModule.class);
-//					s.setLevel(s.getLevel()+1);
-					
-					for(Module m : playerShip.getModules()){
-						m.setLevel(m.getLevel()+1);
-					}
+					//useful for debugging module levels
+					//simulates progression
+//					for(Module m : playerShip.getModules()){
+//						m.setLevel(m.getLevel()+1);
+//					}
 				}
 				
+				//pauses on space
 				if(character == ' '){
 					setPaused(!isPaused());
 				}
-				
-				if(character == 'g'){
-					gameOverScreen();
-				}
-				
+			
+				/////author nick
 				if(character=='m'){
 					//mapTable.clear();
 					UIMapTable uiMapTable = new UIMapTable();
@@ -365,6 +373,7 @@ public class GameplayScreen implements EnumerableScreen{
 					uiMapTable.setUpMapUI();
 					drawMap();
 				}
+				/////
 				
 				return false;
 			}
@@ -385,6 +394,9 @@ public class GameplayScreen implements EnumerableScreen{
 	    return actor.localToStageCoordinates(new Vector2(0, 0));
 	}
 	
+	/**
+	 * Called upon screen showing
+	 */
 	@Override
 	public void show() {
 		// TODO Auto-generated method stub
@@ -398,23 +410,25 @@ public class GameplayScreen implements EnumerableScreen{
 		music.play();
 	}
 
+	//Render update loop
 	@Override
 	public void render(float delta) {
-		// TODO Auto-generated method stub
 	    Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
-	    ////Key inputs here
+	    //frame tied key inputs here
 	    if(Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)){
 	    	mainMenu();
 	    }
 	
 	    //////Update logic goes here
-	    
+	    //updates once per frametime propritonally to time passed
 	    timeAccumulator += delta;
 	    if(timeAccumulator > DTL.getFrameTime()){
+	    	///Author nick
 	    	if(!eventWindow){
 	    		eventTable.clear();
 	    	}
+	    	/////
 	    	playerReacs.update();
 	    	playerShip.update();
 	    	if(enemyWindow != null){
@@ -428,7 +442,6 @@ public class GameplayScreen implements EnumerableScreen{
 	    	gameOverStage.act();
 	    	crewPlateBar.update();
 	    	timeAccumulator -= DTL.getFrameTime();
-//	    	eventStage.act();
 	    	if(enemyWindow != null && enemyWindow.getShip().getHealth() <=0){
 	    		enemyWindow.remove();
 	    		enemyWindow = null;
@@ -440,7 +453,8 @@ public class GameplayScreen implements EnumerableScreen{
 	    gameObjects.draw();
 	    ui.draw();
 	    gameOverStage.draw();
-	    
+
+	    //pathfinding visualization used for debug
 	    if(DTL.GRAPHICALDEBUG || DTL.PATHDEBUG){
 		    shapeRen.begin(ShapeType.Line);
 		    shapeRen.setColor(Color.RED);
@@ -458,7 +472,6 @@ public class GameplayScreen implements EnumerableScreen{
 		    			end.x = playerShip.getX() + sq2.getPos().x * FloorTile.TILESIZE + FloorTile.TILESIZE/2;
 		    			end.y = playerShip.getY() + sq2.getPos().y * FloorTile.TILESIZE + FloorTile.TILESIZE/2;
 		    			shapeRen.line(pos, end);
-		    			//shapeRen.line(playerShip.getLayout()[i][j].getPos(), new Vector2(100,100));
 		    		}
 			    }	
 		    }
@@ -473,12 +486,20 @@ public class GameplayScreen implements EnumerableScreen{
 		ui.addActor(projectile);
 	}
 	
+	/**
+	 * Sets gameOver screen to display
+	 * also blocks input to other things
+	 */
 	public void gameOverScreen(){
 		input.clear();
 		input.addProcessor(gameOverStage);
 		gameOver.setVisible(!gameOver.isVisible());
 	}
 
+	/**
+	 * Set a crew to the selected one
+	 * @param crew
+	 */
 	public void setSelectedCrew(Crew crew){
 		if(getSelectedCrew() != null){
 			getSelectedCrew().setSelected(false);
@@ -501,6 +522,10 @@ public class GameplayScreen implements EnumerableScreen{
 		return true;
 	}
 	
+	/**
+	 * Returns if the player is targettting
+	 * @return
+	 */
 	public boolean isTargetting(){
 		if(bottomBar != null){
 			return bottomBar.getSelected() != null; 
@@ -515,9 +540,9 @@ public class GameplayScreen implements EnumerableScreen{
 		return null;
 	}
 	
+	//Called upon resize
 	@Override
 	public void resize(int width, int height) {
-		// TODO Auto-generated method stub
 		gameObjects.getViewport().update(width, height, true);
 		game.setViewport(gameObjects.getViewport());
 		playerShip.refreshWeaponOrigins();
@@ -526,7 +551,6 @@ public class GameplayScreen implements EnumerableScreen{
 
 	@Override
 	public void pause() {
-		// TODO Auto-generated method stub
 		setPaused(true);
 	}
 	
@@ -541,25 +565,21 @@ public class GameplayScreen implements EnumerableScreen{
 
 	@Override
 	public void resume() {
-		// TODO Auto-generated method stub
 		
 	}
 	
 	public void mainMenu(){
-		//DTL.gameActive = false;
 		game.setScreen(Screens.MAINMENU.getScreen());
 	}
 
 	@Override
 	public void hide() {
-		// TODO Auto-generated method stub
 		DTL.previousScreen = this;
 		music.pause();
 	}
 
 	@Override
 	public void dispose() {
-		// TODO Auto-generated method stub
 		playerShip.dispose();
 		gameObjects.dispose();
 		music.dispose();
@@ -592,6 +612,9 @@ public class GameplayScreen implements EnumerableScreen{
 		}
 	}
 	
+	/**
+	 * @author nick
+	 */
 	public void drawMap(){
 		if(!mapTable.isVisible()){
 			pause();

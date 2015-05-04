@@ -1,3 +1,8 @@
+/**
+ * Moduel that controls weapons
+ * Created by: Zach Higginbotham
+ * Implementations by: Zach Higginbotham
+ */
 package com.deeper.than.modules;
 
 import java.util.ArrayList;
@@ -27,7 +32,13 @@ public class WeaponsModule extends MainModule {
 		return equippedWeapons;
 	}
 
+	/**
+	 * Tries to equip weapon
+	 * @param weapon
+	 * @return success or failure
+	 */
 	public boolean equipWeapon(Weapon weapon){
+		//wotn equip if list is full
 		if(equippedWeapons.size() < this.getShip().getMaxWeapons()){
 			equippedWeapons.add(weapon);
 			return true;
@@ -39,6 +50,9 @@ public class WeaponsModule extends MainModule {
 		equippedWeapons.remove(weapon);
 	}
 	
+	/**
+	 * Gives exp to crew mannign weapons if it exists
+	 */
 	public void giveShotExp(){
 		if(this.isManned()){
 			this.getManning().gainExp(1, CrewSkillsTypes.WEAPONS);

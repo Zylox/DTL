@@ -1,3 +1,8 @@
+/**
+ * Ship implementation and logic. large part of the game logic links in here
+ * Created by: Zach Higginbotham
+ * Implementations by: Zach Higginbotham
+ */
 package com.deeper.than;
 
 import java.io.IOException;
@@ -75,6 +80,7 @@ public class Ship extends Group{
 	private String doorImgHandle;
 	private int wallIdCounter;
 	private int highestModuleId = -1;
+	//utility for a ship builder if one were to exist
 	private boolean colorizeRooms = false;
 	private int health;
 	private int maxHealth;
@@ -264,6 +270,9 @@ public class Ship extends Group{
 			loadAssets();
 	}
 	
+	/**
+	 * Refreshes the weapon shot origins in case of movemetn or resizing
+	 */
 	public void refreshWeaponOrigins(){
 		for(Weapon w : weapons){
 			w.setFireOrigin(getTip());
@@ -271,7 +280,11 @@ public class Ship extends Group{
 
 	}
 	
-	public Vector2 getTip(){
+	/**
+	 * Gets teh tip of the ship for weapon firing purposes
+	 * @return
+	 */
+	private Vector2 getTip(){
 		Vector2 tip = new Vector2();
 		if(this instanceof PlayerShip){
 			tip.x = this.getWidth();
@@ -280,13 +293,10 @@ public class Ship extends Group{
 			tip.x = this.getWidth()/2;
 			tip.y = this.getHeight();
 		}
-		
 		this.localToStageCoordinates(tip);
-		
 		return tip;
 	}
 	
-	//public
 	
 	/**
 	 * Takes in a gridSquare and a door taht is on it, then reflects it and adds it to the coorsponding neighbor.
@@ -364,10 +374,6 @@ public class Ship extends Group{
 			}
 		}
 	}
-
-	private void divyPowerToWeps(){
-		
-	}
 	
 	/**
 	 * Contains any non Action based update logic.
@@ -382,6 +388,7 @@ public class Ship extends Group{
 			r.updateEnv();
 		}
 		
+		//update crew
 		Iterator<Crew> iter = crew.iterator();
 		Crew c;
 		while(iter.hasNext()){
@@ -400,7 +407,7 @@ public class Ship extends Group{
 
 	@Override
 	public void draw(Batch batch, float parentAlpha){
-		//draw the other stuff the ship is supposed to draw, then the modules
+		//draw the other stuff the ship is supposed to draw, then the modules and room hover slots if need be
 		if(isDrawable()){
 		
 			if(sheilds != null && sheilds.getActiveSheildLayers() > 0){
@@ -558,6 +565,7 @@ public class Ship extends Group{
 	}
 	
 	public GridSquare[][] getLayoutCopy(){
+		//copuing a 2d array is stupid in java
 		GridSquare[][] copy = new GridSquare[layout.length][];
 		
 		for(int i = 0; i>layout.length; i++){
@@ -593,10 +601,7 @@ public class Ship extends Group{
 		crew.add(crewMem);
 	}
 	
-	public void addCrewAfterShipLoad(Crew crewMem){
-		crew.add(crewMem);
-		addActor(crewMem);
-	}
+
 	
 	/**
 	 * Finds out if a crew member is in specified room
@@ -644,16 +649,11 @@ public class Ship extends Group{
 	public void addWeapon(Weapon weapon){
 		this.weapons.add(weapon);
 		if(this.weaponMod != null){
+			//equips weaopn if possible
 			weaponMod.equipWeapon(weapon);
 		}
 	}
 	
-	/**
-	 * Attempts to equipWeapon.
-	 * If max weapons already equiped, it will return false.
-	 * @param weapon
-	 * @return equip success or failure
-	 */	
 	public void unEquipWeapon(Weapon weapon){
 		if(weaponMod != null){
 			weaponMod.unEquipWeapon(weapon);
@@ -740,22 +740,26 @@ public class Ship extends Group{
 	}
 	
 	public boolean takeDamage(int amt){
+		//if sheilds are active, take damage to them instead
 		if(sheilds != null && sheilds.getActiveSheildLayers() != 0){
 			damageSheilds(amt);
 			return false;
 		}else{
+			//otherwize take hull damage
 			hitSound.play();
 			setHealth(getHealth()-amt);
 			return true;
 		}
 	}
 	
+	//damages ship beyon sheilds
 	public boolean takeDamageBypassSheilds(int amt){		
 		setHealth(getHealth()-amt);
 		return true;
 	}
 	
 	public boolean takeIonDamage(int amt){
+		//sheild takes ion damage if it is up
 		if(sheilds != null && sheilds.getActiveSheildLayers() != 0){
 			sheilds.receiveIonicCharge(amt);
 			return true;
@@ -826,14 +830,18 @@ public class Ship extends Group{
 			bridge.giveEvadeExp();
 		}
 	}
-	
+
+	/**
+	 * Returns module of type provided if one exists, otheriwse null
+	 * @param module
+	 * @return
+	 */
 	public Module getModule(Class<? extends Module> module){
 		for(Module m : modules){
 			if(module.isInstance(m)){
 				return m;
 			}
 		}
-		
 		return null;
 	}
 	

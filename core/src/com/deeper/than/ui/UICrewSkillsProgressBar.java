@@ -1,15 +1,21 @@
+/**
+ * Bar taht shows progress towards new skill level
+ * Created by: Zach Higginbotham
+ * Implementations by: Zach Higginbotham
+ */
 package com.deeper.than.ui;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
-import com.badlogic.gdx.graphics.g2d.NinePatch;
-import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.Widget;
 import com.deeper.than.crew.CrewSkills;
 import com.deeper.than.screens.GameplayScreen;
 
+/**
+ * Bar that shows skill progress
+ * @author zach
+ *
+ */
 public class UICrewSkillsProgressBar extends Widget {
 	public static final float MIN_HEIGHT_SUGGESTION = 5;
 	public static final float LENGTH_SUGGESTION = 50;
@@ -27,8 +33,10 @@ public class UICrewSkillsProgressBar extends Widget {
 	@Override
 	public void draw(Batch batch, float parentAlpha){
 		Color color = batch.getColor().cpy();
+		//draw progress
 		batch.setColor(getColorByLevel());
 		batch.draw(GameplayScreen.highlight, getX(), getY(), getLevelProgressPrcnt() * getWidth(), getHeight());
+		//draw empty
 		batch.setColor(Color.DARK_GRAY);
 		batch.draw(GameplayScreen.highlight, getX()+ getLevelProgressPrcnt() * getWidth(), getY(), (1-getLevelProgressPrcnt()) * getWidth(), getHeight());
 		batch.setColor(color);
@@ -43,7 +51,6 @@ public class UICrewSkillsProgressBar extends Widget {
 		}else if(level == 2){
 			return Color.YELLOW;
 		}
-		
 		return Color.BLACK;
 	}
 	

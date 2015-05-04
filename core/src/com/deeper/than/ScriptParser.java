@@ -1,3 +1,8 @@
+/**
+ * Parses the ship script into an actual ship
+ * Created by: Zach Higginbotham
+ * Implementations by: Zach Higginbotham
+ */
 package com.deeper.than;
 
 import java.io.IOException;
@@ -19,16 +24,20 @@ import com.deeper.than.weapons.WeaponGenerator.WeaponTypes;
 import com.deeper.than.weapons.WeaponMakers;
 import com.deeper.than.weapons.WeaponQualities;
 
-
+/**
+ * 
+ * @author zach
+ *
+ */
 public class ScriptParser implements Poolable{
 	
-	private final Array<ScriptParser> activeParsers= new Array<ScriptParser>();
 	public static  final Pool<ScriptParser> parserPool = new Pool<ScriptParser>(5){
 		protected ScriptParser newObject(){
 			return new ScriptParser();
 		}
 	};
 	
+	//default ship values when possible
 	private static final String DEFAULT_NAME = "NameYourDangShip";
 	private static final int XDIM_DEFAULT = 1;
 	private static final int YDIM_DEFAULT = 1;
@@ -40,6 +49,7 @@ public class ScriptParser implements Poolable{
 	private static final int FUEL_DEFAULT = 15;
 	private static final int CURRENCY_DEFAULT = 30;
 	
+	//checks if certain values have been set
 	private boolean nameSet;
 	private boolean xDimSet;
 	private boolean yDimSet;
@@ -52,7 +62,6 @@ public class ScriptParser implements Poolable{
 	private boolean currencySet;
 	
 	
-	private int lineNum=0;
 	private String[] tokens;
 	
 	public void loadShipScript(Ship ship, String str, WeaponGenerator weaponGen) throws IOException, ShipLoadException{
@@ -75,6 +84,14 @@ public class ScriptParser implements Poolable{
 		}
 	}
 
+	/**
+	 * Proccesses next line dependign on what it is
+	 * @param line
+	 * @param ship
+	 * @param scanner
+	 * @param weaponGen
+	 * @throws ShipLoadException
+	 */
 	public void proccessNextLine(String line, Ship ship, Scanner scanner, WeaponGenerator weaponGen) throws ShipLoadException{
 		tokens = line.split(" ");
 		
@@ -162,6 +179,12 @@ public class ScriptParser implements Poolable{
 		}
 	}
 	
+	/**
+	 * Loads all weapons in loadweapon section
+	 * @param scanner
+	 * @param ship
+	 * @param weaponGen
+	 */
 	private void loadWeapons(Scanner scanner, Ship ship, WeaponGenerator weaponGen){
 		String line;
 		WeaponTypes type;
@@ -189,6 +212,7 @@ public class ScriptParser implements Poolable{
 			if(tokens.length >= 3){
 				make = getWeaponMake(tokens[2]);
 			}
+			//Generates based on received parameters
 			if(type!=null){
 				if(make==null && quality!=null){
 					weapon = weaponGen.generate(type, quality);
@@ -267,6 +291,12 @@ public class ScriptParser implements Poolable{
 		}
 	}
 	
+	/**
+	 * Loads all doors in the doors section
+	 * @param scanner
+	 * @param ship
+	 * @throws ShipLoadException
+	 */
 	private void loadDoors(Scanner scanner, Ship ship) throws ShipLoadException{
 		Door door = null;
 		String line;
@@ -283,10 +313,16 @@ public class ScriptParser implements Poolable{
 				return;
 			}
 		}
-		
+		//shouldnt reach this
 		throw new ShipLoadException();
 	}
 	
+	/**
+	 * Loads all rooms in the rooms section
+	 * @param scanner
+	 * @param ship
+	 * @throws ShipLoadException
+	 */
 	private void loadRooms(Scanner scanner, Ship ship) throws ShipLoadException{
 		if(scanner == null || ship == null){
 			throw new ShipLoadException();
@@ -310,6 +346,7 @@ public class ScriptParser implements Poolable{
 				roomId++;
 				room = new Room(roomId, ship);
 				tokens = line.split(" , ");
+				//takes action based on how many arguemnts there are
 				if(tokens.length == 4){
 					loadModule(tokens[1], Integer.parseInt(tokens[2]), moduleId, room, ship);
 					crew = loadCrew(tokens[3], ship);
@@ -318,7 +355,8 @@ public class ScriptParser implements Poolable{
 				}else if(tokens.length == 2){
 					crew = loadCrew(tokens[1], ship);
 				}
-				poss = getRoomValues(tokens[0]);						
+				poss = getRoomValues(tokens[0]);
+				//sets values for the room tiles
 				for(Vector2 v : poss){
 					gs = new GridSquare();
 					fl = new FloorTile(v, gs);
@@ -342,6 +380,10 @@ public class ScriptParser implements Poolable{
 		throw new ShipLoadException();
 	}
 	
+	/**
+	 * Sets paramters not yet set to the default value
+	 * @param ship
+	 */
 	public void setUnsetsToDefault(Ship ship){
 		if(!nameSet){
 			ship.setName(DEFAULT_NAME);
@@ -382,8 +424,6 @@ public class ScriptParser implements Poolable{
 		
 		fuelSet = false;
 		currencySet = false;
-		
-		lineNum =0;
 		
 		String line;
 		while(scanner.hasNext()){
@@ -451,7 +491,6 @@ public class ScriptParser implements Poolable{
 		while(line.startsWith("#")){
 			if(scanner.hasNext()){
 				line = scanner.nextLine();
-				lineNum++;
 			}else{
 				return null;
 			}
@@ -460,6 +499,11 @@ public class ScriptParser implements Poolable{
 	}
 	
 	
+	/**
+	 * Removes the curly braces and turncates string to new value
+	 * @param line
+	 * @return
+	 */
 	public static String stripCurly(String line){
 		line = line.replace("{", "");
 		line = line.replace("}", "");
@@ -467,6 +511,11 @@ public class ScriptParser implements Poolable{
 		return line;
 	}
 	
+	/**
+	 * proccess a section of tiles for a rooms
+	 * @param line
+	 * @return
+	 */
 	public static Vector2[] getRoomValues(String line){
 		line = stripCurly(line);
 		String[] tokens = line.split(" ");
@@ -502,7 +551,16 @@ public class ScriptParser implements Poolable{
 
 	@Override
 	public void reset() {
-		lineNum = 0;
+		nameSet = false;
+		xDimSet = false;
+		yDimSet = false;
+		healthSet = false;
+		powerSet = false;
+		floortileImgSet = false;
+		doorSet = false;
+		
+		fuelSet = false;
+		currencySet = false;
 	}
 
 }

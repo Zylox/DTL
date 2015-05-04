@@ -1,3 +1,8 @@
+/**
+ * Ships walls logic and implementaion
+ * Created by: Zach Higginbotham
+ * Implementations by: Zach Higginbotham
+ */
 package com.deeper.than;
 
 import com.badlogic.gdx.graphics.Color;
@@ -8,6 +13,11 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 
+/**
+ * Wall for a ship cell
+ * @author zach
+ *
+ */
 public class Wall extends CellBorder{
 
 	public enum WallType{
@@ -62,6 +72,7 @@ public class Wall extends CellBorder{
 				setBounds(bLeft.x-shortSide/2, bLeft.y, shortSide, longSide);
 			}
 		}else{
+			//exterior walls are inset by half the size of the relevant dimension
 			shortSide = EXTERIORWALLSHORTSIDE;
 			if(orientation == Neighbors.DOWN){
 				setBounds(bLeft.x, bLeft.y, longSide, shortSide);
@@ -93,12 +104,7 @@ public class Wall extends CellBorder{
 	@Override
 	public void draw(Batch batch, float parentAlpha){
 		getExteriorWallImg().draw(batch, getX(), getY(), getWidth(), getHeight());
-
-		
-		
 	}
-	
-	
 	
 	public static void loadAssets(){
 		if(interiorWallImg == null || exteriorWallImg == null){

@@ -1,19 +1,18 @@
+/**
+ * Taks absttraction for giving a crew member a chore
+ * Created by: Zach Higginbotham
+ * Implementations by: Zach Higginbotham
+ */
 package com.deeper.than.crew;
 
-import com.badlogic.gdx.utils.Array;
-import com.badlogic.gdx.utils.Pool;
 import com.badlogic.gdx.utils.Pool.Poolable;
 
+/**
+ * Abstract crew task that has a crew perform some action
+ * @author zach
+ *
+ */
 public abstract class CrewTask implements Poolable, Comparable<CrewTask>{
-//	private final Array<CrewTask> activeTasks = new Array<CrewTask>();
-//	
-//	private final Pool<CrewTask> taskPool = new Pool<CrewTask>(){
-//	    @Override
-//	    protected CrewTask newObject() {
-//	        return new CrewTask();
-//	    }
-//	};
-	
 	
 	protected Crew crew;
 	private boolean isAssigned;

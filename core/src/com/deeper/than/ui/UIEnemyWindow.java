@@ -1,3 +1,9 @@
+/**
+ * UIelement that holds the enemy ship and manages its state
+ * Created by: Zach Higginbotham
+ * Implementations by: Zach Higginbotham
+ */
+
 package com.deeper.than.ui;
 
 import com.badlogic.gdx.graphics.Texture;
@@ -11,6 +17,11 @@ import com.deeper.than.DTL;
 import com.deeper.than.EnemyShip;
 import com.deeper.than.FloorTile;
 
+/**
+ * Window for holding an enemy ship
+ * @author zach
+ *
+ */
 public class UIEnemyWindow extends WidgetGroup{
 	public static NinePatch backgroundNinePatch;
 	
@@ -37,8 +48,8 @@ public class UIEnemyWindow extends WidgetGroup{
 	public void setUpTable(){
 		table.clear();
 		
+		//set up teh table
 		float width = this.getWidth();
-		float height = this.getHeight();
 		table.setFillParent(true);
 		UITopBar topBar = new UITopBar(ship, width, TOP_BAR_HEIGHT, true);
 		topBar.add().prefWidth(width);
@@ -55,10 +66,12 @@ public class UIEnemyWindow extends WidgetGroup{
 		int x = FloorTile.TILESIZE*ship.getLayout()[0].length;
 		int y = FloorTile.TILESIZE*ship.getLayout().length;
 		
+		//center ship in window
 		ship.setBounds(this.getWidth()/2 - x/2, this.getHeight()/2 - y/2, x, y);
 		this.addActor(ship);
 		
 		enemyWeaps = new UIWeaponBottomBar(shipReactors.getWeaponUI());
+		//draw off screen and set to non touchable
 		enemyWeaps.setBounds(DTL.VWIDTH, 0, 0, 0);
 		enemyWeaps.setTouchable(Touchable.disabled);
 		this.addActor(enemyWeaps);
@@ -67,6 +80,7 @@ public class UIEnemyWindow extends WidgetGroup{
 	
 	@Override
 	public void draw(Batch batch, float parentAlpha){
+		//draw background then everything else
 		backgroundNinePatch.draw(batch, this.getX()-BACKGROUND_PADDING, this.getY()-BACKGROUND_PADDING, this.getWidth()+BACKGROUND_PADDING*2, this.getHeight()+BACKGROUND_PADDING*2);
 		super.draw(batch, parentAlpha);
 	}
@@ -79,5 +93,4 @@ public class UIEnemyWindow extends WidgetGroup{
 	public EnemyShip getShip(){
 		return ship;
 	}
-	
 }

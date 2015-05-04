@@ -1,3 +1,8 @@
+/**
+ * Sheild bar for a ship
+ * Created by: Zach Higginbotham
+ * Implementations by: Zach Higginbotham
+ */
 package com.deeper.than.ui;
 
 import com.badlogic.gdx.graphics.Color;
@@ -8,12 +13,16 @@ import com.deeper.than.Ship;
 import com.deeper.than.modules.SheildModule;
 import com.deeper.than.screens.GameplayScreen;
 
+/**
+ * Sheild bar for a ship
+ * @author zach
+ *
+ */
 public class SheildBar extends Widget {
 	private static final float INCREMENT = 20;
 	private static final float COOLDOWN_BAR_HEIGHT = 4;
 	
 	private Ship ship;
-	
 	
 	public SheildBar(Ship ship){
 		this.ship = ship;
@@ -34,14 +43,17 @@ public class SheildBar extends Widget {
 		float lineWidth = 1;
 		for(int i = 0; i < SheildModule.MAX_SHEILD_SECTIONS; i++){
 			if(i < ship.getSheildSections() && i<activeSheilds){
+				//if active shield section
 				img.draw(batch, getX()+i*INCREMENT, getY()+COOLDOWN_BAR_HEIGHT, INCREMENT, getHeight() - COOLDOWN_BAR_HEIGHT);
 			}else if (i < ship.getSheildSections()){
+				//if recharging section
 				GameplayScreen.drawEmptyRectable(getX()+i*INCREMENT+1, getY() + COOLDOWN_BAR_HEIGHT, INCREMENT-1, getHeight() - COOLDOWN_BAR_HEIGHT, lineWidth, Color.BLUE, batch);
 			}else{
+				//if out of level bounds
 				GameplayScreen.drawEmptyRectable(getX()+i*INCREMENT+1, getY() + COOLDOWN_BAR_HEIGHT, INCREMENT-1, getHeight() - COOLDOWN_BAR_HEIGHT, lineWidth, Color.GRAY, batch);
 			}
 		}
-		
+		//draw cooldwon bar
 		if(ship.getSheildCooldownAmt() != 0){
 			img.draw(batch, getX(), getY(), SheildModule.MAX_SHEILD_SECTIONS*INCREMENT * (ship.getSheildCooldownAmt()/SheildModule.COOLDOWN_MAX) , COOLDOWN_BAR_HEIGHT);
 		}

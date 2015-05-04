@@ -1,3 +1,8 @@
+/**
+ * Room implementation of the ship
+ * Created by: Zach Higginbotham
+ * Implementations by: Zach Higginbotham
+ */
 package com.deeper.than;
 
 import java.util.ArrayList;
@@ -10,6 +15,7 @@ import com.deeper.than.crew.Crew;
 import com.deeper.than.modules.Module;
 import com.deeper.than.modules.SensorsModule;
 import com.deeper.than.screens.GameplayScreen;
+import com.deeper.than.screens.Screens;
 
 /**
  * A room is a collection of gridsquares in a ship that occupy the same "room".
@@ -96,6 +102,10 @@ public class Room {
 		}
 	}
 	
+	/**
+	 * Damages module and does normal ship damage
+	 * @param amt
+	 */
 	public void takeDamageBypassSheilds(int amt){
 		ship.takeDamage(amt);
 		if(module != null){
@@ -115,6 +125,11 @@ public class Room {
 		}
 	}
 	
+	/**
+	 * Determines if postion is in the room
+	 * @param pos
+	 * @return if pos is in room
+	 */
 	public boolean isinRoom(Vector2 pos){
 		for(GridSquare gs : squares){
 			if(gs.getPos().equals(pos)){
@@ -124,6 +139,10 @@ public class Room {
 		return false;
 	}
 	
+	/**
+	 * Gets a list of crew that can repair a damaged room
+	 * @return
+	 */
 	public ArrayList<Crew> getRepairCandidates(){
 		ArrayList<Crew> cands = new ArrayList<Crew>();
 		for(GridSquare gs : squares){
@@ -132,6 +151,11 @@ public class Room {
 		return cands;
 	}
 	
+	/**
+	 * get tile within room that is walkable.
+	 * if none available, return the first tile in the room and let it be resolved later
+	 * @return
+	 */
 	public GridSquare selectTileToWalkTo(){
 		for(GridSquare g : squares){
 			if(!g.hasCrewMember()){
@@ -149,6 +173,10 @@ public class Room {
 		return crewInRoom;
 	}
 	
+	/**
+	 * Gets only crew friendly to the ship
+	 * @return
+	 */
 	public ArrayList<Crew> getThisShipsCrewInRoom(){
 		ArrayList<Crew> thisShipsCrewInRoom = new ArrayList<Crew>();
 		for(GridSquare gs : squares){
@@ -162,7 +190,7 @@ public class Room {
 	}
 	
 	/**
-	 * Get the location in global coords
+	 * Get the location relative
 	 * @return centerLoc
 	 */
 	public Vector2 getCenterLoc(){
@@ -172,13 +200,16 @@ public class Room {
 		return centerLoc;
 	}
 	
+	/**
+	 * Retrurns center in stage coords
+	 * @return
+	 */
 	public Vector2 getCenterLocInStage(){
 		if(centerLoc == null){
 			calculateBounds();
 		}
 		Vector2 newC = centerLoc.cpy().sub(ship.getX(),ship.getY());
 		ship.localToStageCoordinates(newC);
-		//ship.getStage().stageToScreenCoordinates(newC);
 		return newC;
 	}
 	
@@ -216,16 +247,18 @@ public class Room {
 	public Vector2 getBottomLeft(){
 		return bottomLeft;
 	}
-	
+
+	/**
+	 * Draws a inset hollow rectangle over the room
+	 * @param batch
+	 */
 	public void drawHover(Batch batch){
 		if(bottomLeft == null){
 			calculateBounds();
 		}
-//		System.out.println(centerLoc);
 		Texture wall = GameplayScreen.highlight;
 		Color color = batch.getColor();
 		batch.setColor(Color.YELLOW);
-		//wall.setColor(Color.CYAN);
 		float offset = Wall.INTERIORWALLSHORTSIDE/2f;
 		batch.draw(wall, bottomLeft.x+offset, bottomLeft.y + offset, Wall.INTERIORWALLSHORTSIDE, bounds.y - offset * 2);
 		batch.draw(wall, bottomLeft.x + bounds.x-Wall.INTERIORWALLSHORTSIDE-offset, bottomLeft.y + offset, Wall.INTERIORWALLSHORTSIDE, bounds.y - offset * 2);
@@ -239,7 +272,9 @@ public class Room {
 	 * Currently this means water level
 	 */
 	public void calculateEnv(){
-		calculateWaterLevel();
+		if(!((GameplayScreen)Screens.GAMEPLAY.getScreen()).isPaused()){
+			calculateWaterLevel();
+		}
 	}
 	
 	/**
@@ -251,7 +286,6 @@ public class Room {
 		//Reset values
 		setGivenWater(0);
 		setNeighBorUpperboundWL(1000000);
-		//Ayy Lmao - Nick Ferguson, 2014
 		setWaterLevel(calculatedWaterLevel);
 	}
 	
@@ -265,7 +299,7 @@ public class Room {
 
 		int i;
 		for(i = 0; i<linkedRooms.size(); i++){
-			
+			//looks throug heach linked room and if it reachable by water
 			link = linkedRooms.get(i);
 			if(link.getDoor().isOpen()){
 				roomClosed = false;
@@ -275,37 +309,38 @@ public class Room {
 					neighWaterLevel = 100; 
 				}else{
 					neighWaterLevel = linkedRoom.getWaterLevel();
-					
 				}
-				
+				//Calcualtes water transfer
 				if(neighWaterLevel > this.waterLevel){
 					float transmission =DTL.getRatePerTimeStep((neighWaterLevel * WATERTRANSMISSIONRATE * 60));
+					//if resultant water level would be too high, set to midway point
 					if(waterLevelAcc+transmission+getWaterLevel() > neighWaterLevel-transmission){
 						transmission =(neighWaterLevel-(waterLevelAcc+getWaterLevel()))/2;
 					}
-			
+					//add water to the accumulator
 					waterLevelAcc +=  transmission;
 					if(linkedRoom != null){
-//						if(transmission > .00000000000009f){
-							linkedRoom.addGivenWater(transmission);
-//						}
+						//let the other room know it gave water away
+						linkedRoom.addGivenWater(transmission);
 					}
 					highestWaterLevel = Math.max(neighWaterLevel, highestWaterLevel);
 				}
 			}
 		}
-
+		//rooms drain slightly faster when fully closed
 		if(roomClosed && ship.getDrainRate() != 0){
 			waterLevelAcc = DTL.getRatePerTimeStep(ship.getDrainRate()*60);
 		}
 
 		setCalculatedWaterLevel(getWaterLevel() + waterLevelAcc + DTL.getRatePerTimeStep(ship.getDrainRate()*60) , highestWaterLevel);
-			
-		
-		
 	}
 	
+	/**
+	 * Retrieves teh loaction to stand to man the module
+	 * @return
+	 */
 	public Vector2 getManningLocation(){
+		//current implementation is just the first square in the room
 		return squares.get(0).getPos();
 	}
 	
@@ -319,6 +354,7 @@ public class Room {
 	public void addLink(Room room, Door door){
 		//not zelda
 		linkedRooms.add(new RoomLink(room, door));
+		//add Ocarina
 	}
 	
 	public void addSquare(GridSquare square){
@@ -329,6 +365,10 @@ public class Room {
 		this.sensors = sensors;
 	}
 	
+	/**
+	 * Returns if the room is visible to the player
+	 * @return
+	 */
 	public boolean isVisible(){
 		if(ship instanceof EnemyShip){
 			return ((EnemyShip)ship).canPlayerSeeMyTiles();
@@ -390,9 +430,6 @@ public class Room {
 	
 	public void setWaterLevel(float waterLevel) {
 		this.waterLevel = waterLevel;
-//		if(waterLevel - (int)waterLevel > .99f){
-//			waterLevel = (float)Math.ceil(waterLevel);
-//		}
 		if(waterLevel > neighBorUpperboundWL){
 			this.waterLevel = neighBorUpperboundWL;
 		}else if(waterLevel < 0){
@@ -449,6 +486,11 @@ public class Room {
 		this.isHoveredOver = isHoveredOver;
 	}
 
+	/**
+	 * a link holding the room linked to by this room and the door linking them
+	 * @author zach
+	 *
+	 */
 	private class RoomLink{
 		Room linkedRoom;
 		Door door;

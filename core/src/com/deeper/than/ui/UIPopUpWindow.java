@@ -1,6 +1,8 @@
-
 /**
- * 
+ * Window that pops up and covers most of the screen
+ * fillable with anything 
+ * Created by: Zach Higginbotham
+ * Implementations by: Zach Higginbotham
  */
 package com.deeper.than.ui;
 
@@ -33,7 +35,6 @@ public class UIPopUpWindow<T extends Actor> extends Table {
 		cont.background(bg);
 		this.clear();
 		addContToTable();
-	
 	}
 	
 	private void addContToTable(){

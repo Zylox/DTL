@@ -1,5 +1,7 @@
 /**
- * 
+ * Recator bar for a specific all weapons
+ * Created by: Zach Higginbotham
+ * Implementations by: Zach Higginbotham
  */
 package com.deeper.than.ui;
 
@@ -12,6 +14,7 @@ import com.deeper.than.modules.WeaponsModule;
 import com.deeper.than.weapons.Weapon;
 
 /**
+ * Tracks power assignments across mulitple weapons
  * @author zach
  *
  */
@@ -28,6 +31,7 @@ public class UIWeaponModuleReacBar extends UIModuleReactorBar{
 	public UIWeaponModuleReacBar(int powered, UIPowerBar mainPower, WeaponsModule module) {
 		super(powered, Modules.getIcon(WeaponsModule.class.getCanonicalName()), mainPower, module);
 		powerAssignments = new ArrayList<WeaponPowerPair>();
+		//callback to check and update power assignments
 		this.addAction(new Action() {
 			
 			@Override
@@ -57,6 +61,7 @@ public class UIWeaponModuleReacBar extends UIModuleReactorBar{
 	
 	public void checkPowerAssignments(){
 		WeaponPowerPair pair;
+		//if weapons doesnt want power anymore take it from it
 		for(int i = 0; i< powerAssignments.size(); i++){
 			pair = powerAssignments.get(i);
 			if(!pair.getWeapon().doesWantPower()){
@@ -65,6 +70,7 @@ public class UIWeaponModuleReacBar extends UIModuleReactorBar{
 		}
 		
 		int avaliable = getAvailablePower();
+		//if there is more power divied than avaliable, take some back
 		if(avaliable < 0){
 			int reclaimedPower = 0;
 			for(int i = powerAssignments.size(); i>=0;i--){
@@ -75,10 +81,13 @@ public class UIWeaponModuleReacBar extends UIModuleReactorBar{
 			}
 		}
 		
+		//if there is available power, give some
 		if(avaliable > 0){
 			int cost = 0;
 			for(WeaponPowerPair wpp : powerAssignments){
+				//if it wants power, butisnt
 				if(wpp.getWeapon().doesWantPower() && !wpp.getWeapon().isPowered()){
+					//and this has enough power to give it, give it power
 					if(avaliable >= wpp.getWeapon().getPowerCost()){
 						cost = wpp.getWeapon().getPowerCost(); 
 						wpp.setPower(cost);
@@ -121,6 +130,11 @@ public class UIWeaponModuleReacBar extends UIModuleReactorBar{
 		return this.getPowered() - count;
 	}
 	
+	/**
+	 * Weapon and the power being tracked
+	 * @author zach
+	 *
+	 */
 	private class WeaponPowerPair{
 		private Weapon weapon;
 		private int power;

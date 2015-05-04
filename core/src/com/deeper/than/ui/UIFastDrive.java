@@ -4,20 +4,12 @@
  * Implementations by: Zach Higginbotham
  */
 
-/**
- * 
- * Created by: Zach Higginbotham
- * Implementations by: Zach Higginbotham
- */
-
 package com.deeper.than.ui;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
-import com.badlogic.gdx.scenes.scene2d.actions.MoveToAction;
 import com.badlogic.gdx.scenes.scene2d.actions.RunnableAction;
 import com.badlogic.gdx.scenes.scene2d.ui.Container;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
@@ -34,6 +26,11 @@ import com.deeper.than.modules.EngineModule;
 import com.deeper.than.modules.Modules;
 import com.deeper.than.screens.GameplayScreen;
 
+/**
+ * Jump drive ui widget
+ * @author zach
+ *
+ */
 public class UIFastDrive extends WidgetGroup{
 	private final static Color CHARGE_COLOR = Color.BLUE;
 	private final static Color FULL_COLOR = new Color(.1f,.7f,.0f,1);
@@ -62,6 +59,7 @@ public class UIFastDrive extends WidgetGroup{
 		this.bridge = (BridgeModule)ship.getModule(BridgeModule.class);
 		charge = new Cooldown(CHARGE_MAX);
 		charge.startCooldown();
+		//stack lets you stack ui elements
 		Stack stack = new Stack();
 		stack.add(new ChargeBar());
 		Label chargeLabel = new Label("Dive",DTL.skin);
@@ -75,6 +73,7 @@ public class UIFastDrive extends WidgetGroup{
 		tabDown = false;
 		layOutTab = false;
 		
+		//set up tab taht falls down when a reason you cant jump exists
 		disCont = new Container<UIFastDrive.DisruptionTab>(disruptionTab);
 		int disWidth = 58;
 		int disHeight= 25;
@@ -90,19 +89,23 @@ public class UIFastDrive extends WidgetGroup{
 
 	
 	public void update(boolean inPeril){
+		//layout tab on the first call
 		if(!layOutTab){
 			disCont.setX(disCont.getX()+this.getWidth()/2-disCont.getWidth()/2);
 			layOutTab = true;
 		}
+		//if there is no peril, just charge the drive
 		if(!inPeril && charge.isOnCooldown()){
 			charge.endCooldown();
 		}
+		//set tab to descend if drive is disturbed
 		if((!engine.enginesOn() || !bridge.canJump()) && !tabDown){
 			disCont.setVisible(true);
 			float destinationY = -disCont.getHeight();
 			disCont.addAction(Actions.moveTo(disCont.getX(), destinationY, .1f, Interpolation.linear));
 			tabDown = true;
 		}
+		//set tab back up if there are no more disruptions 
 		if(engine.enginesOn() && bridge.canJump() && tabDown){
 			
 			disCont.addAction(Actions.sequence(Actions.moveTo(disCont.getX(), 0, .1f, Interpolation.linear), new RunnableAction(){
@@ -112,7 +115,7 @@ public class UIFastDrive extends WidgetGroup{
 			}));
 			tabDown = false;
 		}
-		
+		//advance charge if needbe
 		if(engine.enginesOn() && charge.isOnCooldown()){
 			charge.advanceCooldown(BASE_CHARGE_RATE*engine.getDriveChargeModifier());
 		}
@@ -137,11 +140,16 @@ public class UIFastDrive extends WidgetGroup{
 		bridgeBackground = new Image(GameplayScreen.highlight);
 	}
 	
-	
+	/**
+	 * Tab that falls down when engine or bridge disrupted
+	 * @author zach
+	 *
+	 */
 	private class DisruptionTab extends WidgetGroup{
 		private static final int OULTINE_SIZE = 2;
 		
 		private DisruptionTab(){
+			//layout tables
 			Table table = new Table();
 			table.setFillParent(true);
 			Stack eStack = new Stack();
@@ -159,8 +167,10 @@ public class UIFastDrive extends WidgetGroup{
 		@Override
 		public void draw(Batch batch, float parentAlpha){
 			Color color = batch.getColor().cpy();
+			//draw background
 			batch.setColor(Color.GRAY);
 			batch.draw(GameplayScreen.highlight, this.getX(), this.getY(),this.getWidth(),this.getHeight());
+			//determine colors by what problems exist
 			if(engine.enginesOn()){
 				engineBackground.setColor(FULL_COLOR);
 			}else{
@@ -178,20 +188,29 @@ public class UIFastDrive extends WidgetGroup{
 		}
 	}
 
+	/**
+	 * Bar that charges as drive powers up
+	 * @author zach
+	 *
+	 */
 	private class ChargeBar extends Widget{
 		private static final int PADDING_OFFSET = 2;
 		@Override
 		public void draw(Batch batch, float parentAlpha){
 			Color color = batch.getColor().cpy();
+			//draw background
 			batch.setColor(Color.GRAY);
 			batch.draw(GameplayScreen.highlight, getX(), getY(),this.getWidth(),this.getHeight());
+			//determine color of bar
 			if(charge.getCooldownProgress() != charge.getCooldownLimit()){
 				batch.setColor(CHARGE_COLOR);
 			}else{
 				batch.setColor(FULL_COLOR);
 			}
 			float progress = getChargePercent()*(this.getWidth() - 2 * PADDING_OFFSET);
+			//draw full part
 			batch.draw(GameplayScreen.highlight, getX()+PADDING_OFFSET, getY()+PADDING_OFFSET, progress  ,this.getHeight() - 2 * PADDING_OFFSET);
+			//draw empty part
 			batch.setColor(EMPTY_COLOR);
 			batch.draw(GameplayScreen.highlight, getX() + progress + PADDING_OFFSET, getY() + PADDING_OFFSET, (1 -getChargePercent())*(getWidth()- 2 * PADDING_OFFSET),getHeight()- 2 * PADDING_OFFSET);
 			batch.setColor(color);

@@ -3,8 +3,6 @@
  * Created by: Zach Higginbotham
  * Implementations by: Zach Higginbotham
  */
-
-
 package com.deeper.than.modules;
 
 import java.util.ArrayList;
@@ -21,6 +19,11 @@ import com.deeper.than.crew.CrewRepairTask;
 import com.deeper.than.crew.Crew.CrewState;
 import com.deeper.than.crew.CrewSkills.CrewSkillsTypes;
 
+/**
+ * Abstract module at the loswest level
+ * @author zach
+ *
+ */
 public abstract class Module {
 	
 	private final String name = "baseModule";
@@ -69,6 +72,7 @@ public abstract class Module {
 	}
 	
 	public void update(){
+		//advance ionic cooldown
 		ionicCooldown.setCooldownLimit(Math.max(1,ionicCharges) * IONIC_CHARGE_COOLDOWN_PER_CHARGE);
 		if(ionicCooldown.isOnCooldown()){
 			ionicCooldown.advanceCooldown(IONIC_COOLDOWN_PER_SEC);
@@ -77,6 +81,7 @@ public abstract class Module {
 				isOnLockdown = false;
 			}
 		}
+		//advance repair if damaged
 		if(repairCooldown.isOnCooldown()){
 			repairCooldown.advanceCooldown(getRepairSpeed());
 			if(!repairCooldown.isOnCooldown()){
@@ -93,8 +98,12 @@ public abstract class Module {
 		
 		
 	}
-
 	
+	/**
+	 * Gets the speed at which the module can be reaperd based on the crew repairing it
+	 * Also sets a crew repairing if possible
+	 * @return
+	 */
 	private float getRepairSpeed(){
 		if(repairing != null){
 			if(repairing.getState() == CrewState.REPAIRING){
@@ -126,6 +135,10 @@ public abstract class Module {
 		return repairer.getRepairRatio() * BASE_REPAIR_PER_SEC;
 	}
 	
+	/**
+	 * Draws icon of module
+	 * @param batch
+	 */
 	public void draw(Batch batch){
 		Sprite icon = Modules.getIcon(this.getClass().getCanonicalName()); 
 		Color color = batch.getColor().cpy();
@@ -199,7 +212,7 @@ public abstract class Module {
 	}
 
 	public boolean isManned() {
-		return manning == null ? false : true;
+		return !(manning == null);
 	}
 
 	public Crew getManning() {

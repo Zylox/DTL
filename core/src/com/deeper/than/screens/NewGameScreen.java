@@ -1,3 +1,8 @@
+/**
+ * Screen where player picks their ship
+ * Created by: Zach Higginbotham
+ * Implementations by: Zach Higginbotham
+ */
 package com.deeper.than.screens;
 
 import java.util.ArrayList;
@@ -21,6 +26,11 @@ import com.deeper.than.PlayerShip;
 import com.deeper.than.Ship;
 import com.deeper.than.ShipLoadException;
 
+/**
+ * New game Screen
+ * @author zach
+ *
+ */
 public class NewGameScreen implements EnumerableScreen {
 
 	private DTL game;
@@ -49,15 +59,16 @@ public class NewGameScreen implements EnumerableScreen {
 		Table table = new Table(DTL.skin);
 		shipSelect = new SelectBox<String>(DTL.skin);
 		populateShipSelect();
-		
+
+		//callback to load new ship when one is selected
 		shipSelect.addListener(new ChangeListener() {
 			public void changed (ChangeEvent event, Actor actor) {
-				//System.out.println(shipSelect.getSelected());
 				loadShip();
 			}
 		});
 		
 		TextButton playGame = new TextButton("Use Ship", DTL.skin);
+		//callback to go into ganme when this is selected
 		playGame.addListener(new ChangeListener() {
 			public void changed (ChangeEvent event, Actor actor) {
 				playGame();
@@ -87,6 +98,9 @@ public class NewGameScreen implements EnumerableScreen {
 		shipSelect.setItems(getShipFileHandles(BASEDIR));
 	}
 	
+	/**
+	 * Loads shipo from selectbox
+	 */
 	private void loadShip(){
 		if(ship != null){
 			ship.remove();
@@ -95,7 +109,6 @@ public class NewGameScreen implements EnumerableScreen {
 			ship = new PlayerShip(Gdx.files.internal("ships/" + getSelectedShip() +".ship"), true, game, DTL.firstOpenId++, ((GameplayScreen)Screens.GAMEPLAY.getScreen()).getWeaponGenerator());
 		} catch (ShipLoadException e) {
 			e.printStackTrace();
-			System.out.println("will im going to kill you");
 		}
 		ui.addActor(ship);
 	}
@@ -108,10 +121,11 @@ public class NewGameScreen implements EnumerableScreen {
 			System.out.println(base);
 		   dirHandle = Gdx.files.internal(base);
 		}else  {
-			//(Gdx.app.getType() == ApplicationType.Android)
 			dirHandle = Gdx.files.internal(baseDir);
 		}
-		
+
+		//This is actually required. libgdx has no way of detecting directories internally properly on desktop
+		//So you have to manually iterate through them
 		int numberOfShips = 8;
 		FileHandle[] fileHandles = new FileHandle[numberOfShips];
 		//fileHandles[0] = Gdx.files.internal(baseDir + "/");
@@ -141,50 +155,41 @@ public class NewGameScreen implements EnumerableScreen {
 	
 	@Override
 	public void show() {
-		// TODO Auto-generated method stub
 		DTL.printDebug("New Game Screen");
-	
 		Gdx.input.setInputProcessor(input);
 	}
 
 	@Override
 	public void render(float delta) {
-		// TODO Auto-generated method stub
 	    Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-		
 	    ui.act();
 	    ui.draw();
 	}
 
 	@Override
 	public void resize(int width, int height) {
-		// TODO Auto-generated method stub
 		ui.getViewport().update(width, height, true);
 	}
 
 	@Override
 	public void pause() {
-		// TODO Auto-generated method stub
 
 	}
 
 	@Override
 	public void resume() {
-		// TODO Auto-generated method stub
 
 	}
 
 	@Override
 	public void hide() {
-		// TODO Auto-generated method stub
 		DTL.previousScreen = this;
 		
 	}
 
 	@Override
 	public void dispose() {
-		// TODO Auto-generated method stub
-
+		
 	}
 
 }

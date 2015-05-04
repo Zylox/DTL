@@ -1,3 +1,8 @@
+/**
+ * A label and icon that display info on a reward object like fuel or currency
+ * Created by: Zach Higginbotham
+ * Implementations by: Zach Higginbotham
+ */
 package com.deeper.than.ui;
 
 import com.badlogic.gdx.Gdx;
@@ -14,6 +19,11 @@ import com.deeper.than.EnemyShip;
 import com.deeper.than.PlayerShip;
 import com.deeper.than.screens.GameplayScreen;
 
+/**
+ * UI element for reward objects
+ * @author zach
+ *
+ */
 public class UIRewardLabel extends Table {
 
 	public enum RewardLabelTypes{
@@ -43,7 +53,7 @@ public class UIRewardLabel extends Table {
 	public UIRewardLabel(PlayerShip ship, RewardLabelTypes type){
 		this.ship = ship;
 		this.type = type;
-		
+		//callback to sync to actual values
 		addAction(new Action() {
 			
 			@Override
@@ -85,9 +95,8 @@ public class UIRewardLabel extends Table {
 		label = new Label(Integer.toString(getAmount()), DTL.skin);
 		Image img = new Image(getSprite());
 		Table table = new Table();
-		//table.setFillParent(true);
-		table.add(img).fill().minWidth(getSprite().getWidth());//.prefWidth(getSprite().getWidth()).prefHeight(getSprite().getHeight()).fill();
-		table.add(label).fill();//.minWidth(DTL.font.getBounds(label.getText()).width);
+		table.add(img).fill().minWidth(getSprite().getWidth());
+		table.add(label).fill();
 		this.add(table);
 		this.setBackground(new NinePatchDrawable(UIEnemyWindow.backgroundNinePatch));
 	}

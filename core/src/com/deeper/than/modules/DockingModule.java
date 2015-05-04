@@ -1,6 +1,10 @@
+/**
+ * Docking module for teh ship
+ * Created by: Zach Higginbotham
+ * Implementations by: Zach Higginbotham
+ */
 package com.deeper.than.modules;
 
-import com.deeper.than.DTL;
 import com.deeper.than.Room;
 import com.deeper.than.Ship;
 

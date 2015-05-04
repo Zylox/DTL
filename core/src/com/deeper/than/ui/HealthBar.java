@@ -1,3 +1,8 @@
+/**
+ * Ship health bar
+ * Created by: Zach Higginbotham
+ * Implementations by: Zach Higginbotham
+ */
 package com.deeper.than.ui;
 
 import com.badlogic.gdx.graphics.Color;
@@ -7,13 +12,16 @@ import com.badlogic.gdx.scenes.scene2d.ui.Widget;
 import com.deeper.than.Ship;
 import com.deeper.than.screens.GameplayScreen;
 
-
+/**
+ * Ship health bar
+ * @author zach
+ *
+ */
 public class HealthBar extends Widget {
 	
 	public static final float INCREMENT = 20;
 	
 	private Ship ship;
-	
 	
 	public HealthBar(Ship ship){
 		this.ship = ship;
@@ -25,6 +33,7 @@ public class HealthBar extends Widget {
 		Color color = batch.getColor().cpy();
 		batch.setColor(Color.DARK_GRAY);
 		float padding = 0;
+		//draw a background
 		batch.draw(GameplayScreen.highlight,getX(), getY(), getWidth()-padding, getHeight());
 		batch.setColor(color);
 		
@@ -32,9 +41,11 @@ public class HealthBar extends Widget {
 		img.setColor(Color.GREEN);
 		
 		int i;
+		//draw live segments
 		for(i = 0; i < ship.getHealth(); i++){
 			img.draw(batch, getX()+i*INCREMENT, getY(), INCREMENT-padding, getHeight());
 		}
+		//draw rest another color
 		img.setColor(Color.DARK_GRAY);
 		for( ; i < ship.getMaxHealth(); i++){
 			img.draw(batch, getX()+i*INCREMENT, getY(), INCREMENT-padding, getHeight());

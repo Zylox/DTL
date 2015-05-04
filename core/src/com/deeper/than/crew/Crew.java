@@ -1,3 +1,8 @@
+/**
+ * Crew implementation and logic
+ * Created by: Zach Higginbotham
+ * Implementations by: Zach Higginbotham
+ */
 package com.deeper.than.crew;
 
 import java.util.ArrayList;
@@ -34,8 +39,14 @@ import com.deeper.than.modules.Module;
 import com.deeper.than.screens.GameplayScreen;
 import com.deeper.than.screens.Screens;
 
+/**
+ * Crew member of a ship
+ * @author zach
+ *
+ */
 public class Crew extends Actor{
 	
+	//Possible actions a crew member is performing
 	public enum CrewState{
 		REPAIRING,
 		WALKING,
@@ -45,8 +56,11 @@ public class Crew extends Actor{
 	}
 	
 	private static final float LARGE_ENOUGH = 999999999;
+	//pathfinding static values
 	private static final float DIAGONAL_MOVE = 14;
 	private static final float SQUARE_MOVE = 10;
+	
+	
 	public static final int CREW_HEIGHT = FloorTile.TILESIZE;
 	public static final int CREW_WIDTH = FloorTile.TILESIZE;
 	public static final float SCALE = 1.5f;
@@ -56,13 +70,17 @@ public class Crew extends Actor{
 	private Room room;
 	private Vector2 tilePos;
 	private String name;
+	//direction facing
 	private int direction;
 	private float stateTime;
 	private Races race;
+	//moves still needed to make
 	private ArrayList<Vector2> moves;
+	//doors left in its wake still open
 	private Door doorToClose;
 	private float health;
 	private boolean isAlive;
+	//selected by player for controlling
 	private boolean selected;
 	private CrewState state;
 	private CrewSkills skills;
@@ -97,6 +115,7 @@ public class Crew extends Actor{
 		drowner = new DrownCooldown(this.race);
 		
 		if(ship instanceof PlayerShip){
+			//callbacks for player controlled crew
 			addListener(new ClickListener() {
 				
 				@Override
@@ -150,6 +169,7 @@ public class Crew extends Actor{
 		skills.gainExp(exp, skill);
 	}
 	
+	//set to middle of tile it is on
 	public void initPosition(Vector2 tilePos){
 		this.tilePos = tilePos;
 		float x = (tilePos.x* FloorTile.TILESIZE);
@@ -206,10 +226,12 @@ public class Crew extends Actor{
 			}
 		}
 		Color color = batch.getColor().cpy();
+		//ddraw healthbar if hovered or damaged
 		if(hovered || getHealth() != race.getHealth()){
 			drawHealthBar(batch);
 		}
 		
+		//get the frame to draw
 		float delta = 0;
 		if(!((GameplayScreen)Screens.GAMEPLAY.getScreen()).isPaused()){
 			 delta = Gdx.graphics.getDeltaTime();
@@ -232,6 +254,10 @@ public class Crew extends Actor{
 		batch.setColor(color);
 	}
 	
+	/**
+	 * Draws healthbar above the head
+	 * @param batch
+	 */
 	private void drawHealthBar(Batch batch){
 		Color color = batch.getColor().cpy();
 		batch.setColor(Color.GREEN);
@@ -243,6 +269,12 @@ public class Crew extends Actor{
 		return getFrame(stateTime, Neighbors.DOWN);
 	}
 	
+	/**
+	 * Retruns frame at particular time and direction
+	 * @param stateTime
+	 * @param direction
+	 * @return
+	 */
 	private TextureRegion getFrame(float stateTime, int direction){
 		if(direction == Neighbors.UP){
 			return race.getUpAnim().getKeyFrame(stateTime, true);
@@ -269,9 +301,8 @@ public class Crew extends Actor{
 		return dist;
 	}
 	
+	//Moves to next tile
 	public void moveTo(Vector2 tile){
-		
-		//addAction(new NewSearch(tile));
 		newEnd = tile;
 		needNewPath = true;
 	}
@@ -283,12 +314,18 @@ public class Crew extends Actor{
 		return true;
 	}
 	
+	/**
+	 * Proccesses if next move can be set and sets it if possible
+	 */
 	private void setNextMove(){
+		//if its already moving just keep going
 		if(state == CrewState.WALKING) return;
+		//if a pathfind request has been given find new path
 		if(needNewPath){
 			moves = aStarFindPath(tilePos, newEnd);
 			needNewPath = false;
 		}
+		//if no more moves are needed, make sure it is not sharing a tile with anotehr crew and other actions
 		if(moves.isEmpty()){
 			if(occupiedShip.getLayout()[(int)tilePos.y][(int)tilePos.x].crewStandingCount() > 1){
 				ArrayList<Crew> iIC= ownerShip.getLayout()[(int)tilePos.y][(int)tilePos.x].intrudingStandingCrew();
@@ -298,15 +335,18 @@ public class Crew extends Actor{
 					}
 				}
 			}
+			//if it is reapiring let it continue to do so
 			if(CrewState.REPAIRING == state){
 				return;
 			}else if(state == CrewState.MANNING){
+				//if manning, make sure its still manable
 				Module mod = ownerShip.getLayout()[(int)tilePos.y][(int)tilePos.x].getRoom().getModule();
 				if(mod != null && !mod.isManned()){
 					state = CrewState.IDLE;
 				}
 				
 			}
+			//it module isnt manned and can be and the tiel the player is on is the manning tile, man it
 			if(ownerShip.getLayout()[(int)tilePos.y][(int)tilePos.x].getRoom().getManningLocation() == tilePos && ownerShip == occupiedShip){
 				Module mod = ownerShip.getLayout()[(int)tilePos.y][(int)tilePos.x].getRoom().getModule();
 				if(mod != null && !mod.isManned() && !mod.isOnLockdown()){
@@ -315,9 +355,11 @@ public class Crew extends Actor{
 					return;
 				}
 			}
+			//otherwise get to manning tile if needbe
 			setManningIfPossible();
 			return;
 		}
+		//if about to move and manning, usnet manning
 		if(state == CrewState.MANNING){
 			Module mod = ownerShip.getLayout()[(int)tilePos.y][(int)tilePos.x].getRoom().getModule();
 			if(mod != null){
@@ -327,6 +369,7 @@ public class Crew extends Actor{
 		}
 		Vector2 move = moves.remove(0);
 		if(isWalkable(tilePos, move)){
+			//calculate new direction and speed
 			int xDiff = (int) (move.x - tilePos.x);
 			int yDiff = (int) (move.y - tilePos.y);
 			float moveFactor;
@@ -350,20 +393,22 @@ public class Crew extends Actor{
 				direction = Neighbors.RIGHT;
 			}
 			
+			//check if speed gets modified
 			GridSquare[][] layout = occupiedShip.getLayout();
 			if(layout[(int)tilePos.y][(int)tilePos.x].getRoom().isWaterSwimHeight()){
 				speedRatio= 1/race.getSwimRatio();
 			}else{
 				speedRatio = 1/race.getWalkRatio();
 			}
+			//start walking
 			stateTime = 0;
 			layout[(int)move.y][(int)move.x].addCrewMember(this);
 			layout[(int)tilePos.y][(int)tilePos.x].removeCrewMember(this);
-			//TODO set crew on module if neccesary
 			this.addAction(Actions.sequence(Actions.moveTo(move.x*FloorTile.TILESIZE+(FloorTile.TILESIZE/2f - CREW_WIDTH/SCALE/2), move.y*FloorTile.TILESIZE+(FloorTile.TILESIZE/2f - CREW_HEIGHT/SCALE/2), moveFactor * speedRatio), new SetTile(move)));
-			//this.act(Gdx.graphics.getDeltaTime());
 			state = CrewState.WALKING;
 		}else{
+			//if not walkable and still trying to move
+			//refind path
 			if(moves.size() != 0){
 				move = moves.get(moves.size()-1);
 				moves.clear();
@@ -373,6 +418,11 @@ public class Crew extends Actor{
 		}
 	}
 	
+	/**
+	 * uses breadthsfirst search to find nearest open spot
+	 * @param pos
+	 * @return
+	 */
 	public Vector2 findNearestOpenSpot(Vector2 pos){
 		if(openList == null){
 			openList = new ArrayList<GridSquare>();
@@ -426,13 +476,14 @@ public class Crew extends Actor{
 		}
 	}
 	
-	//ASSUMPTION: passed in start and end are valid points
+	//ASSUMPTION: passed in start and end are valid points, aka, adjacent
 	private boolean isWalkable(Vector2 start, Vector2 end){
 		GridSquare[][] layout = occupiedShip.getLayout();
 		if(layout[(int)end.y][(int)end.x].isPathClosed()){
 			return false;
 		}
 		
+		//figure out orientation
 		int dir = Neighbors.UNDEFINED;
 		float xDiff = end.x - start.x;
 		float yDiff = end.y - start.y;
@@ -458,6 +509,7 @@ public class Crew extends Actor{
 			return false;
 		}
 		
+		//decide if the path is walkable
 		if(dir == Neighbors.UP || dir == Neighbors.DOWN || dir == Neighbors.LEFT || dir == Neighbors.RIGHT){
 			GridSquare currSq = layout[(int)start.y][(int)start.x];
 			if(currSq.hasDoor(dir) && (currSq.getDoor(dir).isOpen() || currSq.getDoor(dir).isOpenableByCrewMem(this))){
@@ -477,7 +529,12 @@ public class Crew extends Actor{
 	}
 	
 
-	
+	/**
+	 * Find new path
+	 * @param start
+	 * @param end
+	 * @return
+	 */
 	private ArrayList<Vector2> aStarFindPath(Vector2 start, Vector2 end){
 		GridSquare[][] layout = occupiedShip.getLayout();
 		if(openList == null){
@@ -558,6 +615,7 @@ public class Crew extends Actor{
 			
 			
 			if(neighbor.isOnOpenList()){
+				//change gvalue and pointer if the square is a better path
 				if(neighbor.getGValue() > currSq.getGValue() + moveValue){
 					neighbor.setGValue(currSq.getGValue() + moveValue);
 					neighbor.setPathPointer(currSq);
@@ -606,7 +664,11 @@ public class Crew extends Actor{
 	}
 	
 	
-	
+	/**
+	 * gets smallest element on the openlist
+	 * @param openList
+	 * @return
+	 */
 	private GridSquare popSmallest(ArrayList<GridSquare> openList){
 		float smallest = LARGE_ENOUGH;
 		float test;
@@ -626,6 +688,13 @@ public class Crew extends Actor{
 		return removeFromOpen(indexOfSmallest);
 	}
 	
+	/**
+	 * Retrieves neighbor if it exists and is travelable, otherwise null
+	 * @param currSq
+	 * @param dir
+	 * @param layout
+	 * @return
+	 */
 	private GridSquare getNeighbor(GridSquare currSq, int dir, GridSquare[][] layout){
 		//do not modify pos
 		Vector2 pos = currSq.getPos();
@@ -684,6 +753,7 @@ public class Crew extends Actor{
 			return null;
 		}
 		//might look like lots of useless code but im trying to instantiate as few objects as possible
+		//as i was seeing a noticiablee slowdown
 		CellBorder wall;
 		switch(dir){
 		case Neighbors.UPPER_LEFT:
@@ -955,6 +1025,11 @@ public class Crew extends Actor{
 		}
 	}
 	
+	/**
+	 * Point to move to
+	 * @author zach
+	 *
+	 */
 	public class MoveToPointOfIntrest extends Action implements Poolable{
 		private Vector2 posToMoveTo;
 		
@@ -975,6 +1050,11 @@ public class Crew extends Actor{
 		
 	}
 
+	/**
+	 * an action to set the tile to new pos when done moving
+	 * @author zach
+	 *
+	 */
 	private class SetTile extends Action{
 
 		private Vector2 tilePos;

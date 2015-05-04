@@ -1,9 +1,18 @@
+/**
+ * Module for vision based checks
+ * Created by: Zach Higginbotham
+ * Implementations by: Zach Higginbotham
+ */
 package com.deeper.than.modules;
 
 import com.deeper.than.Room;
 import com.deeper.than.Ship;
 
-
+/**
+ * Sensor module for ship
+ * @author zach
+ *
+ */
 public class SensorsModule extends SubModule {
 	
 	public SensorsModule(int id, int maxLevel, Room room, Ship ship) {

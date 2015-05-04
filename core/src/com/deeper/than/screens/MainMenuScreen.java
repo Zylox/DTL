@@ -1,14 +1,16 @@
+/**
+ * Main screen player sees upon launch
+ * Created by: Zach Higginbotham
+ * Implementations by: Zach Higginbotham
+ */
 package com.deeper.than.screens;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputMultiplexer;
-import com.badlogic.gdx.audio.Music;
-import com.badlogic.gdx.audio.Music.OnCompletionListener;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
@@ -17,6 +19,11 @@ import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.deeper.than.DTL;
 
+/**
+ * Main menu screen
+ * @author zach
+ *
+ */
 public class MainMenuScreen implements EnumerableScreen {
 
 	public static Sound buttonClick;
@@ -25,7 +32,6 @@ public class MainMenuScreen implements EnumerableScreen {
 	private Stage stage;
 	private Table table;
 	
-	private ShapeRenderer shapeRen;
 	private TextButton playButton;
 	private TextButton newGameButton;
 	private TextButton optionsButton;
@@ -39,6 +45,9 @@ public class MainMenuScreen implements EnumerableScreen {
 
 	}
 	
+	/**
+	 * Sets up table
+	 */
 	public void create(DTL game){
 		this.game = game;
 		stage = new Stage(game.getViewport());
@@ -142,6 +151,10 @@ public class MainMenuScreen implements EnumerableScreen {
 		game.setScreen(Screens.NEWGAME.getScreen());
 	}
 	
+	/**
+	 * lays out tables, including a continue button that takes you to gampeley whan appropriate
+	 * @param continueB
+	 */
 	private void configureTable(boolean continueB){
 		table.clear();
 		table.add().expandX();
@@ -174,10 +187,6 @@ public class MainMenuScreen implements EnumerableScreen {
 		table.add().expandX();
 	}
 	
-	public void goToShipBuilder(){
-		//game.setScreen(Screens.SHIPBUILDER.getScreen());
-	}
-	
 	public void options(){
 		//sends to the OptionScreen
 		buttonClick.play();
@@ -202,9 +211,7 @@ public class MainMenuScreen implements EnumerableScreen {
 
 	@Override
 	public void dispose() {
-		// TODO Auto-generated method stub
 		stage.dispose();
-		shapeRen.dispose();
 	}
 	
 }

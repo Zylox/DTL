@@ -1,3 +1,8 @@
+/**
+ * Module for shield charing and managemetn
+ * Created by: Zach Higginbotham
+ * Implementations by: Zach Higginbotham
+ */
 package com.deeper.than.modules;
 
 import com.badlogic.gdx.Gdx;
@@ -6,6 +11,11 @@ import com.deeper.than.Room;
 import com.deeper.than.Ship;
 import com.deeper.than.crew.CrewSkills.CrewSkillsTypes;
 
+/**
+ * Sheild module to be used by ship
+ * @author zach
+ *
+ */
 public class SheildModule extends MainModule {
 	public static final float COOLDOWN_MAX = 100;
 	public static final float COOLDOWN_INC_BASE = 50;
@@ -61,6 +71,9 @@ public class SheildModule extends MainModule {
 	@Override
 	public void update(){
 		super.update();
+		//update sheilds if on cooldown
+		
+		//if the sheildcoutn is full, end the cycling cooldown
 		if(activeCount > getSheildLayerCount()-1){
 			activeCount= getSheildLayerCount();
 			coolD.endCooldown();
@@ -72,6 +85,7 @@ public class SheildModule extends MainModule {
 				if(!coolD.isOnCooldown()){
 					activeCount++;
 					if(activeCount != getSheildLayerCount()){
+						//start new cooldown if there are still sheilds to restore
 						coolD.startCooldown();
 					}
 				}

@@ -1,3 +1,8 @@
+/**
+ * Screen where options are selected. currenlty this is jsut fullscreen or not
+ * Created by: Zach Higginbotham
+ * Implementations by: Zach Higginbotham
+ */
 package com.deeper.than.screens;
 
 import com.badlogic.gdx.Application.ApplicationType;
@@ -12,13 +17,18 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.deeper.than.DTL;
 
+/**
+ * Option screen
+ * @author zach
+ *
+ */
 public class OptionScreen implements EnumerableScreen {
 
-	private ShapeRenderer shapeRen;
 	
 	private DTL game;
 	private Stage menu;
 	
+	//sets up table
 	public void create(DTL game){
 		this.game = game;
 		menu = new Stage(game.getViewport());
@@ -26,6 +36,7 @@ public class OptionScreen implements EnumerableScreen {
 		Table table = new Table();
 		table.setFillParent(true);
 		TextButton fullscreen = new TextButton("FullScreen On/Off", DTL.skin);
+		//callback to toggle fullscreen
 		fullscreen.addListener(new ChangeListener() {
 		    public void changed (ChangeEvent event, Actor actor) {
 		    	fullscreenToggle();
@@ -35,34 +46,27 @@ public class OptionScreen implements EnumerableScreen {
 		menu.addActor(table);
 		
 		
-		shapeRen = new ShapeRenderer();
 		table.setDebug(DTL.GRAPHICALDEBUG);
 		
 	}
 	
 	@Override
 	public void show() {
-		// TODO Auto-generated method stub
 		DTL.printDebug("Option Screen");
 		Gdx.input.setInputProcessor(menu);
 	}
 
 	@Override
 	public void render(float delta) {
-		// TODO Auto-generated method stub
 	    Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-	    
 	    if(Gdx.input.isKeyPressed(Input.Keys.ESCAPE)){
 	    	mainMenu();
 	    }
-	    
-	    
 		menu.draw();
 	}
 
 	@Override
 	public void resize(int width, int height) {
-		// TODO Auto-generated method stub
 		menu.getViewport().update(width, height, true);
 		game.setViewport(menu.getViewport());
 	}
@@ -70,26 +74,22 @@ public class OptionScreen implements EnumerableScreen {
 	public void fullscreenToggle(){
 		if(Gdx.graphics.isFullscreen()){
 			Gdx.graphics.setDisplayMode(DTL.VWIDTH, DTL.VHEIGHT, false);
-			System.out.println("get out of fullscreen");
 		}else{
 			if(Gdx.app.getType() == ApplicationType.Desktop){
 				Gdx.graphics.setDisplayMode(Gdx.graphics.getDesktopDisplayMode().width, Gdx.graphics.getDesktopDisplayMode().height, true);
 			}else{
 				Gdx.graphics.setDisplayMode(DTL.VWIDTH, DTL.VHEIGHT, true);
 			}
-			System.out.println("set to fullscreen");
 		}
 	}
 
 	@Override
 	public void pause() {
-		// TODO Auto-generated method stub
 
 	}
 
 	@Override
 	public void resume() {
-		// TODO Auto-generated method stub
 
 	}
 	
@@ -99,15 +99,12 @@ public class OptionScreen implements EnumerableScreen {
 
 	@Override
 	public void hide() {
-		// TODO Auto-generated method stub
 		DTL.previousScreen = this;
 	}
 
 	@Override
 	public void dispose() {
-		// TODO Auto-generated method stub
 		menu.dispose();
-		shapeRen.dispose();
 	}
 
 }

@@ -1,6 +1,15 @@
+/**
+ * Various skills that can be leveled up thorughout use in their area
+ * Created by: Zach Higginbotham
+ * Implementations by: Zach Higginbotham
+ */
 package com.deeper.than.crew;
 
-
+/**
+ * Skills a crew member can have
+ * @author zach
+ *
+ */
 public class CrewSkills {
 	public enum CrewSkillsTypes{
 		BRIDGE,

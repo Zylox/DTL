@@ -1,5 +1,7 @@
 /**
- * 
+ * UI element that holds weapon info and manages targetting and firing
+ * Created by: Zach Higginbotham
+ * Implementations by: Zach Higginbotham
  */
 package com.deeper.than.ui;
 
@@ -30,6 +32,7 @@ import com.deeper.than.screens.GameplayScreen;
 import com.deeper.than.weapons.Weapon;
 
 /**
+ * UI element that holds weapon info and manages targetting and firing
  * @author zach
  *
  */
@@ -38,6 +41,7 @@ public class UIWeaponCard extends WidgetGroup {
 	private static Sound targetSound;
 	
 	private NinePatch bgInstance;
+	//callback that manages selecting
 	private ClickListener targetSelect = new ClickListener(){
 		public boolean touchDown(InputEvent event, float x, float y, int pointer, int button){
 			if(powerBar.clickPassthrough){
@@ -68,6 +72,9 @@ public class UIWeaponCard extends WidgetGroup {
 	private Weapon weapon;
 	private Room target;
 	private Image reticule;
+	/**
+	 * if true, target will stay locked upon firing
+	 */
 	private boolean stickTarget;
 	
 	public UIWeaponCard(float width, float height,Weapon weapon, WeaponsModule weapModule, UIWeaponModuleReacBar moduleUI){
@@ -98,26 +105,27 @@ public class UIWeaponCard extends WidgetGroup {
 		reticule.setTouchable(Touchable.disabled);
 		setTarget(null);
 		this.addActor(reticule);
+		//callback to manage selection on power loss and fire when possible
 		this.addAction(new Action() {
-			
 			@Override
 			public boolean act(float delta) {
 				if(powerBar.getPowered() ==0){
 					unSelectSelf();
 				}
-				
 				fireIfPossible();
-
-				
 				return false;
 			}
 		});
 	}
 	
 	private void fireIfPossible(){
+		//if charged and target aquired, start firing sequence
 		if(weapon.isCharged() && target != null){
+			//notify container that shot was fired
 			container.shotFired();
+			//actually fire
 			weapon.fire(target);
+			//start a new charge
 			weapon.startCharging();
 			if(!stickTarget){
 				setTarget(null);
@@ -162,8 +170,6 @@ public class UIWeaponCard extends WidgetGroup {
 		}else{
 			bgInstance.setColor(Color.WHITE);
 		}
-		
-		
 		super.draw(batch, parentAlpha);
 		batch.setColor(Color.GREEN);
 		batch.draw(GameplayScreen.highlight, getX()+1,getY()+1,4,(getHeight()-2)*weapon.getCooldownPercent());
@@ -179,6 +185,7 @@ public class UIWeaponCard extends WidgetGroup {
 
 	public void setTarget(Room target) {
 		if(target != null){
+			//manage stick target
 			if(target.equals(this.target)){
 				stickTarget = true;
 				reticule.setColor(Color.YELLOW);
@@ -186,6 +193,7 @@ public class UIWeaponCard extends WidgetGroup {
 				stickTarget = false;
 				reticule.setColor(Color.RED);
 			}
+			//find where to draw the reticule
 			Vector2 centerLoc = target.getCenterLocInStage().cpy();
 			this.stageToLocalCoordinates(centerLoc);
 			reticule.setPosition(centerLoc.x - reticule.getWidth()/2, centerLoc.y-reticule.getHeight()/2);

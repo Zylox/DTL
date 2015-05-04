@@ -1,3 +1,8 @@
+/**
+ * Plate that pops up when hovering over crew plate
+ * Created by: Zach Higginbotham
+ * Implementations by: Zach Higginbotham
+ */
 package com.deeper.than.ui;
 
 import java.util.ArrayList;
@@ -19,6 +24,11 @@ import com.deeper.than.modules.Modules;
 import com.deeper.than.modules.SheildModule;
 import com.deeper.than.modules.WeaponsModule;
 
+/**
+ * Plate to hold crew stats
+ * @author zach
+ *
+ */
 public class UICrewSkillsPlate extends WidgetGroup {
 
 	public static final float minIconSize = 15;
@@ -39,6 +49,8 @@ public class UICrewSkillsPlate extends WidgetGroup {
 		this.crewSkills = crewSkills;
 		this.icons = new Array<Image>(6);
 		this.progBars = new Array<UICrewSkillsProgressBar>(6);
+		//new images need to be made for each instance
+		//new drawables are not being instantiated so nothing is being leaked or loaded from file again
 		icons.add(new Image(bridge.getDrawable()));
 		icons.add(new Image(engines.getDrawable()));
 		icons.add(new Image(shields.getDrawable()));
@@ -90,7 +102,7 @@ public class UICrewSkillsPlate extends WidgetGroup {
 	
 	@Override
 	public void draw(Batch batch, float parentAlpha){
-		
+		//color icon by level
 		for(int i = 0; i < icons.size; i++){
 			icons.get(i).setColor(progBars.get(i).getColorByLevel());
 		}

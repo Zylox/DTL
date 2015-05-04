@@ -1,3 +1,8 @@
+/**
+ * base level powerbar implementation
+ * Created by: Zach Higginbotham
+ * Implementations by: Zach Higginbotham
+ */
 package com.deeper.than.ui;
 
 import java.util.ArrayList;
@@ -13,6 +18,11 @@ import com.badlogic.gdx.scenes.scene2d.ui.WidgetGroup;
 import com.badlogic.gdx.utils.SnapshotArray;
 import com.deeper.than.screens.GameplayScreen;
 
+/**
+ * Base level class for powerbar implementation
+ * @author zach
+ *
+ */
 public class UIPowerBar extends WidgetGroup{
 	public enum PowerBarState{
 		POWERED,
@@ -21,6 +31,7 @@ public class UIPowerBar extends WidgetGroup{
 		IONIZED;
 	}
 	
+	//sentinel for when a powerbar with no limit is wanted
 	public static final int UNLIMITED_POWER = -999;
 	public static final float PREF_WIDTH = PowerChunk.PREF_SIZE * 1.5f;
 	public static final float BETWEEN_CHUNK_PADDING = 3;
@@ -88,6 +99,10 @@ public class UIPowerBar extends WidgetGroup{
 		batch.setColor(color);
 	}
 	
+	/**
+	 * Draws square in event of lockdown
+	 * @param batch
+	 */
 	protected void drawLockdownSquare(Batch batch){
 		batch.setColor(Color.YELLOW);
 		float wOffset = getWidth()/4;
@@ -113,30 +128,35 @@ public class UIPowerBar extends WidgetGroup{
 	 * @return the amount transfered
 	 */
 	public int givePower(int numToExchange ,UIPowerBar powerBar){
+		//if other bar is infinite, just give it some power and be done with it
 		if(powerBar.getPowered() == UNLIMITED_POWER){
 			setPowered(getPowered() - numToExchange);
 			updatePowered();
 			return numToExchange;
 		}
 		
+		//if bar is already full, retreate
 		if(powerBar.sections == powerBar.powered){
 			return 0;
 		}
 
+		//it if would overload it, adjust
 		if(powerBar.powered + numToExchange > powerBar.sections){
 			numToExchange = powerBar.sections - powerBar.powered;
 		}
+		//if this bar is infinite, give it what it wants
 		if(getPowered() == UNLIMITED_POWER){
 			powerBar.setPowered(powerBar.getPowered() + numToExchange);
 			powerBar.updatePowered();
 			return numToExchange;
 		}
 		
+		//if there isnt enough to give, adjust to give what it can
 		if(getPowered() < numToExchange){
 			numToExchange = getPowered();
-		}else{
 		}
 		
+		//finally, exchange
 		setPowered(getPowered() - numToExchange);
 		powerBar.setPowered(powerBar.getPowered() + numToExchange);
 		updatePowered();
@@ -145,12 +165,19 @@ public class UIPowerBar extends WidgetGroup{
 		return numToExchange;
 	}
 	
+	/**
+	 * Adds listneer to all children
+	 * @param listen
+	 */
 	public void addListenerToChildren(EventListener listen){
 		for(Actor a : this.getChildren()){
 			a.addListener(listen);
 		}
 	}
 	
+	/**
+	 * UPdates chunks to powered or unpowerd status
+	 */
 	protected void updatePowered(){
 		for(int i = 0; i < powerChunks.size(); i++){
 			if(i < getPowered()){
@@ -199,6 +226,10 @@ public class UIPowerBar extends WidgetGroup{
 	}
 
 
+	/**
+	 * @author zach
+	 *
+	 */
 	protected class PowerChunk extends Widget{
 		private static final float PREF_SIZE = 15;
 		private PowerBarState state;

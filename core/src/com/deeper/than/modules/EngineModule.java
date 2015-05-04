@@ -10,6 +10,11 @@ import com.deeper.than.Room;
 import com.deeper.than.Ship;
 import com.deeper.than.crew.CrewSkills.CrewSkillsTypes;
 
+/**
+ * Engine module for the ship
+ * @author zach
+ *
+ */
 public class EngineModule extends MainModule{
 	
 	private static final float dodgeChances[] = {0,.05f,.1f,.15f,.20f,.25f,.28f,.31f,.35f}; 

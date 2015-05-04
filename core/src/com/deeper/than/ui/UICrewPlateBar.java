@@ -1,3 +1,8 @@
+/**
+ * Bar on the left that holds all crew plates
+ * Created by: Zach Higginbotham
+ * Implementations by: Zach Higginbotham
+ */
 package com.deeper.than.ui;
 
 import java.util.ArrayList;
@@ -8,6 +13,11 @@ import com.badlogic.gdx.scenes.scene2d.ui.WidgetGroup;
 import com.deeper.than.DTL;
 import com.deeper.than.crew.Crew;
 
+/**
+ * Crew plate bar that holds all crew members of a ship
+ * @author zach
+ *
+ */
 public class UICrewPlateBar extends WidgetGroup{
 	
 	private ArrayList<CrewPlate> crewPlates;
@@ -19,6 +29,7 @@ public class UICrewPlateBar extends WidgetGroup{
 		
 		table = new Table();
 		table.setFillParent(true);
+		//create plates and add to bar
 		for(Crew c : crew){
 			crewPlate = new CrewPlate(c);
 			crewPlates.add(crewPlate);
@@ -47,6 +58,9 @@ public class UICrewPlateBar extends WidgetGroup{
 		
 	}
 	
+	/**
+	 * Lays out hte table 
+	 */
 	public void layoutTable(){
 		table.clear();
 		Table crewTable = new Table();

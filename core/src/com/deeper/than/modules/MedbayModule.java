@@ -1,3 +1,8 @@
+/**
+ * Module that heals crew
+ * Created by: Zach Higginbotham
+ * Implementations by: Zach Higginbotham
+ */
 package com.deeper.than.modules;
 import java.util.ArrayList;
 

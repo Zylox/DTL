@@ -1,8 +1,18 @@
+/**
+ * Lets a ship cloak, rasing evade
+ * Created by: Zach Higginbotham
+ * Implementations by: Zach Higginbotham
+ */
 package com.deeper.than.modules;
 
 import com.deeper.than.Room;
 import com.deeper.than.Ship;
 
+/**
+ * Cloaking modlue for a ship
+ * @author zach
+ *
+ */
 public class CloakingModule extends MainModule {
 
 	private boolean isCloaked;

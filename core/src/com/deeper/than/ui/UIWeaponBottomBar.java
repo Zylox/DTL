@@ -1,5 +1,7 @@
 /**
- * 
+ * Weapon bar at the bottom of the screen 
+ * Created by: Zach Higginbotham
+ * Implementations by: Zach Higginbotham
  */
 package com.deeper.than.ui;
 
@@ -14,6 +16,7 @@ import com.deeper.than.modules.WeaponsModule;
 import com.deeper.than.weapons.Weapon;
 
 /**
+ * Bar that holds equipped weapons
  * @author zach
  *
  */
@@ -25,6 +28,7 @@ public class UIWeaponBottomBar extends WidgetGroup{
 	private ArrayList<UIWeaponCard> cards;
 	
 	public UIWeaponBottomBar(UIWeaponModuleReacBar modUI){
+		//needs a valid modui
 		if(modUI == null){
 			return;
 		}
@@ -35,6 +39,7 @@ public class UIWeaponBottomBar extends WidgetGroup{
 		selected = null;
 		cards = new ArrayList<UIWeaponCard>();
 		ArrayList<Weapon> equippedWeapons = mod.getEquippedWeapons();
+		//create full cards
 		int i;
 		UIWeaponCard card;
 		for(i = 0; i<equippedWeapons.size(); i++){
@@ -44,6 +49,7 @@ public class UIWeaponBottomBar extends WidgetGroup{
 			this.addActor(card);
 			cards.add(card);
 		}
+		//fill rest with empty
 		Image emptyCont;
 		for(; i< mod.getShip().getMaxWeapons(); i++){
 			emptyCont = new Image(new NinePatchDrawable(UIWeaponCard.background));
@@ -54,6 +60,9 @@ public class UIWeaponBottomBar extends WidgetGroup{
 		}
 	}
 	
+	/**
+	 * Untargets all weapons
+	 */
 	public void clearTargets(){
 		for(UIWeaponCard wc : cards){
 			wc.setTarget(null);

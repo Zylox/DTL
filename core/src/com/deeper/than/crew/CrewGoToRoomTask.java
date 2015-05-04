@@ -1,3 +1,8 @@
+/**
+ * Task that sends crew to a room
+ * Created by: Zach Higginbotham
+ * Implementations by: Zach Higginbotham
+ */
 package com.deeper.than.crew;
 
 import com.badlogic.gdx.math.Vector2;
@@ -6,8 +11,16 @@ import com.badlogic.gdx.utils.Pool.Poolable;
 import com.deeper.than.Room;
 import com.deeper.than.crew.Crew.CrewState;
 
+/**
+ * Task for sending crew to a room
+ * @author zach
+ *
+ */
 public class CrewGoToRoomTask extends CrewTask implements Poolable{
 	
+	/**
+	 * Pool of tasks
+	 */
 	private static final Pool<CrewGoToRoomTask> manTaskPool = new Pool<CrewGoToRoomTask>(){
 	    @Override
 	    protected CrewGoToRoomTask newObject() {
@@ -15,6 +28,10 @@ public class CrewGoToRoomTask extends CrewTask implements Poolable{
 	    }
 	};
 	
+	/**
+	 * Gets a task to use. make sure to init, and free when done
+	 * @return
+	 */
 	public static CrewGoToRoomTask obtain(){
 		return manTaskPool.obtain();
 	}

@@ -1,5 +1,15 @@
+/**
+ * Data for orientations
+ * Created by: Zach Higginbotham
+ * Implementations by: Zach Higginbotham
+ */
 package com.deeper.than;
 
+/**
+ * 
+ * @author zach
+ *
+ */
 public enum Neighbors {
 	INTERNALWALL,
 	EXTERNALWALL,
@@ -7,7 +17,7 @@ public enum Neighbors {
 	TILE;
 
 	//this should really be an enum, i know, im in too deep though.
-	//refactor one day
+	//Holds all the orientations possible
 	public static final int UP = 0;
 	public static final int RIGHT = 1;
 	public static final int DOWN = 2;

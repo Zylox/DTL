@@ -1,3 +1,8 @@
+/**
+ * row that holds all reactor bars
+ * Created by: Zach Higginbotham
+ * Implementations by: Zach Higginbotham
+ */
 package com.deeper.than.ui;
 
 import java.util.ArrayList;
@@ -15,8 +20,14 @@ import com.deeper.than.modules.SheildModule;
 import com.deeper.than.modules.SubModule;
 import com.deeper.than.modules.WeaponsModule;
 
+/**
+ * Ui element for holding all reactor bars for a ship
+ * @author zach
+ *
+ */
 public class UIReactorRow extends WidgetGroup{
 	private Ship ship;
+	//whether or not to split submodules into another table
 	private boolean splitSub;
 	
 	private Table mainReactorBars;
@@ -44,42 +55,41 @@ public class UIReactorRow extends WidgetGroup{
 	public void setupReactorBars(){
 		fillTables();
 	}
+	
 	private void fillTables(){
 		UIPowerBar subBar = new UIPowerBar(1, UIPowerBar.UNLIMITED_POWER);
+		//create a reactorbar for the ship
 		ReactorBar reactorBar = new ReactorBar(ship);
 		if(ship instanceof PlayerShip){
+			//for a player ship, display it
 			mainReactorBars.add(reactorBar).bottom().left().minWidth(ReactorBar.PREF_WIDTH).fillY();
 		}
 		Module mod = null;
 		UIModuleReactorBar moduleReac = null;
+		//cycle through modules adding them
 		for(Class<? extends Module> c : Modules.getModuleClasses()){
 			mod = ship.getModule(c);
 			if(mod != null){
 				if(mod instanceof MainModule){
 					if(mod instanceof WeaponsModule){
 						if(ship instanceof EnemyShip){
+							//give enemy weapons full pwoer if possible
 							moduleReac = new UIWeaponModuleReacBar(mod.getLevel(), reactorBar, (WeaponsModule)mod);
 						}else{
+							//give player weapons no power by default
 							moduleReac = new UIWeaponModuleReacBar(0, reactorBar, (WeaponsModule)mod);
 						}
 						wModreac = (UIWeaponModuleReacBar) moduleReac;
-//						float cardWidth = 120;
-//						float cardHeight = 60;
-//						UIWeaponCard card = new UIWeaponCard(cardWidth, cardHeight,ship.getWeapons().get(0), (WeaponsModule)mod, (UIWeaponModuleReacBar)moduleReac);
-//						UIWeaponCard card2 = new UIWeaponCard(cardWidth, cardHeight,ship.getWeapons().get(1), (WeaponsModule)mod, (UIWeaponModuleReacBar)moduleReac);
-//						this.addActor(card);
-//						card.setX(350);
-//						card.setY(100);
-//						this.addActor(card2);
-//						card2.setX(490);
-//						card2.setY(100);
 					}else{
+						//sheild gets 2 bars by default because that is the least useful amount
+						//everything else 1
 						moduleReac = new UIModuleReactorBar(mod instanceof SheildModule ? 2 : 1, Modules.getIcon(c.getCanonicalName()), reactorBar, mod);
 					}
 					mainReactorBars.add(moduleReac).spaceLeft(10).bottom().left().minWidth(ReactorBar.PREF_WIDTH).fillY().expandY();
 					moduleReactorBars.add(moduleReac);
 				}else if(mod instanceof SubModule){
 					moduleReac = new UIModuleReactorBar(mod.getLevel(), Modules.getIcon(c.getCanonicalName()), subBar, mod);
+					//put into different table if set to split
 					if(splitSub){
 						subReactorBars.add(moduleReac).spaceLeft(10).bottom().left().minWidth(ReactorBar.PREF_WIDTH).fillY().expandY();
 					}else{
@@ -96,6 +106,7 @@ public class UIReactorRow extends WidgetGroup{
 		Table joiner = new Table();
 		joiner.setFillParent(true);
 		joiner.add(mainReactorBars).fill().expand().left();
+		//if set to split, seperate them to oppisite sides of the screen
 		if(splitSub){
 			joiner.add().prefWidth(DTL.VWIDTH);
 			joiner.add(subReactorBars).fill().expand().left();

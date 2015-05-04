@@ -1,8 +1,18 @@
+/**
+ * Controls doors
+ * Created by: Zach Higginbotham
+ * Implementations by: Zach Higginbotham
+ */
 package com.deeper.than.modules;
 
 import com.deeper.than.Room;
 import com.deeper.than.Ship;
 
+/**
+ * Hatch control module for ships
+ * @author zach
+ *
+ */
 public class HatchControlModule extends SubModule {
 
 	public HatchControlModule(int id, int maxLevel, Room room, Ship ship) {

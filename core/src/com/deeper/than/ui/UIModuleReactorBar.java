@@ -1,3 +1,8 @@
+/**
+ * Reactor for a module
+ * Created by: Zach Higginbotham
+ * Implementations by: Zach Higginbotham
+ */
 package com.deeper.than.ui;
 
 import com.badlogic.gdx.Input.Buttons;
@@ -12,13 +17,19 @@ import com.deeper.than.modules.Module;
 import com.deeper.than.modules.SubModule;
 import com.deeper.than.screens.GameplayScreen;
 
+/**
+ * UI element for a moudule
+ * @author zach
+ *
+ */
 public class UIModuleReactorBar extends UIIconReactorBar implements UIModuleSyncable{
 
 	private UIPowerBar mainPower;
-	//private int powerWanted;
+	//powerlevel the module wants
 	private int desiredPowerLevel;
 	private Module module;
 	private int preLockdownPowerLevel;
+	//callback for clicks
 	private ClickListener clicky = new ClickListener() {
 			public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
 				if(button == Buttons.LEFT){
@@ -38,6 +49,7 @@ public class UIModuleReactorBar extends UIIconReactorBar implements UIModuleSync
 		this.mainPower = mainPower;
 		desiredPowerLevel = getPowered();
 		
+		//only main modules should be clickable
 		if(module instanceof MainModule && module.isPlayerModule()){
 			this.addListenerToChildren(clicky);
 		}
@@ -76,6 +88,7 @@ public class UIModuleReactorBar extends UIIconReactorBar implements UIModuleSync
 	@Override
 	public void draw(Batch batch, float parentAlpha){
 		icon.setColor(Color.WHITE);
+		//color if manned
 		if(module.isManable() && module.isManned() && (module.isPlayerModule() || ((EnemyShip)module.getShip()).canPlayerSeeMyTiles())){
 			icon.setColor(Color.GREEN);
 		}
@@ -91,22 +104,22 @@ public class UIModuleReactorBar extends UIIconReactorBar implements UIModuleSync
 		amount = getSections()- module.getDamage()-getPowered();
 		mainPower.givePower(amount, this);
 			
-		//updateModulePowerLevel();
 	}
 	
 	public void losePower(int amount){
 		this.givePower(amount, mainPower);
-		//updateModulePowerLevel();
 	}
 	
 	@Override
 	public void updateModulePowerLevel() {
+		//modify visibility based on new conditions
 		if(!this.isPowerVisible && module.getShip() instanceof EnemyShip && ((EnemyShip)module.getShip()).canPlayerSeeMyPower()){
 			this.setPowerVisible(true);
 		}else if(this.isPowerVisible && module.getShip() instanceof EnemyShip && !((EnemyShip)module.getShip()).canPlayerSeeMyPower()){
 			this.setPowerVisible(false);
 		}
 		
+		//if the module is on lockdown, effect power accordingly
 		if(module.isOnLockdown() && !this.isLockedDown){
 			this.setLockedDown(true);
 			preLockdownPowerLevel = getPowered();
@@ -114,15 +127,17 @@ public class UIModuleReactorBar extends UIIconReactorBar implements UIModuleSync
 			this.setLockedDown(false);
 			getPower(preLockdownPowerLevel - getPowered());
 		}
-		
+		//take power in case of lockdown
 		if(module.isOnLockdown()){
 			if(preLockdownPowerLevel - module.getIonicCharges() < getPowered()){
 				losePower(getPowered() - (preLockdownPowerLevel - module.getIonicCharges()));
 			}
 		}
+		//if damage is too much, take some power
 		if(getSections() - module.getDamage() < getPowered()){
 			losePower(getPowered() - (getSections() - module.getDamage()));
 		}else if(getSections() - module.getDamage() > getPowered() && !this.isLockedDown){
+			//if there is room for power, and more is wanted, get it
 			if(desiredPowerLevel > getPowered()){
 				if(mainPower.isEmpty()){
 					desiredPowerLevel = getPowered();
@@ -131,15 +146,18 @@ public class UIModuleReactorBar extends UIIconReactorBar implements UIModuleSync
 				}
 			}
 		}
+		//if the bar wants to lose some power, take it
 		if(desiredPowerLevel < getPowered() && !this.isLockedDown){
 			losePower(getPowered() - desiredPowerLevel);
 		}
-
-		
+		//sync module
 		module.setPowerLevel(getPowered());
 		updatePowered();
 	}
 	
+	/**
+	 * Set power chunks to appropriate states for drawing
+	 */
 	@Override
 	protected void updatePowered(){
 		for(int i = 0; i < powerChunks.size(); i++){
@@ -152,13 +170,11 @@ public class UIModuleReactorBar extends UIIconReactorBar implements UIModuleSync
 			if(getSections() - i <= module.getDamage()){
 				powerChunks.get(i).setState(PowerBarState.DAMAGED);
 			}
-//			if(getPowered() - i <= module.getIonicCharges()){
-//				powerChunks.get(i).setState(PowerBarState.IONIZED);
-//			}
 		}
 	}
 	
 
+	//Check to see if module has updated itself to a new level and react accordingly
 	public void checkforSectionsChange(){
 		if(module.getLevel() != getSections()){
 			if(module instanceof SubModule){

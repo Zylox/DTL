@@ -1,3 +1,9 @@
+/**
+ * Implementation of the enemy ship
+ * Holds the ai elements and allows for detection of enemy ships by instanceof
+ * Created by: Zach Higginbotham
+ * Implementations by: Zach Higginbotham
+ */
 package com.deeper.than;
 
 import java.util.ArrayList;
@@ -14,6 +20,11 @@ import com.deeper.than.ui.UIWeaponBottomBar;
 import com.deeper.than.ui.UIWeaponCard;
 import com.deeper.than.weapons.WeaponGenerator;
 
+/**
+ * Ship with ai components and parameterized elements required for the enemy
+ * @author zach
+ *
+ */
 public class EnemyShip extends Ship{
 
 	private static final Random ran = new Random();
@@ -44,12 +55,18 @@ public class EnemyShip extends Ship{
 		this.equipedWeaponsBar = wBar;
 	}
 
+	/**
+	 * Procceses the ai tasks and ship update tasks.
+	 * 
+	 * {@inheritDoc} 
+	 */
 	@Override
 	public void update(){
 		ArrayList<Crew> untaskedCrew = getUntaskedCrew();
 		Crew crew;
 		Iterator<CrewTask> iter = taskQueue.iterator();
 		CrewTask task = null;
+		//check status of all tasks and assignes if possible
 		while(iter.hasNext()){
 			task = iter.next();
 			crew = null;
@@ -65,11 +82,14 @@ public class EnemyShip extends Ship{
 					crew = findClosestCrew(((CrewRepairTask)task).getLocation(), untaskedCrew);
 					if(crew != null){
 						task.assign(crew);
+						untaskedCrew.remove(crew);
 					}
 				}else if(task instanceof CrewGoToRoomTask){
+					//find a crewmemeber that is available if possibble
 					crew = findClosestCrew(((CrewGoToRoomTask)task).getLocation(), untaskedCrew);
 					if(crew != null){
 						task.assign(crew);
+						untaskedCrew.remove(crew);
 					}
 				}
 				
@@ -78,6 +98,7 @@ public class EnemyShip extends Ship{
 			
 		}
 		
+		//power all weapons possible and set targets for them
 		for(UIWeaponCard wc : this.equipedWeaponsBar.getCards()){
 			if(wc.getTarget() == null){
 				wc.setTarget(selectRoomToTarget());
@@ -87,10 +108,19 @@ public class EnemyShip extends Ship{
 		super.update();
 	}
 	
+	/**
+	 * Gets a room to target on the playership with weapons
+	 * @return
+	 */
 	private Room selectRoomToTarget(){
 		return playerShip.rooms.get(ran.nextInt(playerShip.rooms.size()));
 	}
 	
+	/**
+	 * Frees tasks that can be pooled.
+	 * Does nothing to non pooled tasks.
+	 * @param task
+	 */
 	private void freeTask(CrewTask task){
 		if(task instanceof CrewRepairTask){
 			CrewRepairTask.free((CrewRepairTask)task);
@@ -101,6 +131,12 @@ public class EnemyShip extends Ship{
 		taskQueue.add(task);
 	}
 	
+	/**
+	 * Gets the closest crew member of the list provided
+	 * @param pos position to relate to
+	 * @param crew
+	 * @return closest crew member
+	 */
 	public Crew findClosestCrew(Vector2 pos, ArrayList<Crew> crew){
 		Crew closest = null;
 		float dist = 1000000;
@@ -115,6 +151,10 @@ public class EnemyShip extends Ship{
 		return closest;
 	}
 	
+	/**
+	 * Retrieves all crew that are manning or idle
+	 * @return
+	 */
 	public ArrayList<Crew> getUntaskedCrew(){
 		ArrayList<Crew> untaskedCrew = new ArrayList<Crew>();
 		for(Crew c : this.getCrew()){

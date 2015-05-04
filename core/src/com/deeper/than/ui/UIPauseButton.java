@@ -1,3 +1,8 @@
+/**
+ * UI element for a pause button
+ * Created by: Zach Higginbotham
+ * Implementations by: Zach Higginbotham
+ */
 package com.deeper.than.ui;
 
 import com.badlogic.gdx.Gdx;
@@ -11,6 +16,11 @@ import com.badlogic.gdx.scenes.scene2d.utils.NinePatchDrawable;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.deeper.than.screens.GameplayScreen;
 
+/**
+ * Pause button ui element
+ * @author zach
+ *
+ */
 public class UIPauseButton extends Button{
 	
 	private static TextureRegionDrawable playImg;
@@ -29,8 +39,8 @@ public class UIPauseButton extends Button{
 	public UIPauseButton(GameplayScreen gameplayScreen){
 		super(bStyle);
 		this.gameplayScreen = gameplayScreen;
+		//callback to get pause status from gameplay state
 		this.addAction(new Action() {
-			
 			@Override
 			public boolean act(float delta) {
 				syncToGameplayScreen();
@@ -38,6 +48,7 @@ public class UIPauseButton extends Button{
 			}
 		});
 		this.background(new NinePatchDrawable(UIEnemyWindow.backgroundNinePatch));
+		//callback to toggle paused
 		this.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y){
@@ -53,7 +64,6 @@ public class UIPauseButton extends Button{
 	private void syncToGameplayScreen(){
 		if(gameplayScreen.isPaused()){
 			setChecked(true);
-			
 		}else{
 			setChecked(false);
 		}

@@ -1,3 +1,8 @@
+/**
+ * Crew Race data
+ * Created by: Zach Higginbotham
+ * Implementations by: Zach Higginbotham, Will Hedges, and Nick Ferguson
+ */
 package com.deeper.than.crew;
 
 import java.util.Random;
@@ -7,6 +12,11 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
+/**
+ * Crew race data
+ * @author zach
+ *
+ */
 public enum Races {
 	HUMAN("human", 1f, .6f, 50, 75, 5, 100, 1.1f, 1f),
 	SCAIL("scail", .6f, 1f, 300, 40, 7, 80, 1f, 1f),
@@ -15,6 +25,7 @@ public enum Races {
 	MUR("mur", .9f, .8f, 150, 60, 5, 100, 1f, 1f),
 	ILLUMI("illumi", 1f, .7f, 50, 75, 5, 70, 1f, 1f);
 	
+	//various names
 	public static final String[] humanNames = {"Bob", "Jeb", "Steve", "Jim", "Nick", "Zach", "Will", "Ben", "GIJoe", "Jimmy", "Jake", "Ian", "John", "Bill", "James", "Zebulon", "Horatio",
 											   "John", "Michael", "Tim", "Shawn", "Wyatt", "Isaac", "Jan", "Shan", "Thomas", "Jonah", "Nathan", "Matt", "Dakota", "Kitchenset", "Joe",
 											   "Ivan", "Tyler", "Goku", "Harlee", "Tom", "Andy", "Matsuda", "Lelouch", "Light", "Lawliet", "Tai", "Izzy", "Ash", "Bambi", "Rock", "Dwayne", "Meller",
@@ -73,14 +84,14 @@ public enum Races {
 		}
 	}
 	
+	/**
+	 * Creates animations for the different directions
+	 * @author nick
+	 */
 	private void constructAnims(){
 		String folder;
 		if(race.equals("human")){
 			folder = "crew/HumanMale/firstDraftHuman";
-			/*downAnim = conAnim(folder+"firstDraftHumanFrontStep1.png",folder+"firstDraftHumanFront.png", folder+"firstDraftHumanFrontStep2.png" );
-			upAnim = conAnim(folder+"firstDraftHumanBackStep1.png",folder+"firstDraftHumanBack.png", folder+"firstDraftHumanBackStep2.png" );
-			rightAnim = conAnim(folder+"firstDraftHumanFaceRightStep1.png",folder+"firstDraftHumanFaceRight.png", folder+"firstDraftHumanFaceRightStep2.png" );
-			leftAnim = conAnim(folder+"firstDraftHumanFaceLeftStep1.png",folder+"firstDraftHumanFaceLeft.png", folder+"firstDraftHumanFaceLeftStep2.png" );*/
 		} else if(race.equals("tekdrone")){
 			folder = "TekDrone/TekDrone";
 		} else if(race.equals("scail")){

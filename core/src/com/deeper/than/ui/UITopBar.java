@@ -11,6 +11,11 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.deeper.than.DTL;
 import com.deeper.than.Ship;
 
+/**
+ * Top bar of ui. Has ship health and sheilds
+ * @author zach
+ *
+ */
 public class UITopBar extends Table {
 	private static final float TOP_BAR_HEIGHT = 25;
 	
@@ -23,11 +28,18 @@ public class UITopBar extends Table {
 		this(ship, width, TOP_BAR_HEIGHT, split);
 	}
 	
+	/**
+	 * 
+	 * @param ship
+	 * @param width
+	 * @param height
+	 * @param split two lines or one
+	 */
 	public UITopBar(Ship ship, float width, float height, boolean split){
 		healthLabel = new Label("Health:", DTL.skin);
 		sheildLabel = new Label("Sheilds:", DTL.skin);
 		float fontHeight = DTL.font.getBounds("Health:").height;
-		
+		//scale font if neccesary
 		if(fontHeight > height){
 			float newHeight = (fontHeight/height)-1;
 			healthLabel.setFontScale(newHeight);
@@ -42,6 +54,5 @@ public class UITopBar extends Table {
 		}
 		this.add(sheildLabel).spaceRight(1);
 		this.add(sBar).minWidth(width/4).minHeight(height);
-		//this.add().prefWidth(Gdx.graphics.getWidth());
 	}
 }

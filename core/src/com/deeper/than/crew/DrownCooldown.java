@@ -1,11 +1,14 @@
 /**
- * 
+ * A special cooldown object to track if a crew is dronwing
+ * Created by: Zach Higginbotham
+ * Implementations by: Zach Higginbotham
  */
 package com.deeper.than.crew;
 
 import com.deeper.than.modules.Cooldown;
 
 /**
+ * Keeps track of a crews drownign status
  * @author zach
  *
  */
