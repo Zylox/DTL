@@ -44,6 +44,12 @@ public abstract class Weapon extends Group{
 		});
 	}
 	
+	public static void loadWeaponAssets(){
+		Laser.loadAssets();
+		EMPShot.loadAssets();
+		TorpedoLauncher.loadAssets();
+	}
+	
 	public String getParamString(){
 		String paramString = "Acc:" + Float.toString(getAccuracy()) + "\n" +
 							 "Damage:" + Float.toString(getDamage()) + "\n" +

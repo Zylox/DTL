@@ -1,5 +1,7 @@
 package com.deeper.than.weapons;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Vector2;
@@ -8,6 +10,12 @@ import com.deeper.than.screens.GameplayScreen;
 
 public class EMPShot extends Weapon{
 
+	private static Sound empShot;
+	
+	public static void loadAssets(){
+		empShot = Gdx.audio.newSound(Gdx.files.internal("sounds/empshot.wav"));
+	}
+	
 	public EMPShot(String name, WeaponParams params) {
 		super(name, params);
 		// TODO Auto-generated constructor stub
@@ -37,7 +45,8 @@ public class EMPShot extends Weapon{
 		proj.setStart(start);
 		proj.setDestination(this.stageToLocalCoordinates(target.getCenterLocInStage().cpy()), new WeaponHitAction(this,this.didHit(target), target), 1);
 		proj.setColor(Color.YELLOW);
-		this.addActor(proj);		
+		this.addActor(proj);	
+		empShot.play();
 	}
 
 

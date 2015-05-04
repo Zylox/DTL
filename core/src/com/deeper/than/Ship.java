@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
@@ -38,6 +39,8 @@ import com.deeper.than.weapons.WeaponGenerator;
  */
 public class Ship extends Group{
 	public static final int EQUIPED_WEAPON_MAX = 4;
+	
+	public static Sound hitSound;
 	
 	/**
 	 * A reference to the game for reasons. Don't ask the reasons.
@@ -548,6 +551,10 @@ public class Ship extends Group{
 			texAtl       = new TextureAtlas(doorImgHandle);
 			doorImg      = texAtl.createPatch("doorhalf");
 		}
+		
+		if(hitSound == null){
+			hitSound = Gdx.audio.newSound(Gdx.files.internal("sounds/hit.wav"));
+		}
 	}
 	
 	public GridSquare[][] getLayoutCopy(){
@@ -737,6 +744,7 @@ public class Ship extends Group{
 			damageSheilds(amt);
 			return false;
 		}else{
+			hitSound.play();
 			setHealth(getHealth()-amt);
 			return true;
 		}

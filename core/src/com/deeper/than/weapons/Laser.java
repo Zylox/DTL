@@ -1,12 +1,21 @@
 package com.deeper.than.weapons;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Vector2;
 import com.deeper.than.Room;
 import com.deeper.than.screens.GameplayScreen;
 
-public class Laser extends Weapon {	
+public class Laser extends Weapon {
+
+	private static Sound laserShot;
+	
+	public static void loadAssets(){
+		laserShot = Gdx.audio.newSound(Gdx.files.internal("sounds/laserShot.wav"));
+	}
+	
 	private Color beamColor;
 	public Laser(String name, WeaponParams params, Color beamColor) {
 		super(name, params);
@@ -41,6 +50,7 @@ public class Laser extends Weapon {
 		proj.setDestination(this.stageToLocalCoordinates(target.getCenterLocInStage().cpy()), new WeaponHitAction(this,this.didHit(target), target), 1);
 		proj.setColor(beamColor);
 		this.addActor(proj);
+		laserShot.play();
 	}
 	/* (non-Javadoc)
 	 * @see com.deeper.than.weapons.Weapon#onhit()

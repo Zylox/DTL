@@ -4,7 +4,9 @@
 package com.deeper.than.ui;
 
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Buttons;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
@@ -21,10 +23,10 @@ import com.badlogic.gdx.scenes.scene2d.ui.WidgetGroup;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.NinePatchDrawable;
 import com.deeper.than.DTL;
+import com.deeper.than.EnemyShip;
 import com.deeper.than.Room;
 import com.deeper.than.modules.WeaponsModule;
 import com.deeper.than.screens.GameplayScreen;
-import com.deeper.than.screens.Screens;
 import com.deeper.than.weapons.Weapon;
 
 /**
@@ -33,6 +35,7 @@ import com.deeper.than.weapons.Weapon;
  */
 public class UIWeaponCard extends WidgetGroup {
 	public static NinePatch background;
+	private static Sound targetSound;
 	
 	private NinePatch bgInstance;
 	private ClickListener targetSelect = new ClickListener(){
@@ -57,6 +60,7 @@ public class UIWeaponCard extends WidgetGroup {
 	
 	public static void loadAssets(){
 		background = new NinePatch(new Texture("weaponBackground.png"),1,3,1,3);
+		targetSound = Gdx.audio.newSound(Gdx.files.internal("sounds/targetsound.wav"));
 	}
 	
 	private UIWeaponReactor powerBar;
@@ -188,7 +192,9 @@ public class UIWeaponCard extends WidgetGroup {
 			if(!target.isPlayerRoom()){
 				reticule.setVisible(true);
 			}
-			
+			if(target.getShip() instanceof EnemyShip){
+				targetSound.play();
+			}
 		}else{
 			stickTarget = false;
 			reticule.setVisible(false);

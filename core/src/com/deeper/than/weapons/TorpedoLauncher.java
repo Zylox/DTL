@@ -1,5 +1,7 @@
 package com.deeper.than.weapons;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Vector2;
@@ -7,6 +9,12 @@ import com.deeper.than.Room;
 import com.deeper.than.screens.GameplayScreen;
 
 public class TorpedoLauncher extends Weapon{
+	private static Sound torpedoShot;
+	
+	public static void loadAssets(){
+		torpedoShot = Gdx.audio.newSound(Gdx.files.internal("sounds/torpedofire.wav"));
+	}
+	
 	private float torpedoSpeed;
 	
 	public TorpedoLauncher(String name, WeaponParams params, float torpedoSpeed) {
@@ -41,7 +49,8 @@ public class TorpedoLauncher extends Weapon{
 		proj.setStart(start);
 		proj.setColor(Color.LIGHT_GRAY);
 		proj.setDestination(this.stageToLocalCoordinates(target.getCenterLocInStage().cpy()), new WeaponHitAction(this,this.didHit(target), target), getTorpedoSpeed());
-		this.addActor(proj);		
+		this.addActor(proj);
+		torpedoShot.play();
 	}
 
 	/* (non-Javadoc)

@@ -2,16 +2,13 @@ package com.deeper.than.screens;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputMultiplexer;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.InputEvent;
-import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.actions.Actions;
-import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
@@ -20,7 +17,7 @@ import com.deeper.than.DTL;
 
 public class MainMenuScreen implements EnumerableScreen {
 
-	
+	public static Sound buttonClick;
 	
 	private DTL game;
 	private Stage stage;
@@ -88,7 +85,7 @@ public class MainMenuScreen implements EnumerableScreen {
 	}
 	
 	public void loadAssets(){
-		
+		buttonClick = Gdx.audio.newSound(Gdx.files.internal("sounds/select5.wav"));
 	}
 	
 	@Override
@@ -128,17 +125,13 @@ public class MainMenuScreen implements EnumerableScreen {
 	}
 
 	public void play(){
-		//sends to the GameplayScreen
-//		if(DTL.gameActive){
-//			game.setScreen(Screens.GAMEPLAY.getScreen());			
-//		}else{
-//			game.setScreen(Screens.NEWGAME.getScreen());
-//		}
+		buttonClick.play();
 		game.setScreen(Screens.GAMEPLAY.getScreen());
 	}
 	
 	public void newGame(){
 		Screens.GAMEPLAY.create(game);
+		buttonClick.play();
 		DTL.gameActive = false;
 		game.setScreen(Screens.NEWGAME.getScreen());
 	}
@@ -181,6 +174,7 @@ public class MainMenuScreen implements EnumerableScreen {
 	
 	public void options(){
 		//sends to the OptionScreen
+		buttonClick.play();
 		game.setScreen(Screens.OPTIONS.getScreen());
 	}
 	

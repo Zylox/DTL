@@ -10,6 +10,7 @@ import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.deeper.than.screens.NewGameScreen;
 import com.deeper.than.screens.Screens;
+import com.deeper.than.weapons.Weapon;
 
 public class DTL extends Game {
 	
@@ -53,8 +54,10 @@ public class DTL extends Game {
 		skin = new Skin(Gdx.files.internal("uiskin.json"));
 		DTL.skin.getFont("default-font").getRegion().getTexture().setFilter(TextureFilter.Linear, TextureFilter.Linear);
 		font = skin.getFont("default-font");
-		Screens[] screens = Screens.values();
 		
+		Weapon.loadWeaponAssets();
+		
+		Screens[] screens = Screens.values();
 		for(Screens s : screens){
 			s.create(this);
 		}
