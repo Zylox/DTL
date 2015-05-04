@@ -5,6 +5,8 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Input.Buttons;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.InputProcessor;
+import com.badlogic.gdx.audio.Music;
+import com.badlogic.gdx.audio.Music.OnCompletionListener;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
@@ -60,6 +62,13 @@ public class GameplayScreen implements EnumerableScreen{
 	public static Texture highlight;
 	public static Sprite reticule;
 	
+	public static final String musicHandles[] = {"music/Rob Cosh - PONDER - 03 Flow-01.wav",
+		 										 "music/Rob Cosh - PONDER - 03 Flow-02.wav",
+		 										 "music/Rob Cosh - PONDER - 03 Flow-03.wav",
+												 "music/Rob Cosh - PONDER - 03 Flow-04.wav"};
+	public static Music music;
+	public static int musicCounter = 0;
+	
 	private DTL game;
 	
 	private Label evadeValue;
@@ -90,7 +99,7 @@ public class GameplayScreen implements EnumerableScreen{
 	private boolean eventWindow;
 	
 	
-	Background tempBackground;
+	private Background background;
 	
 	public void create(DTL game){
 		this.game = game;
@@ -101,8 +110,8 @@ public class GameplayScreen implements EnumerableScreen{
 	
 	public void loadAssets(){
 		UIWeaponCard.loadAssets();
-		tempBackground = new Background(new Texture("tempbackground.png"));
-		tempBackground.setColor(Color.WHITE);
+		background = new Background(new Texture("tempbackground.png"));
+		background.setColor(Color.WHITE);
 		highlight = new Texture(Gdx.files.internal("pixel.png"));
 		UIPauseButton.loadAssets();
 		UIRewardLabel.loadAssets();
@@ -117,8 +126,30 @@ public class GameplayScreen implements EnumerableScreen{
 		mapGenerator = new MapGenerator();
 		UIMapScreen.loadAssets();
 		
+		loadNewMusic();
+		music.setOnCompletionListener(new OnCompletionListener() {
+			
+			@Override
+			public void onCompletion(Music music) {
+				musicCounter++;
+				if(musicCounter >= musicHandles.length){
+					musicCounter = 0;
+				}
+				loadNewMusic();
+				playMusic();
+			}
+		});
+		loadNewMusic();
 	}
 	
+	
+	private void loadNewMusic(){
+		music = Gdx.audio.newMusic(Gdx.files.internal(musicHandles[musicCounter]));
+	}
+	
+	private void playMusic(){
+		music.play();
+	}
 
 	/**
 	 * 
@@ -135,7 +166,7 @@ public class GameplayScreen implements EnumerableScreen{
 		
 		gameObjects = new Stage(game.getViewport());
 		
-		gameObjects.addActor(tempBackground);
+		gameObjects.addActor(background);
 		gameObjects.addActor(playerShip);
 		shapeRen.setProjectionMatrix(gameObjects.getViewport().getCamera().combined);
 		EnemyShip enemy = null;
@@ -363,6 +394,7 @@ public class GameplayScreen implements EnumerableScreen{
 		}
 		DTL.gameActive = true;
 		Gdx.input.setInputProcessor(input);
+		music.play();
 	}
 
 	@Override
@@ -522,6 +554,7 @@ public class GameplayScreen implements EnumerableScreen{
 	public void hide() {
 		// TODO Auto-generated method stub
 		DTL.previousScreen = this;
+		music.pause();
 	}
 
 	@Override

@@ -2,6 +2,8 @@ package com.deeper.than.screens;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputMultiplexer;
+import com.badlogic.gdx.audio.Music;
+import com.badlogic.gdx.audio.Music.OnCompletionListener;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
@@ -85,8 +87,12 @@ public class MainMenuScreen implements EnumerableScreen {
 	}
 	
 	public void loadAssets(){
-		buttonClick = Gdx.audio.newSound(Gdx.files.internal("sounds/select5.wav"));
+		if(buttonClick == null){
+			buttonClick = Gdx.audio.newSound(Gdx.files.internal("sounds/select5.wav"));
+		}
+
 	}
+
 	
 	@Override
 	public void show() {
