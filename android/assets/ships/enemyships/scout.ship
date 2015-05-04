@@ -2,13 +2,13 @@ name= scout
 xDim= 4
 yDim= 5
 health= 5
-power= 15
+power= 11
 floortileimg= floortile.png
 doorimg= door.pack
 layout=
 {0,0 1,0} , SensorsModule , 1 , human
 {0,1 0,2} , EngineModule , 1
-{1,1 1,2} , HatchControlModule , 1 , human
+{1,1 1,2} , WeaponsModule , 4 , human
 {0,3 1,3} , ClimateControlModule , 1
 {2,1 2,2 3,2 3,1} , SheildModule , 2
 {4,1 4,2} , BridgeModule , 1
@@ -21,5 +21,6 @@ doors=
 {3,2 up}
 enddoors
 weapons=
-laser
+laser worn
+laser worn
 endweapons

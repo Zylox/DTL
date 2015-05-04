@@ -121,8 +121,8 @@ public class ScriptParser implements Poolable{
 			break;
 		case "health=":
 			if(tokens.length > 1){
-				ship.setHealth(Integer.parseInt(tokens[1]));
 				ship.setMaxHealth(Integer.parseInt(tokens[1]));
+				ship.setHealth(Integer.parseInt(tokens[1]));
 				healthSet = true;
 			}
 			break;
@@ -424,7 +424,6 @@ public class ScriptParser implements Poolable{
 			module.setLevel(level);
 		}else if(type.equals("MedbayModule")){
 			module = Modules.Medbay.instantiateModule(moduleId++, room, ship);
-			
 			module.setLevel(level);
 		}else if(type.equals("DockingModule")){
 			module = Modules.Docking.instantiateModule(moduleId++, room, ship);
@@ -438,8 +437,10 @@ public class ScriptParser implements Poolable{
 			module.setLevel(level);
 		}
 		
-		room.setModule(module);
-		ship.addModule(module);
+		if(module != null){
+			room.setModule(module);
+			ship.addModule(module);
+		}
 		return moduleId;
 	}
 	

@@ -2,6 +2,7 @@ package com.deeper.than;
 
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.Random;
 
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.math.Vector2;
@@ -9,14 +10,18 @@ import com.deeper.than.crew.Crew;
 import com.deeper.than.crew.CrewGoToRoomTask;
 import com.deeper.than.crew.CrewRepairTask;
 import com.deeper.than.crew.CrewTask;
+import com.deeper.than.ui.UIWeaponBottomBar;
+import com.deeper.than.ui.UIWeaponCard;
 import com.deeper.than.weapons.WeaponGenerator;
 
 public class EnemyShip extends Ship{
 
+	private static final Random ran = new Random();
+	
 	private PlayerShip playerShip;
 	
 	private ArrayList<CrewTask> taskQueue;
-	
+	private UIWeaponBottomBar equipedWeaponsBar;
 	
 	public EnemyShip(FileHandle filepath, DTL game, int id, PlayerShip playerShip, WeaponGenerator weaponGen)  throws ShipLoadException{
 		super(filepath, false, game, id, weaponGen);
@@ -33,6 +38,10 @@ public class EnemyShip extends Ship{
 			return playerShip.getSensors().canSeeEnemyPowerUse();
 		}
 		return false;
+	}
+	
+	public void setWeaponsBar(UIWeaponBottomBar wBar){
+		this.equipedWeaponsBar = wBar;
 	}
 
 	@Override
@@ -69,7 +78,17 @@ public class EnemyShip extends Ship{
 			
 		}
 		
+		for(UIWeaponCard wc : this.equipedWeaponsBar.getCards()){
+			if(wc.getTarget() == null){
+				wc.setTarget(selectRoomToTarget());
+				wc.tryGivePower();
+			}
+		}
 		super.update();
+	}
+	
+	private Room selectRoomToTarget(){
+		return playerShip.rooms.get(ran.nextInt(playerShip.rooms.size()));
 	}
 	
 	private void freeTask(CrewTask task){

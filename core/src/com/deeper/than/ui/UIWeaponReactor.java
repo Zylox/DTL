@@ -62,7 +62,7 @@ public class UIWeaponReactor extends UIPowerBar{
 		return weapon.isPowered();
 	}
 	
-	private void setDesirePower(boolean desire){
+	public void setDesirePower(boolean desire){
 		this.weapon.setWantsPower(desire);
 	}
 	

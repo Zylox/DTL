@@ -7,9 +7,8 @@ public enum Screens{
 	MAINMENU(new MainMenuScreen()),
 	OPTIONS(new OptionScreen()),
 	TUTORIAL(new TutorialScreen()),
-	NEWGAME(new NewGameScreen()),
-	GAMEPLAY(new GameplayScreen());
-	//SHIPBUILDER(new ShipBuilderScreen());
+	GAMEPLAY(new GameplayScreen()),
+	NEWGAME(new NewGameScreen());
 	
 	private final EnumerableScreen screen;
 	

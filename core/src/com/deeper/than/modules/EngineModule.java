@@ -8,6 +8,7 @@ package com.deeper.than.modules;
 
 import com.deeper.than.Room;
 import com.deeper.than.Ship;
+import com.deeper.than.crew.CrewSkills.CrewSkillsTypes;
 
 public class EngineModule extends MainModule{
 	
@@ -46,6 +47,12 @@ public class EngineModule extends MainModule{
 			driveChargeMod = driveChargeModifiers[getPowerLevel()];
 		}
 		return driveChargeMod;
+	}
+	
+	public void giveEvadeExp(){
+		if(this.isManned()){
+			this.getManning().gainExp(1, CrewSkillsTypes.ENGINES);;
+		}
 	}
 	
 	public static float[] getDodgeChances(){

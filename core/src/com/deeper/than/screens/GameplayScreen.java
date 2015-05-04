@@ -9,11 +9,14 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.actions.Actions;
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
@@ -22,9 +25,9 @@ import com.badlogic.gdx.scenes.scene2d.utils.NinePatchDrawable;
 import com.deeper.than.DTL;
 import com.deeper.than.DTLMap;
 import com.deeper.than.EnemyShip;
-import com.deeper.than.MapGenerator;
 import com.deeper.than.FloorTile;
 import com.deeper.than.GridSquare;
+import com.deeper.than.MapGenerator;
 import com.deeper.than.PlayerShip;
 import com.deeper.than.ShipLoadException;
 import com.deeper.than.Wall;
@@ -48,13 +51,14 @@ import com.deeper.than.ui.UISecondaryTopBar;
 import com.deeper.than.ui.UITopBar;
 import com.deeper.than.ui.UIWeaponBottomBar;
 import com.deeper.than.ui.UIWeaponCard;
+import com.deeper.than.weapons.Projectile;
 import com.deeper.than.weapons.WeaponGenerator;
 
 public class GameplayScreen implements EnumerableScreen{
 	
 	public static ShapeRenderer shapeRen;
 	public static Texture highlight;
-	
+	public static Sprite reticule;
 	
 	private DTL game;
 	private Stage ui;
@@ -73,14 +77,20 @@ public class GameplayScreen implements EnumerableScreen{
 	private float timeAccumulator;
 	private Crew selectedCrew;
 	private UIEnemyWindow enemyWindow;
+	private WeaponGenerator weaponGen;
+	private UIWeaponBottomBar bottomBar;
+	private Label pausedLabel;
 	private DTLMap map;
 	private MapGenerator mapGenerator;
-	private WeaponGenerator weaponGen;
 	
 	private InputMultiplexer input;
 
 	private boolean isPaused;
 	private boolean eventWindow;
+	
+	
+	Image test;
+	
 	
 	Background tempBackground;
 	
@@ -88,6 +98,7 @@ public class GameplayScreen implements EnumerableScreen{
 		this.game = game;
 
 		loadAssets();
+		weaponGen = new WeaponGenerator();
 	}
 	
 	public void loadAssets(){
@@ -103,7 +114,7 @@ public class GameplayScreen implements EnumerableScreen{
 		UIFastDrive.loadAssets();
 		Races.loadAnims();
 		shapeRen = new ShapeRenderer();
-
+		reticule = new Sprite(new Texture(Gdx.files.internal("targetreticule.png")));
 		UIEnemyWindow.loadAssets();
 		mapGenerator = new MapGenerator();
 		UIMapScreen.loadAssets();
@@ -118,7 +129,7 @@ public class GameplayScreen implements EnumerableScreen{
 		mapGenerator.generate();
 		map = mapGenerator.getMap();
 		
-		weaponGen = new WeaponGenerator();
+		
 //		weaponGen.getQualityDist().clearDistribution();
 //		weaponGen.getQualityDist().setPercent(100, WeaponQualities.EXCEPTIONAL);
 
@@ -188,22 +199,24 @@ public class GameplayScreen implements EnumerableScreen{
 		playerReacs.setupReactorBars();
 		uiT.row();
 		
-		UIWeaponBottomBar bottomWeps = new UIWeaponBottomBar(playerReacs.getWeaponUI());
-		System.out.println(playerReacs.getOriginX() + " " + playerReacs.getOriginY());
-		bottomWeps.setX(DTL.VWIDTH/3);
-		bottomWeps.setY(10);
+		bottomBar = new UIWeaponBottomBar(playerReacs.getWeaponUI());
+		bottomBar.setX(DTL.VWIDTH/3);
+		bottomBar.setY(10);
 		
-	
-		Label tacos = new Label("tacos", DTL.skin);
-		//tacos.setFontScale(.4f);
-		//uiT.add(tacos).bottom().left();
+		pausedLabel = new Label("Paused\n(press space)", DTL.skin);
+		pausedLabel.setAlignment(Align.center);
+		float pLabelWidth = 55;
+		float pLabelHeight = 25;
+		pausedLabel.setBounds(DTL.VWIDTH/2 - pLabelWidth/2, DTL.VHEIGHT/3f - pLabelHeight/2, pLabelWidth, pLabelHeight);
+		ui.addActor(pausedLabel);
 		
 		ui.addActor(uiT);
-		ui.addActor(bottomWeps);
 		enemyWindow = new UIEnemyWindow(enemy);
 		enemyWindow.setBounds(DTL.VWIDTH * 2/3, DTL.VHEIGHT/6, DTL.VWIDTH/4, DTL.VHEIGHT - DTL.VHEIGHT/6 * 2);
 		enemyWindow.setUpTable();
 		ui.addActor(enemyWindow);
+		enemyWindow.getShip().refreshWeaponOrigins();
+		ui.addActor(bottomBar);
 		
 		
 		
@@ -306,9 +319,22 @@ public class GameplayScreen implements EnumerableScreen{
 			}
 		});
 		timeAccumulator = 0;
-		selectedCrew = null;
-		isPaused = false;
+		selectedCrew = null;	
+		setPaused(true);
 		eventWindow = true;
+		
+//		test = new Image(highlight);
+//		
+//		Vector2 testV = new Vector2(300,300);
+//		Vector2 endPoint = new Vector2(DTL.VWIDTH-100,DTL.VHEIGHT-100);
+//	    test.setBounds(testV.x, testV.y, 10, 3);
+//	    test.setColor(Color.RED);
+//	    test.setOrigin(Align.center);
+//	    test.setRotation(endPoint.cpy().sub(testV).angle());
+//	    
+//	    test.addAction(Actions.moveTo(endPoint.x, endPoint.y,3));
+//	    test.setOriginCenter();
+//	    test.rotate(1);
 	}
 	
 	public static Vector2 getStageLocation(Actor actor) {
@@ -332,7 +358,6 @@ public class GameplayScreen implements EnumerableScreen{
 		// TODO Auto-generated method stub
 	    Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
-	    
 	    ////Key inputs here
 	    if(Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)){
 	    	mainMenu();
@@ -353,21 +378,36 @@ public class GameplayScreen implements EnumerableScreen{
 	    	}
 	    	playerFastDrive.update(true);
 	    	evadeValue.setText("Evade: " + Integer.toString((int)(playerShip.getEvade()*100)) + "%");
+	    	
 	    	gameObjects.act();
 	    	ui.act();
 	    	crewPlateBar.update();
 	    	timeAccumulator -= DTL.getFrameTime();
 //	    	eventStage.act();
+	    	if(enemyWindow != null && enemyWindow.getShip().getHealth() <=0){
+	    		enemyWindow.remove();
+	    		enemyWindow = null;
+	    		bottomBar.clearTargets();
+	    	}
 	    }
 
 	   ////Rendering goes here
 	    gameObjects.draw();
 	    ui.draw();
+//	    test.act(Gdx.graphics.getDeltaTime());
+	    ui.getBatch().begin();
+//	    test.draw(ui.getBatch(), 1);
+	    ui.getBatch().end();
+	    
 //	    eventStage.draw();
 	    
 	    if(DTL.GRAPHICALDEBUG || DTL.PATHDEBUG){
 		    shapeRen.begin(ShapeType.Line);
 		    shapeRen.setColor(Color.RED);
+//		    shapeRen.line(new Vector2(0,0), new Vector2(224,240).add(DTL.VWIDTH * 2/3, DTL.VHEIGHT/6));
+////		    System.out.println(new Vector2(224,240).add(DTL.VWIDTH * 2/3, DTL.VHEIGHT/6));
+//		    shapeRen.line(new Vector2(0,0), new Vector2(224,240));
+//		    shapeRen.line(new Vector2(0,0), new Vector2(666,360));
 		    Vector2 pos = new Vector2();
 		    Vector2 end = new Vector2();
 		    GridSquare sq = null;
@@ -392,12 +432,21 @@ public class GameplayScreen implements EnumerableScreen{
 
 	    
 	}
+	
+	public void addProjectile(Projectile projectile){
+		ui.addActor(projectile);
+	}
+	
 
 	public void setSelectedCrew(Crew crew){
 		if(getSelectedCrew() != null){
 			getSelectedCrew().setSelected(false);
 		}
 		this.selectedCrew = crew;
+	}
+	
+	public UIEnemyWindow getEnemyWindow(){
+		return enemyWindow;
 	}
 	
 	public Crew getSelectedCrew(){
@@ -411,11 +460,27 @@ public class GameplayScreen implements EnumerableScreen{
 		return true;
 	}
 	
+	public boolean isTargetting(){
+		if(bottomBar != null){
+			return bottomBar.getSelected() != null; 
+		}
+		return false;
+	}
+	
+	public UIWeaponCard getTargetting(){
+		if(bottomBar != null){
+			return bottomBar.getSelected();
+		}
+		return null;
+	}
+	
 	@Override
 	public void resize(int width, int height) {
 		// TODO Auto-generated method stub
 		gameObjects.getViewport().update(width, height, true);
 		game.setViewport(gameObjects.getViewport());
+		playerShip.refreshWeaponOrigins();
+		enemyWindow.getShip().refreshWeaponOrigins();
 	}
 
 	@Override
@@ -429,6 +494,7 @@ public class GameplayScreen implements EnumerableScreen{
 	}
 
 	public void setPaused(boolean isPaused) {
+		pausedLabel.setVisible(isPaused);
 		this.isPaused = isPaused;
 	}
 
@@ -490,5 +556,9 @@ public class GameplayScreen implements EnumerableScreen{
 			mapTable.setVisible(false);
 			setPaused(false);
 		}
+	}
+	
+	public WeaponGenerator getWeaponGenerator(){
+		return weaponGen;
 	}
 }

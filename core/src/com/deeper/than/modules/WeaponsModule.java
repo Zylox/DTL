@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import com.deeper.than.Room;
 import com.deeper.than.Ship;
+import com.deeper.than.crew.CrewSkills.CrewSkillsTypes;
 import com.deeper.than.weapons.Weapon;
 
 public class WeaponsModule extends MainModule {
@@ -36,6 +37,12 @@ public class WeaponsModule extends MainModule {
 	
 	public void unEquipWeapon(Weapon weapon){
 		equippedWeapons.remove(weapon);
+	}
+	
+	public void giveShotExp(){
+		if(this.isManned()){
+			this.getManning().gainExp(1, CrewSkillsTypes.WEAPONS);
+		}
 	}
 
 }

@@ -88,6 +88,33 @@ public class Room {
 		return false;
 	}
 	
+	public void takeDamage(int amt){
+		if(ship.takeDamage(amt)){
+			if(module != null){
+				module.recieveDamage(amt);
+			}
+		}
+	}
+	
+	public void takeDamageBypassSheilds(int amt){
+		ship.takeDamage(amt);
+		if(module != null){
+			module.recieveDamage(amt);
+		}
+	}
+	
+	public void takeSheildDamage(int amt){
+		ship.damageSheilds(amt);
+	}
+	
+	public void takeIonDamage(int amt){
+		if(!ship.takeIonDamage(amt)){
+			if(module != null){
+				module.receiveIonicCharge(amt);;
+			}
+		}
+	}
+	
 	public boolean isinRoom(Vector2 pos){
 		for(GridSquare gs : squares){
 			if(gs.getPos().equals(pos)){
@@ -145,6 +172,16 @@ public class Room {
 		return centerLoc;
 	}
 	
+	public Vector2 getCenterLocInStage(){
+		if(centerLoc == null){
+			calculateBounds();
+		}
+		Vector2 newC = centerLoc.cpy().sub(ship.getX(),ship.getY());
+		ship.localToStageCoordinates(newC);
+		//ship.getStage().stageToScreenCoordinates(newC);
+		return newC;
+	}
+	
 	/**
 	 * Calculates the center in global coords.
 	 * @return Global coord center location.
@@ -169,16 +206,22 @@ public class Room {
 		bounds = new Vector2();
 		centerLoc.x = ship.getX() +  minX + (maxX-minX)/2;
 		centerLoc.y = ship.getY() + minY + (maxY-minY)/2;
+		
 		bottomLeft.x = ship.getX() + minX;
 		bottomLeft.y = ship.getY() + minY;
 		bounds.x = maxX-minX;
 		bounds.y = maxY-minY;
 	}
 	
+	public Vector2 getBottomLeft(){
+		return bottomLeft;
+	}
+	
 	public void drawHover(Batch batch){
 		if(bottomLeft == null){
 			calculateBounds();
 		}
+//		System.out.println(centerLoc);
 		Texture wall = GameplayScreen.highlight;
 		Color color = batch.getColor();
 		batch.setColor(Color.YELLOW);
@@ -303,6 +346,14 @@ public class Room {
 			}
 		}
 		return false;
+	}
+	
+	public boolean isPlayerRoom(){
+		return this.ship instanceof PlayerShip;
+	}
+	
+	public Ship getShip(){
+		return ship;
 	}
 	
 	public int getSize(){

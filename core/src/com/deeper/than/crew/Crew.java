@@ -14,6 +14,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Action;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Pool.Poolable;
@@ -116,6 +117,8 @@ public class Crew extends Actor{
 					return false;
 			    }
 			});
+		}else{
+			this.setTouchable(Touchable.disabled);
 		}
 		
 		this.addAction(new Action() {
@@ -860,6 +863,10 @@ public class Crew extends Actor{
 	
 	public Ship getOwnerShip(){
 		return ownerShip;
+	}
+	
+	public Ship getOccupiedShip(){
+		return occupiedShip;
 	}
 	
 	public Races getRace() {

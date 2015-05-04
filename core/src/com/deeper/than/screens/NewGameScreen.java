@@ -8,28 +8,44 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.SelectBox;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.deeper.than.DTL;
+import com.deeper.than.PlayerShip;
+import com.deeper.than.Ship;
+import com.deeper.than.ShipLoadException;
 
 public class NewGameScreen implements EnumerableScreen {
 
-	private Game game;
+	private DTL game;
 	private Stage ui; 
 	private SelectBox<String> shipSelect;
 	
+	private Ship ship;
+	
+	private static Texture background;
+	
+	private Image bg;
 	private static final String BASEDIR = "ships";
 	
 	private InputMultiplexer input;
 	
+	public static void loadAssets(){
+		background = new Texture(Gdx.files.internal("tempbackground.png")); 
+	}
+	
 	public void create(DTL game){
 		this.game = game;
-		
+		loadAssets();
 		ui = new Stage(game.getViewport());
+		bg = new Image(background);
+		ui.addActor(bg);
 		Table table = new Table(DTL.skin);
 		shipSelect = new SelectBox<String>(DTL.skin);
 		populateShipSelect();
@@ -37,6 +53,7 @@ public class NewGameScreen implements EnumerableScreen {
 		shipSelect.addListener(new ChangeListener() {
 			public void changed (ChangeEvent event, Actor actor) {
 				//System.out.println(shipSelect.getSelected());
+				loadShip();
 			}
 		});
 		
@@ -48,13 +65,17 @@ public class NewGameScreen implements EnumerableScreen {
 		});
 		table.setFillParent(true);
 		
-		table.add(shipSelect);
+		table.add(shipSelect).top();
 		table.row();
 		table.add(playGame).pad(10);
+		table.row();
+		table.add().expand();
 		
 		ui.addActor(table);
+		ui.setDebugAll(DTL.GRAPHICALDEBUG);
 		input = new InputMultiplexer();
 		input.addProcessor(ui);
+		loadShip();
 	}
 	
 	private void playGame(){
@@ -64,6 +85,19 @@ public class NewGameScreen implements EnumerableScreen {
 	private void populateShipSelect(){
 		shipSelect.clearItems();
 		shipSelect.setItems(getShipFileHandles(BASEDIR));
+	}
+	
+	private void loadShip(){
+		if(ship != null){
+			ship.remove();
+		}
+		try {
+			ship = new PlayerShip(Gdx.files.internal("ships/" + getSelectedShip() +".ship"), true, game, DTL.firstOpenId++, ((GameplayScreen)Screens.GAMEPLAY.getScreen()).getWeaponGenerator());
+		} catch (ShipLoadException e) {
+			e.printStackTrace();
+			System.out.println("will im going to kill you");
+		}
+		ui.addActor(ship);
 	}
 	
 	public String[] getShipFileHandles(String baseDir){

@@ -8,6 +8,7 @@ package com.deeper.than.modules;
 
 import com.deeper.than.Room;
 import com.deeper.than.Ship;
+import com.deeper.than.crew.CrewSkills.CrewSkillsTypes;
 
 public class BridgeModule extends SubModule {
 
@@ -42,6 +43,12 @@ public class BridgeModule extends SubModule {
 			return evasionRetentions[getPowerLevel()];
 		}
 		return 0;
+	}
+	
+	public void giveEvadeExp(){
+		if(this.isManned()){
+			this.getManning().gainExp(1, CrewSkillsTypes.BRIDGE);;
+		}
 	}
 	
 	public static float[] getEvasionRetentions(){

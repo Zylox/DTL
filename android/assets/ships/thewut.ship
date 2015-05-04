@@ -1,54 +1,54 @@
 name= thewut
 xDim= 14
-yDim= 9
+yDim= 16
 health= 12
 power= 15
 layout=
-{1,7 1,8 2,7 2,8} , EngineModule , 1
-{3,7 3,8 4,7 4,8} , ShieldModule , 1
-{3,3 3,4} , human
-{3,5 3,6} , human
-{4,3 4,4 5,3 5,4}
-{5,1 5,2 6,1 6,2} , WeaponsModule , 1
-{5,6 5,7 6,6 6,7}
-{6,8 7,8}
-{7,5 7,6} , human
-{6,4 6,5}
-{6,3 7,3} , human
-{8,3 9,3}
-{10,3 11,3}
-{12,3 12,4 13,3 13,4}
-{12,5 12,6 13,5 13,6} , MedbayModule , 1
-{11,7 11,8 12,7 12,8} , BridgeModule , 1
-{10,6 11,6}
+{7,1 8,1 7,2 8,2} , human
+{7,3 8,3 7,4 8,4} , EngineModule , 1
+{3,3 4,3}
+{5,3 6,3}
+{3,4 4,4 3,5 4,5} , WeaponsModule , 1
+{1,5 2,5 1,6 2,6} , human
+{6,5 7,5 6,6 7,6} , BridgeModule , 1
+{8,6 8,7}
+{5,7 6,7} , human
+{4,6 5,6}
+{3,6 3,7}
+{3,8 3,9}
+{3,10 3,11} , human
+{3,12 4,12 3,13 4,13}
+{5,12 6,12 5,13 6,13} , SensorsModule , 1
+{7,11 8,11 7,12 8,12} , SheildModule , 1
+{6,10 6,11}
 endlayout
 doors=
-{2,8 right}
-{3,7 down}
-{3,6 left}
-{3,5 left}
-{3,4 up}
+{8,2 right}
+{7,2 right}
+{7,3 down}
+{5,3 down}
 {3,3 right}
-{4,4 left}
-{5,4 right}
-{5,2 up}
-{6,2 up}
-{6,3 up}
-{6,5 up}
+{3,5 right}
+{3,5 down}
+{4,5 right}
+{3,6 down}
+{5,6 up}
+{7,6 up}
+{7,5 left}
 {6,6 right}
-{6,7 up}
-{5,7 left}
-{7,3 right}
-{8,3 down}
-{8,4 down}
-{10,3 left}
-{11,3 right}
-{12,4 up}
-{12,6 left}
-{12,7 down}
-{11,7 down}
+{5,6 right}
+{3,7 right}
+{3,9 right}
+{3,11 right}
+{4,12 up}
+{6,12 up}
+{6,12 left}
+{6,11 up}
+{8,6 up}
+{8,7 up}
+{6,10 left}
 enddoors
 weapons=
-laser
-railgun
+torpedo
+railgun worn
 endweapons
