@@ -94,7 +94,7 @@ public class UIMapTable extends Table {
 					public void clicked(InputEvent event, float x, float y){
 						DTL.MAP.setCurrentNode(num);
 						parent.setVisible(false);
-						
+						DTL.MAP.setAdvance(true);
 					}
 				};
 				button.addListener(clickListener2);

@@ -116,6 +116,7 @@ public class GameplayScreen implements EnumerableScreen{
 		UIEnemyWindow.loadAssets();
 		mapGenerator = new MapGenerator();
 		UIMapScreen.loadAssets();
+
 		
 	}
 	
@@ -124,8 +125,7 @@ public class GameplayScreen implements EnumerableScreen{
 	 * 
 	 */
 	private void initializeGame(){
-		mapGenerator.generate();
-		DTL.MAP = mapGenerator.getMap();
+		DTL.MAP.setAdvance(false);
 		
 		try {
 			playerShip = new PlayerShip(Gdx.files.internal("ships/" + game.getSelectedShip() +".ship"), true, game, DTL.firstOpenId++, weaponGen);
@@ -208,7 +208,7 @@ public class GameplayScreen implements EnumerableScreen{
 		
 		ui.setDebugAll(DTL.GRAPHICALDEBUG);
 		
-		UIEventTable uiEventTable = new UIEventTable("template");
+		UIEventTable uiEventTable = new UIEventTable(DTL.MAP.getNodes().get(DTL.MAP.getCurrentNode()).getEvent());
 		eventTable = new UIPopUpWindow<UIEventTable>(uiEventTable);
 		uiEventTable.setParent(eventTable);
 		uiEventTable.setUpUI();
@@ -327,10 +327,10 @@ public class GameplayScreen implements EnumerableScreen{
 				
 				if(character=='m'){
 					//mapTable.clear();
-					UIMapTable uiMapTable = new UIMapTable();
-					mapTable = new UIPopUpWindow<UIMapTable>(uiMapTable);
-					uiMapTable.setParent(mapTable);
-					uiMapTable.setUpMapUI();
+					//UIMapTable uiMapTable = new UIMapTable();
+					//mapTable = new UIPopUpWindow<UIMapTable>(uiMapTable);
+					//uiMapTable.setParent(mapTable);
+					//uiMapTable.setUpMapUI();
 					drawMap();
 				}
 				
@@ -357,6 +357,8 @@ public class GameplayScreen implements EnumerableScreen{
 	public void show() {
 		// TODO Auto-generated method stub
 		DTL.printDebug("gameplay state ");
+		mapGenerator.generate();
+		DTL.MAP = mapGenerator.getMap();
 		
 		if(DTL.gameActive != true){
 			initializeGame();
@@ -433,7 +435,7 @@ public class GameplayScreen implements EnumerableScreen{
 		    shapeRen.end();
 	    }
 	    
-
+	    if(DTL.MAP.getAdvance()) initializeGame();
 	    
 	}
 	

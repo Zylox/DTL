@@ -12,12 +12,14 @@ public class DTLMap {
 	//lattice of connection of nodes, not set up until after nodes are set up
 	private Map<Integer,ArrayList<Integer>> lattice = new HashMap<Integer,ArrayList<Integer>>();
 	private int currentNode;
+	private boolean advance;
 	
 	public DTLMap(int level){
 		setLevel(level);
 		nodes.clear();
 		lattice.clear();
 		setCurrentNode(0);
+		advance = true;
 	}
 	
 	public int getLevel(){
@@ -61,5 +63,13 @@ public class DTLMap {
 	
 	public ArrayList<Integer> getReachableNodes(){
 		return lattice.get(currentNode);
+	}
+	
+	public boolean getAdvance(){
+		return advance;
+	}
+	
+	public void setAdvance(boolean advance){
+		this.advance = advance;
 	}
 }

@@ -85,9 +85,12 @@ public class UIEventTable extends Table {
 	}
 	
 	public static DTLEvent getDTLEventFromFile(String eventString){
-		
+		if(eventString.endsWith(".event")) eventString = eventString.substring(0, eventString.length()-6);
 		try{
-			FileHandle fh = Gdx.files.internal("events/"+eventString+".event");
+			FileHandle fh;
+			if(eventString.endsWith(".event")) fh = Gdx.files.internal("events/"+eventString);
+			else fh = Gdx.files.internal("events/"+eventString+".event");
+			
 			String jsonString = fh.readString();
 			JsonValue root = new JsonReader().parse(jsonString);
 			String eventTitle = root.getString("title");
