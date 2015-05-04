@@ -68,7 +68,7 @@ public class MapGenerator {
 	
 	public void generateLattice(){
 		//how far away things should and still be connected
-		int range=400;
+		int range=300;
 		int size=map.getNodes().size();
 		
 		for(int i=0; i<size ;i++){

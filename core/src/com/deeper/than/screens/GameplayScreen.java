@@ -23,9 +23,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.Align;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.NinePatchDrawable;
-import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener.ChangeEvent;
 import com.deeper.than.DTL;
-import com.deeper.than.DTLMap;
 import com.deeper.than.EnemyShip;
 import com.deeper.than.FloorTile;
 import com.deeper.than.GridSquare;
@@ -84,7 +82,6 @@ public class GameplayScreen implements EnumerableScreen{
 	private WeaponGenerator weaponGen;
 	private UIWeaponBottomBar bottomBar;
 	private Label pausedLabel;
-	private DTLMap map;
 	private MapGenerator mapGenerator;
 	
 	private InputMultiplexer input;
@@ -128,7 +125,7 @@ public class GameplayScreen implements EnumerableScreen{
 	 */
 	private void initializeGame(){
 		mapGenerator.generate();
-		map = mapGenerator.getMap();
+		DTL.MAP = mapGenerator.getMap();
 		
 		try {
 			playerShip = new PlayerShip(Gdx.files.internal("ships/" + game.getSelectedShip() +".ship"), true, game, DTL.firstOpenId++, weaponGen);
@@ -218,7 +215,7 @@ public class GameplayScreen implements EnumerableScreen{
 		
 		ui.addActor(eventTable);
 		
-		UIMapTable uiMapTable = new UIMapTable(map);
+		UIMapTable uiMapTable = new UIMapTable();
 		mapTable = new UIPopUpWindow<UIMapTable>(uiMapTable);
 		uiMapTable.setParent(mapTable);
 		uiMapTable.setUpMapUI();
@@ -329,6 +326,11 @@ public class GameplayScreen implements EnumerableScreen{
 				}
 				
 				if(character=='m'){
+					//mapTable.clear();
+					UIMapTable uiMapTable = new UIMapTable();
+					mapTable = new UIPopUpWindow<UIMapTable>(uiMapTable);
+					uiMapTable.setParent(mapTable);
+					uiMapTable.setUpMapUI();
 					drawMap();
 				}
 				
