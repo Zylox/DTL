@@ -15,9 +15,9 @@ public class DTL extends Game {
 	
 	public static final int VWIDTH = 1280;
 	public static final int VHEIGHT = 720;
+	public static DTLMap MAP;
 	
 	public static final boolean GLOBALDEBUG = false;
-	@SuppressWarnings("unused")
 	public static final boolean GRAPHICALDEBUG = false || GLOBALDEBUG;
 	@SuppressWarnings("unused")
 	public static final boolean PATHDEBUG = true || GLOBALDEBUG;

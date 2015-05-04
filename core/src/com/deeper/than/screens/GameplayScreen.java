@@ -13,17 +13,17 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.scenes.scene2d.Action;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.actions.Actions;
-import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.Align;
+import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.NinePatchDrawable;
 import com.deeper.than.DTL;
-import com.deeper.than.DTLMap;
 import com.deeper.than.EnemyShip;
 import com.deeper.than.FloorTile;
 import com.deeper.than.GridSquare;
@@ -61,7 +61,6 @@ public class GameplayScreen implements EnumerableScreen{
 	public static Sprite reticule;
 	
 	private DTL game;
-	private Stage ui;
 	
 	private Label evadeValue;
 	
@@ -69,9 +68,12 @@ public class GameplayScreen implements EnumerableScreen{
 	private UICrewPlateBar crewPlateBar;
 	
 	
+	private Stage ui;
 	private Stage gameObjects;
+	private Stage gameOverStage;
 	private UIPopUpWindow<UIMapTable> mapTable;
 	private UIPopUpWindow<UIEventTable> eventTable;
+	private UIPopUpWindow<Table> gameOver;
 	private PlayerShip playerShip;
 	private UIFastDrive playerFastDrive;
 	private float timeAccumulator;
@@ -80,16 +82,12 @@ public class GameplayScreen implements EnumerableScreen{
 	private WeaponGenerator weaponGen;
 	private UIWeaponBottomBar bottomBar;
 	private Label pausedLabel;
-	private DTLMap map;
 	private MapGenerator mapGenerator;
 	
 	private InputMultiplexer input;
 
 	private boolean isPaused;
 	private boolean eventWindow;
-	
-	
-	Image test;
 	
 	
 	Background tempBackground;
@@ -127,25 +125,13 @@ public class GameplayScreen implements EnumerableScreen{
 	 */
 	private void initializeGame(){
 		mapGenerator.generate();
-		map = mapGenerator.getMap();
-		
-		
-//		weaponGen.getQualityDist().clearDistribution();
-//		weaponGen.getQualityDist().setPercent(100, WeaponQualities.EXCEPTIONAL);
-
+		DTL.MAP = mapGenerator.getMap();
 		
 		try {
 			playerShip = new PlayerShip(Gdx.files.internal("ships/" + game.getSelectedShip() +".ship"), true, game, DTL.firstOpenId++, weaponGen);
 		} catch (ShipLoadException e) {
 			e.printStackTrace();
 		}
-		
-//		for(Weapon w : playerShip.getWeapons()){
-//			System.out.println(w.getName());
-//			System.out.println(w.getParamString());
-//			System.out.println();
-//		}
-		
 		
 		gameObjects = new Stage(game.getViewport());
 		
@@ -229,7 +215,7 @@ public class GameplayScreen implements EnumerableScreen{
 		
 		ui.addActor(eventTable);
 		
-		UIMapTable uiMapTable = new UIMapTable(map);
+		UIMapTable uiMapTable = new UIMapTable();
 		mapTable = new UIPopUpWindow<UIMapTable>(uiMapTable);
 		uiMapTable.setParent(mapTable);
 		uiMapTable.setUpMapUI();
@@ -237,6 +223,36 @@ public class GameplayScreen implements EnumerableScreen{
 		
 		ui.addActor(mapTable);
 		
+		
+		Table goT = new Table();
+		Label goL = new Label("Game Over",DTL.skin);
+		TextButton goB = new TextButton("Main Menu", DTL.skin);
+		goB.addListener(new ChangeListener() {
+			
+			@Override
+			public void changed(ChangeEvent event, Actor actor) {
+				DTL.gameActive = false;
+				mainMenu();
+			}
+		});
+		goT.add(goL).expand();
+		goT.row();
+		goT.add(goB).expand();
+		gameOver = new UIPopUpWindow<Table>(goT);
+		gameOver.addAction(new Action() {
+			
+			@Override
+			public boolean act(float delta) {
+				if(playerShip.getHealth() <= 0){
+					gameOverScreen();
+					return true;
+				}
+				return false;
+			}
+		});
+		gameOver.setVisible(false);
+		gameOverStage = new Stage(game.getViewport());
+		gameOverStage.addActor(gameOver);
 		input = new InputMultiplexer();
 		input.addProcessor(ui);
 		input.addProcessor(gameObjects);
@@ -305,7 +321,16 @@ public class GameplayScreen implements EnumerableScreen{
 					setPaused(!isPaused());
 				}
 				
+				if(character == 'g'){
+					gameOverScreen();
+				}
+				
 				if(character=='m'){
+					//mapTable.clear();
+					UIMapTable uiMapTable = new UIMapTable();
+					mapTable = new UIPopUpWindow<UIMapTable>(uiMapTable);
+					uiMapTable.setParent(mapTable);
+					uiMapTable.setUpMapUI();
 					drawMap();
 				}
 				
@@ -322,19 +347,6 @@ public class GameplayScreen implements EnumerableScreen{
 		selectedCrew = null;	
 		setPaused(true);
 		eventWindow = true;
-		
-//		test = new Image(highlight);
-//		
-//		Vector2 testV = new Vector2(300,300);
-//		Vector2 endPoint = new Vector2(DTL.VWIDTH-100,DTL.VHEIGHT-100);
-//	    test.setBounds(testV.x, testV.y, 10, 3);
-//	    test.setColor(Color.RED);
-//	    test.setOrigin(Align.center);
-//	    test.setRotation(endPoint.cpy().sub(testV).angle());
-//	    
-//	    test.addAction(Actions.moveTo(endPoint.x, endPoint.y,3));
-//	    test.setOriginCenter();
-//	    test.rotate(1);
 	}
 	
 	public static Vector2 getStageLocation(Actor actor) {
@@ -381,6 +393,7 @@ public class GameplayScreen implements EnumerableScreen{
 	    	
 	    	gameObjects.act();
 	    	ui.act();
+	    	gameOverStage.act();
 	    	crewPlateBar.update();
 	    	timeAccumulator -= DTL.getFrameTime();
 //	    	eventStage.act();
@@ -394,20 +407,11 @@ public class GameplayScreen implements EnumerableScreen{
 	   ////Rendering goes here
 	    gameObjects.draw();
 	    ui.draw();
-//	    test.act(Gdx.graphics.getDeltaTime());
-	    ui.getBatch().begin();
-//	    test.draw(ui.getBatch(), 1);
-	    ui.getBatch().end();
-	    
-//	    eventStage.draw();
+	    gameOverStage.draw();
 	    
 	    if(DTL.GRAPHICALDEBUG || DTL.PATHDEBUG){
 		    shapeRen.begin(ShapeType.Line);
 		    shapeRen.setColor(Color.RED);
-//		    shapeRen.line(new Vector2(0,0), new Vector2(224,240).add(DTL.VWIDTH * 2/3, DTL.VHEIGHT/6));
-////		    System.out.println(new Vector2(224,240).add(DTL.VWIDTH * 2/3, DTL.VHEIGHT/6));
-//		    shapeRen.line(new Vector2(0,0), new Vector2(224,240));
-//		    shapeRen.line(new Vector2(0,0), new Vector2(666,360));
 		    Vector2 pos = new Vector2();
 		    Vector2 end = new Vector2();
 		    GridSquare sq = null;
@@ -437,6 +441,11 @@ public class GameplayScreen implements EnumerableScreen{
 		ui.addActor(projectile);
 	}
 	
+	public void gameOverScreen(){
+		input.clear();
+		input.addProcessor(gameOverStage);
+		gameOver.setVisible(!gameOver.isVisible());
+	}
 
 	public void setSelectedCrew(Crew crew){
 		if(getSelectedCrew() != null){

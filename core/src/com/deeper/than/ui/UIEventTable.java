@@ -4,7 +4,6 @@ import java.util.ArrayList;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
-import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
@@ -20,7 +19,6 @@ import com.deeper.than.Response;
 public class UIEventTable extends Table {
 	private DTLEvent event;
 	Json json;
-	private Table table = this;
 	UIPopUpWindow<UIEventTable> parent;
 	
 	
@@ -60,7 +58,6 @@ public class UIEventTable extends Table {
 		for( final Response resp: event.getInputs()){
 			i++;
 			TextButton button = new TextButton(i + ": " + resp.getInputText(), DTL.skin);
-			//TODO add listeners to the buttons here, make them do things??
 			ClickListener clickListener=null;
 			if(resp.getTriggersEvent()==null){
 				clickListener = new ClickListener(){
