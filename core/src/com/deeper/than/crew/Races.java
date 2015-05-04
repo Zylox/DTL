@@ -10,12 +10,10 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 public enum Races {
 	HUMAN("human", 1f, .6f, 50, 75, 5, 100, 1.1f, 1f),
 	SCAIL("scail", .6f, 1f, 300, 40, 7, 80, 1f, 1f),
-	//TEKDRONE("tekdrone", 1f, .6f, 100, 90, 3, 100, 1f, 1.5f),
+	TEKDRONE("tekdrone", 1f, .6f, 100, 90, 3, 100, 1f, 1.5f),
 	GOGOR("gogor", .6f, .4f, 40, 100, 5, 150, 1f, 1f),
 	MUR("mur", .9f, .8f, 150, 60, 5, 100, 1f, 1f),
-	ILLUMI("illumi", 1f, .7f, 50, 75, 5, 70, 1f, 1f),
-	GLACIEN("glacien", .8f, .8f, 80, 150, 5, 80, 1f, 1f);
-	
+	ILLUMI("illumi", 1f, .7f, 50, 75, 5, 70, 1f, 1f);
 	
 	public static final String[] humanNames = {"Bob", "Jeb", "Steve", "Jim", "Nick", "Zach", "Will", "Ben", "GIJoe", "Jimmy", "Jake", "Ian", "John", "Bill", "James", "Zebulon", "Horatio",
 											   "John", "Michael", "Tim", "Shawn", "Wyatt", "Isaac", "Jan", "Shan", "Thomas", "Jonah", "Nathan", "Matt", "Dakota", "Kitchenset", "Joe",
@@ -85,8 +83,6 @@ public enum Races {
 			leftAnim = conAnim(folder+"firstDraftHumanFaceLeftStep1.png",folder+"firstDraftHumanFaceLeft.png", folder+"firstDraftHumanFaceLeftStep2.png" );*/
 		} else if(race.equals("tekdrone")){
 			folder = "TekDrone/TekDrone";
-		} else if(race.equals("glacien")){
-			folder = "Glacien/glacien";
 		} else if(race.equals("scail")){
 			folder = "Scail/scail";
 		} else if(race.equals("mur")){
@@ -124,6 +120,16 @@ public enum Races {
 	public static Races getRace(String raceName){
 		if(raceName.equals("human")){
 			return HUMAN;
+		}else if(raceName.equals("tekdrone")){
+			return TEKDRONE;
+		}else if(raceName.equals("scail")){
+			return SCAIL;
+		}else if(raceName.equals("mur")){
+			return MUR;
+		}else if(raceName.equals("gogor")){
+			return GOGOR;
+		}else if(raceName.equals("illumi")){
+			return ILLUMI;
 		}
 		return null;
 	}

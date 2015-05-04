@@ -133,9 +133,9 @@ public class FloorTile extends Actor{
 			long seed = gridSquare.getRoom().getId();
 			Random ran = new Random(seed);
 			
-			batch.setColor(new Color(ran.nextFloat(),ran.nextFloat(),ran.nextFloat(),1f));
+			batch.setColor(new Color(ran.nextFloat(),ran.nextFloat(),ran.nextFloat(),alpha));
 		}else{
-			batch.setColor(new Color(getRedComponent(),getGreenComponent(),1,1f));
+			batch.setColor(new Color(getRedComponent(),getGreenComponent(),1,alpha));
 		}
 		batch.draw(ship.getFloorTileImg(), getX(), getY(), getOriginX(), getOriginY(), getWidth(), getHeight(), getScaleX(), getScaleY(), getRotation());
 		batch.setColor(color);

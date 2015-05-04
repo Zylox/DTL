@@ -25,5 +25,8 @@ public class CloakingModule extends MainModule {
 		this.isCloaked = isCloaked;
 	}
 
+	public void cloak(){
+		
+	}
 
 }
