@@ -1,9 +1,20 @@
+/**
+ * Concussion bomb. dealt with pressure and is being deprecated
+ * Created by: Zach Higginbotham
+ * Implementations by: Zach Higginbotham
+ */
 package com.deeper.than.weapons;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.deeper.than.Room;
 import com.deeper.than.screens.GameplayScreen;
 
+/**
+ * Concussion bomb
+ * Being deprecated
+ * @author zach
+ *
+ */
 public class ConcussionBomb extends Weapon{
 
 	public ConcussionBomb(String name, WeaponParams params) {

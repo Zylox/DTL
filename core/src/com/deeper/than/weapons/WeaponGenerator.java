@@ -1,9 +1,19 @@
+/**
+ * Generates weaopns based on parameters
+ * Created by: Zach Higginbotham
+ * Implementations by: Zach Higginbotham
+ */
 package com.deeper.than.weapons;
 
 import java.util.Random;
 
 import com.badlogic.gdx.graphics.Color;
 
+/**
+ * Weapon generating utility
+ * @author zach
+ *
+ */
 public class WeaponGenerator {
 
 	public enum WeaponTypes{
@@ -16,6 +26,7 @@ public class WeaponGenerator {
 		TORPEDO_LAUNCHER;
 	}
 	
+	//Some weapons can have colors
 	private static Color beamColors[] = {Color.GREEN, Color.BLUE, Color.RED, Color.CYAN, Color.PURPLE, Color.PINK, Color.WHITE, Color.YELLOW};
 	
 	private Random ran;
@@ -57,20 +68,43 @@ public class WeaponGenerator {
 		return value;
 	}
 	
+	/**
+	 * Generates weapon of supplied type
+	 * @param type
+	 * @return
+	 */
 	public Weapon generate(WeaponTypes type){
 		return generate(type, dist.getRandomQualityByDist(), WeaponMakers.getRandomMaker());
 	}
 	
+	/**
+	 * Generates weapon of supplied type and quality
+	 * @param type
+	 * @param quality
+	 * @return
+	 */
 	public Weapon generate(WeaponTypes type, WeaponQualities quality){
 		return generate(type, quality, WeaponMakers.getRandomMaker());
 	}
 	
+	/**
+	 * Generate weapon of supplied type and make
+	 * @param type
+	 * @param make
+	 * @return
+	 */
 	public Weapon generate(WeaponTypes type, WeaponMakers make){
 		return generate(type, dist.getRandomQualityByDist(), make);
 	}
 	
 	
-	
+	/**
+	 * Gernerates weapon of supplied type, quality, and maker
+	 * @param type
+	 * @param quality
+	 * @param make
+	 * @return
+	 */
 	public Weapon generate(WeaponTypes type, WeaponQualities quality, WeaponMakers make){
 		
 		switch(type){

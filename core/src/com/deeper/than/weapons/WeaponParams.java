@@ -1,5 +1,8 @@
 /**
- * 
+ * Basic weapon values
+ * information sack
+ * Created by: Zach Higginbotham
+ * Implementations by: Zach Higginbotham
  */
 package com.deeper.than.weapons;
 

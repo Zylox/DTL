@@ -1,9 +1,20 @@
+/**
+ * Beam that slows crew in affected rooms
+ * not finished
+ * Created by: Zach Higginbotham
+ * Implementations by: Zach Higginbotham
+ */
 package com.deeper.than.weapons;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.deeper.than.Room;
 import com.deeper.than.screens.GameplayScreen;
 
+/**
+ * Beem that slows crew in affected rooms
+ * @author zach
+ *
+ */
 public class SuperCoolingBeam extends Weapon{
 
 	public SuperCoolingBeam(String name, WeaponParams params) {

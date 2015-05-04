@@ -1,3 +1,8 @@
+/**
+ * Laser weapon. Quinitseential weapon 
+ * Created by: Zach Higginbotham
+ * Implementations by: Zach Higginbotham
+ */
 package com.deeper.than.weapons;
 
 import com.badlogic.gdx.Gdx;
@@ -8,6 +13,11 @@ import com.badlogic.gdx.math.Vector2;
 import com.deeper.than.Room;
 import com.deeper.than.screens.GameplayScreen;
 
+/**
+ * Laser weapon
+ * @author zach
+ *
+ */
 public class Laser extends Weapon {
 
 	private static Sound laserShot;
@@ -20,8 +30,8 @@ public class Laser extends Weapon {
 	public Laser(String name, WeaponParams params, Color beamColor) {
 		super(name, params);
 		this.beamColor = beamColor;
-		// TODO Auto-generated constructor stub
 	}
+	
 	public Color getBeamColor() {
 		return beamColor;
 	}
@@ -38,13 +48,14 @@ public class Laser extends Weapon {
 		params.powerCost = 1;
 		return params;
 	}
-	/* (non-Javadoc)
+	/**
+	 * Fire laser
+	 *  (non-Javadoc)
 	 * @see com.deeper.than.weapons.Weapon#fire()
 	 */
 	@Override
 	public void fire(Room target) {
 		Projectile proj = super.createProjectile();
-//		Vector2 start = this.screenToLocalCoordinates(getFireOrigin().cpy());
 		Vector2 start = this.stageToLocalCoordinates((getFireOrigin().cpy()));
 		proj.setStart(start);
 		proj.setDestination(this.stageToLocalCoordinates(target.getCenterLocInStage().cpy()), new WeaponHitAction(this,this.didHit(target), target), 1);

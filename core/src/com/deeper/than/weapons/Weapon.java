@@ -1,3 +1,8 @@
+/**
+ * Abstract class that defines weapons qualities
+ * Created by: Zach Higginbotham
+ * Implementations by: Zach Higginbotham
+ */
 package com.deeper.than.weapons;
 
 import com.badlogic.gdx.graphics.Texture;
@@ -8,16 +13,26 @@ import com.deeper.than.Room;
 import com.deeper.than.screens.GameplayScreen;
 import com.deeper.than.screens.Screens;
 
+/**
+ * Abstract weapon class
+ * @author zach
+ *
+ */
 public abstract class Weapon extends Group{
 
 	public static final int MAX_POWER_PER_WEAPON = 4;
 
+	
 	private WeaponParams params;
 	private String name;
 	private WeaponParams qualityMods;
 	private int power;
+	/**
+	 * Whether or not the weapon wants power
+	 */
 	private boolean wantsPower;
 	private ChargeCooldown cooldown;
+	//Point where, upon firing, the projectile will originate from.
 	private Vector2 fireOrigin;
 	
 	public Weapon(String name, WeaponParams params){
@@ -72,6 +87,7 @@ public abstract class Weapon extends Group{
 		return name;
 	}
 	
+	//All parameters have their base values that are somehow added or multiplied to the quality modifier behind the weapon interface.
 	public float getAccuracy() {
 		if(params.maker == WeaponMakers.BOOM_N_ZOOM){
 			return 1;
@@ -132,6 +148,7 @@ public abstract class Weapon extends Group{
 		return new Projectile(getProjectileImage(), getProjectileWidth(), getProjectileHeight());
 	}
 	
+	//Functions implementing weaons need implement.
 	public abstract void fire(Room target);
 	public abstract Texture getProjectileImage();
 	public abstract float getProjectileWidth();

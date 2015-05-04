@@ -1,3 +1,8 @@
+/**
+ * Beam weapon. like a sustained lazer
+ * Created by: Zach Higginbotham
+ * Implementations by: Zach Higginbotham
+ */
 package com.deeper.than.weapons;
 
 import com.badlogic.gdx.graphics.Color;
@@ -5,6 +10,12 @@ import com.badlogic.gdx.graphics.Texture;
 import com.deeper.than.Room;
 import com.deeper.than.screens.GameplayScreen;
 
+/**
+ * Beam Weapon
+ * Not finished
+ * @author zach
+ *
+ */
 public class BeamWeapon extends Weapon{
 
 	private Color beamcolor;

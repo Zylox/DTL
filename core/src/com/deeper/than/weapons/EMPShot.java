@@ -1,3 +1,8 @@
+/**
+ * Emp weapon that can sap sheilds and lock down modules but does no damage
+ * Created by: Zach Higginbotham
+ * Implementations by: Zach Higginbotham
+ */
 package com.deeper.than.weapons;
 
 import com.badlogic.gdx.Gdx;
@@ -8,6 +13,11 @@ import com.badlogic.gdx.math.Vector2;
 import com.deeper.than.Room;
 import com.deeper.than.screens.GameplayScreen;
 
+/**
+ * Emp weapon that can sap sheilds and lock down modules but does no damage
+ * @author zach
+ *
+ */
 public class EMPShot extends Weapon{
 
 	private static Sound empShot;
@@ -18,7 +28,6 @@ public class EMPShot extends Weapon{
 	
 	public EMPShot(String name, WeaponParams params) {
 		super(name, params);
-		// TODO Auto-generated constructor stub
 	}
 
 
@@ -28,14 +37,15 @@ public class EMPShot extends Weapon{
 		params.baseDamage = 1;
 		params.critDamage = 1;
 		params.critChance = 1;
-		params.rechargeSpeed = 5; //%/sec
+		params.rechargeSpeed = 5; //sec
 		params.baseMonetaryCost = 30;
 		params.powerCost = 1;
 		return params;
 	}
 
 
-	/* (non-Javadoc)
+	/**
+	 * Fire the emp
 	 * @see com.deeper.than.weapons.Weapon#fire()
 	 */
 	@Override
@@ -43,12 +53,11 @@ public class EMPShot extends Weapon{
 		Projectile proj = super.createProjectile();
 		Vector2 start = this.stageToLocalCoordinates((getFireOrigin().cpy()));
 		proj.setStart(start);
-		proj.setDestination(this.stageToLocalCoordinates(target.getCenterLocInStage().cpy()), new WeaponHitAction(this,this.didHit(target), target), 1);
+		proj.setDestination(this.stageToLocalCoordinates(target.getCenterLocInStage().cpy()), new WeaponHitAction(this,this.didHit(target), target), 1); //1 is seconds till hit
 		proj.setColor(Color.YELLOW);
 		this.addActor(proj);	
 		empShot.play();
 	}
-
 
 	/* (non-Javadoc)
 	 * @see com.deeper.than.weapons.Weapon#onhit()
@@ -64,7 +73,6 @@ public class EMPShot extends Weapon{
 	 */
 	@Override
 	public Texture getProjectileImage() {
-		// TODO Auto-generated method stub
 		return GameplayScreen.highlight;
 	}
 
@@ -74,7 +82,6 @@ public class EMPShot extends Weapon{
 	 */
 	@Override
 	public float getProjectileWidth() {
-		// TODO Auto-generated method stub
 		return 15;
 	}
 
@@ -84,7 +91,6 @@ public class EMPShot extends Weapon{
 	 */
 	@Override
 	public float getProjectileHeight() {
-		// TODO Auto-generated method stub
 		return 8;
 	}
 

@@ -1,11 +1,14 @@
 /**
- * 
+ * Special cooldwon that tracks weapon charge
+ * Created by: Zach Higginbotham
+ * Implementations by: Zach Higginbotham
  */
 package com.deeper.than.weapons;
 
 import com.deeper.than.modules.Cooldown;
 
 /**
+ * Charge Cooldown. when cooldwon ends, it is fully charged until loseCharge or startcharging is called 
  * @author zach
  *
  */

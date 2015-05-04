@@ -1,5 +1,7 @@
 /**
- * 
+ * Data for all weapon makers
+ * Created by: Zach Higginbotham
+ * Implementations by: Zach Higginbotham
  */
 package com.deeper.than.weapons;
 
@@ -28,6 +30,10 @@ public enum WeaponMakers {
 	
 	private static Random ran = new Random();
 	
+	/**
+	 * Transforms the parameters in some way.
+	 * @param params
+	 */
 	public void modifyWeaponParams(WeaponParams params){
 		if(this == BUY_N_LARGE){
 			params.baseMonetaryCost *= .8;

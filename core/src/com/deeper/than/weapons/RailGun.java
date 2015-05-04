@@ -1,9 +1,20 @@
+/**
+ * Rail gun weapon. Powerful beam style weapon
+ * not finished
+ * Created by: Zach Higginbotham
+ * Implementations by: Zach Higginbotham
+ */
 package com.deeper.than.weapons;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.deeper.than.Room;
 import com.deeper.than.screens.GameplayScreen;
 
+/**
+ * Rail gun weapon
+ * @author zach
+ *
+ */
 public class RailGun extends Weapon{
 
 	public RailGun(String name, WeaponParams params) {

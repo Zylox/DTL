@@ -1,3 +1,8 @@
+/**
+ * Weapon quality distribution utility
+ * Created by: Zach Higginbotham
+ * Implementations by: Zach Higginbotham
+ */
 package com.deeper.than.weapons;
 
 import java.util.ArrayList;
@@ -6,6 +11,11 @@ import java.util.Random;
 
 import com.badlogic.gdx.utils.Array;
 
+/**
+ * Utility for calculating a distrivution for weapons quality chances
+ * @author zach
+ *
+ */
 public class WeaponQualityDistribution {
 	private ArrayList<Range> ranges;
 	private int percents[] = {20,20,20,20,20};
@@ -25,13 +35,18 @@ public class WeaponQualityDistribution {
 		rangesChanged = false;
 	}
 	
-	
+	/**
+	 * Saves current distribution. Reload it by calling restoreDistribution.
+	 */
 	public void storeDistribution(){
 		for(int i = 0; i<percents.length;i++){
 			storedPercents[i] = percents[i];
 		}
 	}
 	
+	/**
+	 * Restores a saved distribution. if no distributions have been saved, sets it equal to the even distribution
+	 */
 	public void restoreDistribution(){
 		for(int i = 0; i<percents.length;i++){
 			percents[i] = storedPercents[i];
@@ -39,12 +54,19 @@ public class WeaponQualityDistribution {
 		rangesChanged = true;
 	}
 	
+	/**
+	 * Sets all possible percentages to 0
+	 */
 	public void clearDistribution(){
 		for(int i = 0; i<percents.length;i++){
 			percents[i] = 0;
 		}
 		rangesChanged = true;
 	}
+	
+	/**
+	 * evenly divides distribution
+	 */
 	public void setEvenDistribution(){
 		for(int i = 0; i<percents.length;i++){
 			percents[i] = 20;
@@ -52,6 +74,9 @@ public class WeaponQualityDistribution {
 		rangesChanged = true;
 	}
 	
+	/**
+	 * Calculates ranges if percentages changed
+	 */
 	private void calculateRanges(){
 		if(ranges == null){
 			ranges = new ArrayList<Range>();
@@ -73,6 +98,12 @@ public class WeaponQualityDistribution {
 		return this.getRandomQualityByDist(ran.nextInt(100));
 	}
 	
+	/**
+	 * Gets a randome quality based on the distirbution
+	 * if there are overlapping distributions, the lowest quality wins
+	 * @param percentRoll
+	 * @return
+	 */
 	public WeaponQualities getRandomQualityByDist(int percentRoll){
 		if(rangesChanged){
 			calculateRanges();
@@ -88,6 +119,11 @@ public class WeaponQualityDistribution {
 		return getQualityByIndex(0);
 	}
 	
+	/**
+	 * Gets distribution for that quality
+	 * @param quality
+	 * @return
+	 */
 	public int getPercent(WeaponQualities quality){
 		return percents[getIndexByQuality(quality)];
 	}

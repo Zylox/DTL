@@ -1,5 +1,7 @@
 /**
- * 
+ * A projectile fired from a projectile weapon 
+ * Created by: Zach Higginbotham
+ * Implementations by: Zach Higginbotham
  */
 package com.deeper.than.weapons;
 
@@ -12,20 +14,17 @@ import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.deeper.than.Room;
 
 /**
+ * Projectile fired from a projectile weapon
  * @author zach
  *
  */
 public class Projectile extends Image {
 
-	private Vector2 destination;
-	private Room target;
 	
 	public Projectile(Texture tex, float width, float height){
 		super(tex);
 		this.setWidth(width);
 		this.setHeight(height);
-		destination = new Vector2();
-		this.target = null;
 	}
 	
 	public void setColor(Color color){
@@ -38,24 +37,17 @@ public class Projectile extends Image {
 	}
 	
 	public void setDestination(Vector2 destination, WeaponHitAction hitAction, float timeToGetThere){
-//		Vector2 testV = new Vector2(300,300);
-//		Vector2 endPoint = new Vector2(DTL.VWIDTH-100,DTL.VHEIGHT-100);
-//	    test.setBounds(testV.x, testV.y, 10, 3);
-//	    test.setColor(Color.RED);
-//	    test.setOrigin(Align.center);
-//	    test.setRotation(endPoint.cpy().sub(testV).angle());
-//	    
-//	    test.addAction(Actions.moveTo(endPoint.x, endPoint.y,3));
+		//calculate angle of projectile
 		Vector2 dirVec = destination.cpy().sub(this.getX(),this.getY());
 		this.setRotation(dirVec.angle());
+		//if it didnt hit, make the final target farther away to make it keep going
 		if(!hitAction.hit){
 			dirVec.scl(2);
 			timeToGetThere *= 2;
 			destination = dirVec.add(this.getX(),this.getY());
 		}
-		this.destination = destination;
+		//setactions to move to the destination then clean itself up
 		this.addAction(Actions.sequence(Actions.moveTo(destination.x, destination.y, timeToGetThere),hitAction,new Action() {
-			
 			@Override
 			public boolean act(float delta) {
 				cleanup();
@@ -64,7 +56,6 @@ public class Projectile extends Image {
 		}));
 
 	}
-	
 	
 	public void cleanup(){
 		this.remove();

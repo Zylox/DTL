@@ -1,3 +1,8 @@
+/**
+ * Launches a torpedo, a slow moving projectile that does damage to sheilds and piercing damage to the underlying ship.
+ * Created by: Zach Higginbotham
+ * Implementations by: Zach Higginbotham
+ */
 package com.deeper.than.weapons;
 
 import com.badlogic.gdx.Gdx;
@@ -8,6 +13,11 @@ import com.badlogic.gdx.math.Vector2;
 import com.deeper.than.Room;
 import com.deeper.than.screens.GameplayScreen;
 
+/**
+ * Torpedo launcher
+ * @author zach
+ *
+ */
 public class TorpedoLauncher extends Weapon{
 	private static Sound torpedoShot;
 	
@@ -19,7 +29,6 @@ public class TorpedoLauncher extends Weapon{
 	
 	public TorpedoLauncher(String name, WeaponParams params, float torpedoSpeed) {
 		super(name, params);
-		// TODO Auto-generated constructor stub
 		this.torpedoSpeed = torpedoSpeed;
 	}
 
@@ -39,7 +48,9 @@ public class TorpedoLauncher extends Weapon{
 		return params;
 	}
 
-	/* (non-Javadoc)
+	/**
+	 * fire torpedo
+	 *  (non-Javadoc)
 	 * @see com.deeper.than.weapons.Weapon#fire()
 	 */
 	@Override
@@ -68,7 +79,6 @@ public class TorpedoLauncher extends Weapon{
 	 */
 	@Override
 	public Texture getProjectileImage() {
-		// TODO Auto-generated method stub
 		return GameplayScreen.highlight;
 	}
 
@@ -77,7 +87,6 @@ public class TorpedoLauncher extends Weapon{
 	 */
 	@Override
 	public float getProjectileWidth() {
-		// TODO Auto-generated method stub
 		return 20;
 	}
 
@@ -86,7 +95,6 @@ public class TorpedoLauncher extends Weapon{
 	 */
 	@Override
 	public float getProjectileHeight() {
-		// TODO Auto-generated method stub
 		return 10;
 	}
 }

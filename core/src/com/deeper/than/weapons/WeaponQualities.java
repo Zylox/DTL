@@ -1,7 +1,17 @@
+/**
+ * Data for weapon qualities
+ * Created by: Zach Higginbotham
+ * Implementations by: Zach Higginbotham
+ */
 package com.deeper.than.weapons;
 
 import java.util.Random;
 
+/**
+ * 
+ * @author zach
+ *
+ */
 public enum WeaponQualities { //accuracy, damageModifier, critdamage, chance, rechargeSpeed, cost, power
 	EXCEPTIONAL("Exceptional",new Range(.95f, 1f), new Range(1,2),new Range(2,2),new Range(.25f,.50f),new Range(.7f,1),new Range(3,4),new Range(1,3)),
 	PRISTINE("Pristine",new Range(.90f, 1f), new Range(1,1),new Range(2,2),new Range(.25f,.40f),new Range(.8f,1),new Range(2,3),new Range(1,2)),
@@ -48,11 +58,22 @@ public enum WeaponQualities { //accuracy, damageModifier, critdamage, chance, re
 		return params;
 	}
 	
-	
+	/**
+	 * Gets value in range, exclusively on the max
+	 * @param min
+	 * @param max
+	 * @return
+	 */
 	private float getValueInRange(Range range){
 		return getValueInRange(range.min, range.max);
 	}
 	
+	/**
+	 * Gets value in range, exclusively on the max
+	 * @param min
+	 * @param max
+	 * @return
+	 */
 	private int getIntValueInRange(int min, int max){
 		int range = max - min;
 		int value = min;
@@ -62,6 +83,12 @@ public enum WeaponQualities { //accuracy, damageModifier, critdamage, chance, re
 		return value;
 	}
 	
+	/**
+	 * Gets value in range, exclusively on the max
+	 * @param min
+	 * @param max
+	 * @return
+	 */
 	private float getValueInRange(float min, float max){
 		float range = max-min;
 		float value = ran.nextFloat();

@@ -1,5 +1,7 @@
 /**
- * 
+ * Action for a projectile that determines what happens upon hit
+ * Created by: Zach Higginbotham
+ * Implementations by: Zach Higginbotham
  */
 package com.deeper.than.weapons;
 
