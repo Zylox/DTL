@@ -126,7 +126,7 @@ public class GameplayScreen implements EnumerableScreen{
 		mapGenerator = new MapGenerator();
 		UIMapScreen.loadAssets();
 		
-		loadNewMusic();
+		music = Gdx.audio.newMusic(Gdx.files.internal(musicHandles[musicCounter]));
 		music.setOnCompletionListener(new OnCompletionListener() {
 			
 			@Override
@@ -135,17 +135,18 @@ public class GameplayScreen implements EnumerableScreen{
 				if(musicCounter >= musicHandles.length){
 					musicCounter = 0;
 				}
-				loadNewMusic();
-				playMusic();
+				//loadNewMusic();
+				music.dispose();
+				music = Gdx.audio.newMusic(Gdx.files.internal(musicHandles[musicCounter]));
+//				GameplayScreen.music = music;
+//				GameplayScreen.music.play();
+				music.play();
+				music.setOnCompletionListener(this);
 			}
 		});
-		loadNewMusic();
 	}
 	
 	
-	private void loadNewMusic(){
-		music = Gdx.audio.newMusic(Gdx.files.internal(musicHandles[musicCounter]));
-	}
 	
 	private void playMusic(){
 		music.play();
@@ -407,7 +408,6 @@ public class GameplayScreen implements EnumerableScreen{
 	    	mainMenu();
 	    }
 	
-
 	    //////Update logic goes here
 	    
 	    timeAccumulator += delta;
@@ -562,6 +562,8 @@ public class GameplayScreen implements EnumerableScreen{
 		// TODO Auto-generated method stub
 		playerShip.dispose();
 		gameObjects.dispose();
+		music.dispose();
+		
 	}
 	
 	/**
