@@ -56,7 +56,7 @@ public class MapGenerator {
 				xMax=1280;
 				yMax=720;
 			}
-			x = (int) ((Math.random()*(xMax-xMin))+xMin);
+			x = (int) ((1080/size)*i);
 			y = (int) ((Math.random()*(yMax-yMin))+yMin);
 			
 			//add the node to the map
@@ -68,7 +68,7 @@ public class MapGenerator {
 	
 	public void generateLattice(){
 		//how far away things should and still be connected
-		int range=50;
+		int range=400;
 		int size=map.getNodes().size();
 		
 		for(int i=0; i<size ;i++){
