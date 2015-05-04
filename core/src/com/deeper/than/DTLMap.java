@@ -1,6 +1,7 @@
 package com.deeper.than;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -10,7 +11,7 @@ public class DTLMap {
 	//current level, first is 1
 	private int level;
 	//lattice of connection of nodes, not set up until after nodes are set up
-	private Map<Integer,Integer> lattice = new HashMap<Integer,Integer>();
+	private Map<Integer,ArrayList<Integer>> lattice = new HashMap<Integer,ArrayList<Integer>>();
 	private int currentNode;
 	
 	public DTLMap(int level){
@@ -28,7 +29,7 @@ public class DTLMap {
 		return nodes;
 	}
 	
-	public Map<Integer,Integer> getLattice(){
+	public Map<Integer,ArrayList<Integer>> getLattice(){
 		return lattice;
 	}
 	
@@ -41,7 +42,10 @@ public class DTLMap {
 	}
 	
 	public void addConnection(int start, int end){
-		lattice.put(start,end);
+		ArrayList<Integer> currentList = lattice.get(start);
+		if(currentList == null) currentList = new ArrayList<Integer>();
+		currentList.add(end);
+		lattice.put(start, currentList);
 	}
 	
 	public void setCurrentNode(int currentNode){
@@ -50,5 +54,13 @@ public class DTLMap {
 	
 	public int getCurrentNode(){
 		return currentNode;
+	}
+	
+	public int getSize(){
+		return nodes.size();
+	}
+	
+	public ArrayList<Integer> getReachableNodes(){
+		return lattice.get(currentNode);
 	}
 }
